@@ -3,25 +3,30 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>ColdCase AI — Autonomous Criminal Investigation OS</title>
+  <title>ColdCase AI — Autonomous Criminal Investigation OS & Cinematic Crime Board</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&family=Outfit:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@600;700&family=JetBrains+Mono:wght@400;600;800&family=Outfit:wght@300;400;600;700;800&family=Playfair+Display:ital,wght@0,700;1,700&family=Special+Elite&display=swap" rel="stylesheet">
   <style>
     :root {
-      --bg-dark: #090c10;
-      --panel-bg: #0d1117;
-      --card-bg: #161b22;
-      --card-border: #30363d;
+      --bg-dark: #07090e;
+      --panel-bg: #0d1118;
+      --card-bg: #151b24;
+      --card-border: #2b3340;
       --accent-red: #f85149;
-      --accent-amber: #e3b341;
-      --accent-cyan: #58a6ff;
+      --accent-crimson: #e63946;
+      --accent-amber: #f0b429;
+      --accent-cyan: #38bdf8;
       --accent-green: #3fb950;
-      --accent-purple: #bc8cff;
+      --accent-purple: #c084fc;
+      --cork-bg: #2a2016;
       --text-main: #f0f6fc;
       --text-muted: #8b949e;
-      --font-ui: 'Outfit', sans-serif;
+      --font-ui: 'Outfit', -apple-system, BlinkMacSystemFont, sans-serif;
       --font-mono: 'JetBrains Mono', monospace;
+      --font-hand: 'Caveat', cursive;
+      --font-typewriter: 'Special Elite', cursive;
+      --font-press: 'Playfair Display', Georgia, serif;
     }
     * { box-sizing: border-box; margin: 0; padding: 0; }
     body {
@@ -34,42 +39,44 @@
       overflow: hidden;
     }
     header {
-      background: var(--panel-bg);
+      background: #090d14;
       border-bottom: 1px solid var(--card-border);
-      padding: 10px 20px;
+      padding: 10px 22px;
       display: flex;
       justify-content: space-between;
       align-items: center;
       flex-shrink: 0;
+      z-index: 100;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
     }
     .brand {
       display: flex;
       align-items: center;
-      gap: 12px;
+      gap: 14px;
     }
     .badge-case {
       background: rgba(248, 81, 73, 0.15);
       color: var(--accent-red);
-      border: 1px solid var(--accent-red);
+      border: 1px solid rgba(248, 81, 73, 0.6);
       font-family: var(--font-mono);
-      font-size: 11px;
-      padding: 3px 8px;
+      font-size: 10.5px;
+      padding: 4px 10px;
       border-radius: 4px;
-      font-weight: bold;
-      letter-spacing: 1px;
+      font-weight: 800;
+      letter-spacing: 1.5px;
     }
     .logo-title {
       font-size: 19px;
       font-weight: 800;
       letter-spacing: -0.5px;
     }
-    .logo-title span { color: var(--accent-red); }
+    .logo-title span { color: var(--accent-red); text-shadow: 0 0 12px rgba(248, 81, 73, 0.5); }
     .status-pill {
       font-family: var(--font-mono);
       font-size: 11px;
       display: flex;
       align-items: center;
-      gap: 12px;
+      gap: 16px;
       color: var(--accent-green);
     }
     .pulse-dot {
@@ -77,49 +84,178 @@
       height: 8px;
       background: var(--accent-green);
       border-radius: 50%;
-      box-shadow: 0 0 8px var(--accent-green);
+      box-shadow: 0 0 10px var(--accent-green);
       animation: pulse 2s infinite;
     }
-    @keyframes pulse { 0% { opacity: 0.4; } 50% { opacity: 1; } 100% { opacity: 0.4; } }
+    @keyframes pulse { 0% { opacity: 0.3; } 50% { opacity: 1; } 100% { opacity: 0.3; } }
 
     .fbi-ext-link {
-      background: rgba(88, 166, 255, 0.12);
-      border: 1px solid rgba(88, 166, 255, 0.4);
+      background: rgba(56, 189, 248, 0.12);
+      border: 1px solid rgba(56, 189, 248, 0.4);
       color: var(--accent-cyan);
       text-decoration: none;
-      padding: 4px 10px;
-      border-radius: 4px;
+      padding: 4px 12px;
+      border-radius: 5px;
       font-size: 11px;
-      font-weight: 600;
+      font-weight: 700;
       display: flex;
       align-items: center;
       gap: 6px;
       transition: all 0.2s;
     }
     .fbi-ext-link:hover {
-      background: rgba(88, 166, 255, 0.25);
+      background: rgba(56, 189, 248, 0.25);
       border-color: var(--accent-cyan);
+      box-shadow: 0 0 12px rgba(56, 189, 248, 0.3);
     }
 
     main {
       flex: 1;
-      display: grid;
-      grid-template-columns: 410px 1fr 390px;
-      gap: 12px;
-      padding: 12px;
+      display: flex;
+      gap: 0;
+      padding: 10px;
       overflow: hidden;
+      min-height: 0;
+      position: relative;
     }
+
+    .panel-left-wrapper {
+      width: 390px;
+      min-width: 0;
+      flex-shrink: 0;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      transition: width 0.3s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.25s, transform 0.3s;
+    }
+    .panel-right-wrapper {
+      width: 400px;
+      min-width: 0;
+      flex-shrink: 0;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      transition: width 0.3s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.25s, transform 0.3s;
+    }
+    .panel-center-wrapper {
+      flex: 1;
+      min-width: 300px;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      position: relative;
+    }
+
+    main.resizing .panel-left-wrapper,
+    main.resizing .panel-right-wrapper {
+      transition: none !important;
+      user-select: none;
+    }
+
+    main.left-collapsed .panel-left-wrapper {
+      width: 0px !important;
+      opacity: 0;
+      pointer-events: none;
+      transform: translateX(-30px);
+    }
+    main.right-collapsed .panel-right-wrapper {
+      width: 0px !important;
+      opacity: 0;
+      pointer-events: none;
+      transform: translateX(30px);
+    }
+
+    /* Unified Interactive Splitter Bar (Drag to Resize + Click Pill to Collapse/Expand) */
+    .unified-splitter {
+      width: 14px;
+      cursor: col-resize;
+      background: transparent;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      z-index: 60;
+      user-select: none;
+      flex-shrink: 0;
+      transition: background 0.15s ease;
+    }
+    .unified-splitter::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      bottom: 0;
+      width: 1px;
+      background: var(--card-border);
+      transition: background 0.2s, box-shadow 0.2s;
+    }
+    .unified-splitter:hover::before, .unified-splitter.dragging::before {
+      background: var(--accent-cyan);
+      box-shadow: 0 0 10px var(--accent-cyan);
+      width: 2px;
+    }
+    .unified-splitter-pill {
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 18px;
+      height: 46px;
+      background: #151d28;
+      border: 1px solid var(--card-border);
+      border-radius: 9px;
+      color: var(--accent-cyan);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 9.5px;
+      font-weight: 800;
+      cursor: pointer;
+      box-shadow: 0 4px 14px rgba(0, 0, 0, 0.6);
+      transition: all 0.2s ease;
+      z-index: 65;
+    }
+    .unified-splitter-pill:hover {
+      background: #1e293b;
+      border-color: var(--accent-cyan);
+      color: #fff;
+      box-shadow: 0 0 14px rgba(56, 189, 248, 0.5);
+      transform: translateY(-50%) scale(1.12);
+    }
+
+    .header-icon-btn {
+      background: rgba(255, 255, 255, 0.06);
+      border: 1px solid var(--card-border);
+      color: var(--text-muted);
+      width: 24px;
+      height: 24px;
+      border-radius: 4px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      font-size: 10px;
+      font-weight: bold;
+      transition: all 0.15s;
+    }
+    .header-icon-btn:hover {
+      background: rgba(56, 189, 248, 0.2);
+      border-color: var(--accent-cyan);
+      color: var(--accent-cyan);
+    }
+
     .panel {
       background: var(--panel-bg);
       border: 1px solid var(--card-border);
-      border-radius: 8px;
+      border-radius: 10px;
       display: flex;
       flex-direction: column;
       overflow: hidden;
       min-height: 0;
+      height: 100%;
+      box-shadow: 0 8px 30px rgba(0, 0, 0, 0.4);
     }
     .panel-header {
       padding: 10px 14px;
+      background: #101620;
       border-bottom: 1px solid var(--card-border);
       font-size: 11px;
       text-transform: uppercase;
@@ -140,7 +276,7 @@
       gap: 10px;
     }
 
-    /* Live Search Input at Top */
+    /* Search Input */
     .search-box {
       position: relative;
       display: flex;
@@ -151,19 +287,21 @@
       background: var(--card-bg);
       border: 1px solid var(--card-border);
       color: var(--text-main);
-      padding: 8px 30px 8px 30px;
+      padding: 8px 30px 8px 32px;
       border-radius: 6px;
       font-size: 12px;
       font-family: var(--font-ui);
+      transition: border-color 0.2s;
     }
     .search-box input:focus {
       outline: none;
       border-color: var(--accent-red);
+      box-shadow: 0 0 10px rgba(248, 81, 73, 0.2);
     }
     .search-icon {
       position: absolute;
       left: 10px;
-      font-size: 12px;
+      font-size: 13px;
       color: var(--text-muted);
     }
     .clear-search-btn {
@@ -207,9 +345,9 @@
 
     /* Live Web Intelligence Card */
     .live-web-card {
-      background: #111a24;
+      background: linear-gradient(145deg, #111a24 0%, #0d151e 100%);
       border: 1px solid #1f354a;
-      border-radius: 6px;
+      border-radius: 8px;
       padding: 10px;
       display: flex;
       flex-direction: column;
@@ -217,8 +355,8 @@
     }
     .live-badge {
       font-family: var(--font-mono);
-      font-size: 9px;
-      font-weight: bold;
+      font-size: 9.5px;
+      font-weight: 700;
       color: var(--accent-green);
       display: flex;
       align-items: center;
@@ -230,10 +368,10 @@
       align-items: flex-start;
     }
     .live-card-thumb {
-      width: 65px;
-      height: 65px;
+      width: 68px;
+      height: 68px;
       object-fit: cover;
-      border-radius: 4px;
+      border-radius: 6px;
       border: 1px solid var(--card-border);
       flex-shrink: 0;
       background: #090c10;
@@ -249,12 +387,12 @@
     }
 
     button.btn-live-fetch {
-      background: rgba(56, 185, 80, 0.15);
-      border: 1px solid var(--accent-green);
-      color: var(--accent-green);
+      background: rgba(56, 189, 248, 0.12);
+      border: 1px solid var(--accent-cyan);
+      color: var(--accent-cyan);
       padding: 7px 10px;
       border-radius: 5px;
-      font-weight: bold;
+      font-weight: 700;
       font-size: 11px;
       cursor: pointer;
       display: flex;
@@ -264,8 +402,8 @@
       transition: all 0.2s;
     }
     button.btn-live-fetch:hover {
-      background: rgba(56, 185, 80, 0.3);
-      box-shadow: 0 0 10px rgba(56, 185, 80, 0.3);
+      background: rgba(56, 189, 248, 0.25);
+      box-shadow: 0 0 12px rgba(56, 189, 248, 0.3);
     }
 
     /* Case List Items */
@@ -273,7 +411,7 @@
       display: flex;
       flex-direction: column;
       gap: 6px;
-      max-height: 140px;
+      max-height: 120px;
       overflow-y: auto;
       padding-right: 2px;
     }
@@ -307,8 +445,8 @@
       text-transform: uppercase;
     }
     .tag-critical { background: rgba(248, 81, 73, 0.2); color: var(--accent-red); border: 1px solid var(--accent-red); }
-    .tag-high { background: rgba(227, 179, 65, 0.2); color: var(--accent-amber); border: 1px solid var(--accent-amber); }
-    .tag-medium { background: rgba(88, 166, 255, 0.2); color: var(--accent-cyan); border: 1px solid var(--accent-cyan); }
+    .tag-high { background: rgba(240, 180, 41, 0.2); color: var(--accent-amber); border: 1px solid var(--accent-amber); }
+    .tag-medium { background: rgba(56, 189, 248, 0.2); color: var(--accent-cyan); border: 1px solid var(--accent-cyan); }
 
     .case-card-title {
       font-size: 11.5px;
@@ -340,65 +478,405 @@
     input.form-input:focus, textarea.form-textarea:focus { outline: none; border-color: var(--accent-red); }
 
     button.btn-investigate {
-      background: linear-gradient(135deg, #da3633 0%, #b62324 100%);
+      background: linear-gradient(135deg, #e63946 0%, #a81c26 100%);
       color: white;
       border: none;
-      padding: 10px;
+      padding: 11px;
       border-radius: 6px;
-      font-weight: 700;
+      font-weight: 800;
       font-size: 12px;
+      letter-spacing: 0.5px;
       cursor: pointer;
       display: flex;
       justify-content: center;
       align-items: center;
       gap: 8px;
-      box-shadow: 0 4px 12px rgba(218, 54, 51, 0.4);
+      box-shadow: 0 4px 16px rgba(230, 57, 70, 0.4);
       transition: all 0.2s;
     }
     button.btn-investigate:hover {
       transform: translateY(-1px);
-      box-shadow: 0 6px 16px rgba(218, 54, 51, 0.6);
+      box-shadow: 0 6px 20px rgba(230, 57, 70, 0.6);
     }
 
-    /* Agent Timeline */
-    .agent-step {
-      background: var(--card-bg);
-      border: 1px solid var(--card-border);
-      border-radius: 6px;
-      padding: 10px;
-      display: flex;
-      flex-direction: column;
-      gap: 5px;
-    }
-    .agent-step.active {
-      border-color: var(--accent-red);
-      box-shadow: 0 0 12px rgba(248, 81, 73, 0.2);
-    }
-    .step-badge {
-      font-family: var(--font-mono);
-      font-size: 10px;
-      font-weight: bold;
-      color: var(--accent-cyan);
-      display: flex;
-      justify-content: space-between;
-    }
-    .step-title { font-weight: 700; font-size: 12px; }
-    .step-desc { font-size: 11px; color: var(--text-muted); line-height: 1.4; }
-
-    /* Murder Board Graph View */
-    .board-container {
+    /* ==========================================================================
+       CINEMATIC CORKBOARD & RED STRINGS CASE BOARD STYLING
+       ========================================================================== */
+    .board-wrapper {
       flex: 1;
       position: relative;
-      background: radial-gradient(circle at center, #111724 0%, #080b10 100%);
       display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      background: #18120c;
+    }
+
+    /* Channel Filter Bar */
+    .channel-filter-bar {
+      background: rgba(13, 17, 24, 0.95);
+      border-bottom: 1px solid var(--card-border);
+      padding: 6px 12px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      overflow-x: auto;
+      z-index: 30;
+      flex-shrink: 0;
+    }
+    .filter-btn {
+      background: #151b24;
+      border: 1px solid var(--card-border);
+      color: var(--text-muted);
+      padding: 4px 10px;
+      border-radius: 14px;
+      font-size: 10.5px;
+      font-weight: 700;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      white-space: nowrap;
+      transition: all 0.15s;
+    }
+    .filter-btn:hover, .filter-btn.active {
+      background: rgba(248, 81, 73, 0.2);
+      border-color: var(--accent-red);
+      color: #fff;
+    }
+
+    /* Corkboard Main Area */
+    .corkboard-container {
+      flex: 1;
+      position: relative;
       overflow: hidden;
       cursor: grab;
       user-select: none;
-      height: 100%;
-      width: 100%;
+      background: 
+        radial-gradient(circle at center, rgba(30, 22, 14, 0.3) 0%, rgba(10, 7, 4, 0.85) 100%),
+        repeating-radial-gradient(circle at 17% 32%, rgba(200, 140, 80, 0.08) 0px, rgba(140, 90, 50, 0.08) 7px, transparent 14px),
+        repeating-radial-gradient(circle at 84% 68%, rgba(80, 50, 25, 0.12) 0px, rgba(120, 75, 40, 0.08) 9px, transparent 18px),
+        linear-gradient(135deg, #3d2817 0%, #291a0f 50%, #1e130a 100%);
+      box-shadow: inset 0 0 80px rgba(0, 0, 0, 0.9);
+      border: 4px solid #140d07;
     }
-    .board-container:active { cursor: grabbing; }
-    svg.murder-board { width: 100%; height: 100%; touch-action: none; }
+    .corkboard-container:active { cursor: grabbing; }
+
+    /* SVG String Canvas Layer */
+    svg.strings-layer {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      z-index: 10;
+    }
+
+    /* Board Viewport for Pan & Zoom */
+    .board-viewport {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 1200px;
+      height: 900px;
+      transform-origin: 0 0;
+      transform: matrix(1, 0, 0, 1, 0, 0);
+    }
+
+    /* Clue Items on the Board */
+    .board-item {
+      position: absolute;
+      cursor: grab;
+      z-index: 15;
+      transition: transform 0.1s ease, box-shadow 0.2s ease;
+      touch-action: none;
+    }
+    .board-item:hover {
+      z-index: 25 !important;
+    }
+    .board-item.dragging {
+      cursor: grabbing;
+      z-index: 50 !important;
+      filter: drop-shadow(0 15px 30px rgba(0, 0, 0, 0.8)) !important;
+    }
+
+    /* Pushpins (3D Effect) */
+    .thumbtack {
+      position: absolute;
+      top: -10px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 18px;
+      height: 18px;
+      border-radius: 50%;
+      z-index: 30;
+      box-shadow: 0 3px 6px rgba(0, 0, 0, 0.7), inset 0 2px 3px rgba(255, 255, 255, 0.6);
+      border: 1.5px solid rgba(0, 0, 0, 0.4);
+    }
+    .pin-red { background: radial-gradient(circle at 35% 35%, #ff6b6b 0%, #c92a2a 70%, #5c0000 100%); }
+    .pin-brass { background: radial-gradient(circle at 35% 35%, #ffe066 0%, #f59f00 70%, #5f370e 100%); }
+    .pin-silver { background: radial-gradient(circle at 35% 35%, #ffffff 0%, #adb5bd 70%, #343a40 100%); }
+
+    /* Scotch Tape Effect */
+    .scotch-tape {
+      position: absolute;
+      top: -9px;
+      left: 50%;
+      transform: translateX(-50%) rotate(-1deg);
+      width: 60px;
+      height: 18px;
+      background: rgba(255, 255, 255, 0.45);
+      border-left: 2px dashed rgba(255, 255, 255, 0.6);
+      border-right: 2px dashed rgba(255, 255, 255, 0.6);
+      box-shadow: 0 1px 4px rgba(0, 0, 0, 0.2);
+      backdrop-filter: blur(2px);
+      z-index: 28;
+    }
+
+    /* 1. Polaroid Photo Item */
+    .item-polaroid {
+      width: 190px;
+      background: #f8f6f0;
+      padding: 10px 10px 22px 10px;
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.6), 0 2px 6px rgba(0, 0, 0, 0.4);
+      border-radius: 2px;
+      border: 1px solid #d0c8b8;
+    }
+    .polaroid-img-wrapper {
+      width: 100%;
+      height: 150px;
+      background: #111;
+      overflow: hidden;
+      position: relative;
+    }
+    .polaroid-img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      filter: contrast(1.1) saturate(0.9) sepia(0.15);
+    }
+    .polaroid-caption {
+      margin-top: 10px;
+      font-family: var(--font-hand);
+      font-size: 16px;
+      color: #1a1a1a;
+      line-height: 1.2;
+      text-align: center;
+      font-weight: 700;
+    }
+
+    /* 2. Sticky Note Item */
+    .item-sticky {
+      width: 175px;
+      min-height: 140px;
+      padding: 14px 12px 12px 12px;
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.5), 0 2px 4px rgba(0, 0, 0, 0.3);
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+    .sticky-yellow {
+      background: linear-gradient(135deg, #fff3a8 0%, #fdef7e 100%);
+      color: #3b3000;
+    }
+    .sticky-pink {
+      background: linear-gradient(135deg, #ffc2d1 0%, #ffadc1 100%);
+      color: #4a0e1c;
+    }
+    .sticky-title {
+      font-family: var(--font-ui);
+      font-size: 10.5px;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      border-bottom: 1px dashed rgba(0, 0, 0, 0.2);
+      padding-bottom: 4px;
+      margin-bottom: 6px;
+    }
+    .sticky-body {
+      font-family: var(--font-hand);
+      font-size: 15.5px;
+      font-weight: 700;
+      line-height: 1.25;
+      flex: 1;
+    }
+
+    /* 3. Newspaper Clipping Item */
+    .item-newspaper {
+      width: 210px;
+      background: #f1ebd9;
+      padding: 12px;
+      color: #1b1712;
+      box-shadow: 0 8px 22px rgba(0, 0, 0, 0.6);
+      border: 1px solid #d4c8ad;
+      position: relative;
+    }
+    .newspaper-header {
+      font-family: var(--font-press);
+      font-size: 9.5px;
+      font-weight: bold;
+      border-bottom: 2px solid #2b2219;
+      padding-bottom: 3px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+    .newspaper-headline {
+      font-family: var(--font-press);
+      font-size: 13px;
+      font-weight: 800;
+      line-height: 1.2;
+      margin: 6px 0;
+      text-transform: uppercase;
+    }
+    .newspaper-snippet {
+      font-family: 'Times New Roman', Times, serif;
+      font-size: 11px;
+      line-height: 1.35;
+      color: #332a22;
+      display: -webkit-box;
+      -webkit-line-clamp: 3;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+    }
+
+    /* 4. Private Investigator Dossier Item */
+    .item-pi-report {
+      width: 200px;
+      background: #ece7db;
+      border: 1px solid #b8ad96;
+      padding: 12px;
+      color: #2b261f;
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.6);
+      position: relative;
+    }
+    .pi-stamp {
+      position: absolute;
+      top: 8px;
+      right: 8px;
+      border: 1.5px solid #d90429;
+      color: #d90429;
+      font-family: var(--font-mono);
+      font-size: 8px;
+      font-weight: 800;
+      padding: 1px 4px;
+      transform: rotate(12deg);
+      letter-spacing: 0.5px;
+    }
+    .pi-header {
+      font-family: var(--font-typewriter);
+      font-size: 10px;
+      font-weight: bold;
+      color: #4a3e2c;
+      margin-bottom: 6px;
+      border-bottom: 1px solid #b8ad96;
+      padding-bottom: 3px;
+    }
+    .pi-text {
+      font-family: var(--font-typewriter);
+      font-size: 11px;
+      line-height: 1.3;
+      color: #1a1610;
+    }
+
+    /* 5. Video Card Item */
+    .item-video {
+      width: 195px;
+      background: #1e2632;
+      border: 1px solid #334155;
+      padding: 10px;
+      border-radius: 6px;
+      color: #f1f5f9;
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.6);
+    }
+    .video-thumb-container {
+      width: 100%;
+      height: 90px;
+      background: #090d14;
+      border-radius: 4px;
+      position: relative;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+    }
+    .video-play-badge {
+      width: 34px;
+      height: 34px;
+      background: rgba(230, 57, 70, 0.85);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #fff;
+      font-size: 13px;
+      box-shadow: 0 0 12px rgba(230, 57, 70, 0.6);
+    }
+    .video-timecode {
+      position: absolute;
+      bottom: 4px;
+      right: 4px;
+      background: rgba(0, 0, 0, 0.8);
+      font-family: var(--font-mono);
+      font-size: 9px;
+      padding: 1px 4px;
+      border-radius: 2px;
+      color: #38bdf8;
+    }
+    .video-title {
+      font-size: 11px;
+      font-weight: 700;
+      margin-top: 6px;
+      line-height: 1.3;
+    }
+    .video-snippet {
+      font-size: 10px;
+      color: #94a3b8;
+      margin-top: 4px;
+      line-height: 1.3;
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+    }
+
+    /* NATO / Interpol Reliability Tag */
+    .reliability-pill {
+      margin-top: 6px;
+      font-family: var(--font-mono);
+      font-size: 8.5px;
+      font-weight: 800;
+      padding: 2px 5px;
+      border-radius: 3px;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+    }
+    .rel-a1 { background: #dcfce7; color: #166534; border: 1px solid #86efac; }
+    .rel-a2 { background: #e0f2fe; color: #075985; border: 1px solid #7dd3fc; }
+    .rel-b1 { background: #fef9c3; color: #854d0e; border: 1px solid #fde047; }
+    .rel-b2 { background: #ffedd5; color: #9a3412; border: 1px solid #fdba74; }
+    .rel-c2 { background: #f3e8ff; color: #6b21a8; border: 1px solid #d8b4fe; }
+    .rel-c3 { background: #fce7f3; color: #9d174d; border: 1px solid #f9a8d4; }
+    .rel-d4 { background: #fee2e2; color: #991b1b; border: 1px solid #fca5a5; }
+
+    /* Red Thread Tag */
+    .thread-tag {
+      position: absolute;
+      background: #9b2226;
+      color: #fff;
+      font-family: var(--font-mono);
+      font-size: 9px;
+      font-weight: 800;
+      padding: 2px 6px;
+      border-radius: 3px;
+      pointer-events: none;
+      transform: translate(-50%, -50%);
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.6);
+      border: 1px solid #ff4d6d;
+      white-space: nowrap;
+      z-index: 12;
+    }
 
     /* Floating Toolbar */
     .board-toolbar {
@@ -408,13 +886,13 @@
       display: flex;
       align-items: center;
       gap: 6px;
-      background: rgba(13, 17, 23, 0.92);
+      background: rgba(13, 17, 24, 0.94);
       backdrop-filter: blur(10px);
       border: 1px solid var(--card-border);
       border-radius: 8px;
       padding: 5px 8px;
-      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.6);
-      z-index: 20;
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.7);
+      z-index: 35;
     }
     .toolbar-btn {
       background: var(--card-bg);
@@ -448,22 +926,103 @@
       position: absolute;
       top: 12px;
       left: 12px;
-      background: rgba(13, 17, 23, 0.85);
+      background: rgba(13, 17, 24, 0.88);
       border: 1px solid rgba(48, 54, 61, 0.8);
       border-radius: 6px;
-      padding: 4px 9px;
+      padding: 4px 10px;
       font-family: var(--font-mono);
       font-size: 10px;
       color: var(--text-muted);
       pointer-events: none;
-      z-index: 10;
+      z-index: 35;
     }
 
-    .node-group { cursor: pointer; }
-    .node-group:hover circle.node-bg {
-      stroke-width: 4px;
-      filter: drop-shadow(0 0 14px rgba(248, 81, 73, 0.8));
+    /* Modal Clue Inspector */
+    .modal-backdrop {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      background: rgba(0, 0, 0, 0.75);
+      backdrop-filter: blur(6px);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 200;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.2s ease;
     }
+    .modal-backdrop.open {
+      opacity: 1;
+      pointer-events: auto;
+    }
+    .modal-card {
+      width: 540px;
+      max-width: 90vw;
+      background: #111722;
+      border: 1px solid #334155;
+      border-radius: 10px;
+      box-shadow: 0 20px 50px rgba(0, 0, 0, 0.8);
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+    }
+    .modal-header {
+      background: #182232;
+      padding: 12px 16px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 1px solid var(--card-border);
+    }
+    .modal-title {
+      font-weight: 800;
+      font-size: 14px;
+      color: #fff;
+    }
+    .modal-close {
+      background: none;
+      border: none;
+      color: var(--text-muted);
+      font-size: 16px;
+      cursor: pointer;
+    }
+    .modal-body {
+      padding: 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      font-size: 12.5px;
+      line-height: 1.5;
+      color: #cbd5e1;
+    }
+
+    /* Agent Timeline */
+    .agent-step {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 6px;
+      padding: 10px;
+      display: flex;
+      flex-direction: column;
+      gap: 5px;
+    }
+    .agent-step.active {
+      border-color: var(--accent-red);
+      box-shadow: 0 0 14px rgba(248, 81, 73, 0.25);
+    }
+    .step-badge {
+      font-family: var(--font-mono);
+      font-size: 10px;
+      font-weight: bold;
+      color: var(--accent-cyan);
+      display: flex;
+      justify-content: space-between;
+    }
+    .step-title { font-weight: 700; font-size: 12px; }
+    .step-desc { font-size: 11px; color: var(--text-muted); line-height: 1.4; }
   </style>
 </head>
 <body>
@@ -471,211 +1030,304 @@
   <header>
     <div class="brand">
       <div class="badge-case">CLASSIFIED // COLD CASE SQUAD</div>
-      <div class="logo-title">ColdCase<span>OS</span> — Agentic Criminal Intelligence</div>
+      <div class="logo-title">ColdCase<span>AI</span> — Autonomous Crime Board OS</div>
     </div>
     <div class="status-pill">
       <div style="display: flex; align-items: center; gap: 6px;">
         <div class="pulse-dot"></div>
-        <span>6 AGENTS ONLINE (ADK + GEMINI 3.5)</span>
+        <span>6 OSINT AGENTS ONLINE (GEMINI 3.7 + ADK)</span>
       </div>
-      <a href="https://www.fbi.gov/wanted" target="_blank" class="fbi-ext-link" title="Open FBI Official Archives">
+      <a href="https://www.fbi.gov/wanted" target="_blank" class="fbi-ext-link" title="Open FBI Official Wanted Archives">
         <span>🌐 FBI.GOV WANTED LIVE ARCHIVES ↗</span>
       </a>
     </div>
   </header>
 
-  <main>
+  <main id="mainContainer">
     <!-- Left Panel: Search, Category, Case Dropdown, Live Web Card, Form -->
-    <div class="panel">
-      <div class="panel-header">
-        <span>Affaires Non Résolues</span>
-        <span id="caseCountBadge" style="color: var(--accent-red); font-family: var(--font-mono);">9 AFFAIRES</span>
-      </div>
-      <div class="panel-body">
-        <!-- 1. Real-Time Search Bar (TOP) -->
-        <div class="search-box">
-          <span class="search-icon">🔍</span>
-          <input type="text" id="searchInput" placeholder="Rechercher par suspect, ville, mot-clé..." oninput="filterCases()">
-          <button class="clear-search-btn" onclick="clearSearch()" title="Effacer">✖</button>
+    <div class="panel-left-wrapper" id="panelLeftWrapper">
+      <div class="panel">
+        <div class="panel-header">
+          <span>Unsolved Cold Case Dossiers</span>
+          <span id="caseCountBadge" style="color: var(--accent-red); font-family: var(--font-mono);">9 CASES</span>
         </div>
-
-        <!-- 2. Category Dropdown -->
-        <div class="dropdown-block">
-          <label class="field-label">1. CATÉGORIE D'AFFAIRES</label>
-          <select class="styled-dropdown" id="categorySelect" onchange="onCategorySelectChange()">
-            <option value="ALL">📂 Toutes les Catégories (9 Affaires)</option>
-            <option value="Braquages & Fraudes Majeures">🏦 Braquages & Fraudes Majeures (3)</option>
-            <option value="Homicides & Cold Cases">🔪 Homicides & Cold Cases (2)</option>
-            <option value="Disparitions Mystérieuses">⛵ Disparitions Mystérieuses (2)</option>
-            <option value="Cybercriminalité & Espionnage">💻 Cybercriminalité & Espionnage (2)</option>
-          </select>
-        </div>
-
-        <!-- 3. Case Dropdown -->
-        <div class="dropdown-block">
-          <label class="field-label">2. SÉLECTIONNER UNE AFFAIRE DANS LA LISTE</label>
-          <select class="styled-dropdown" id="caseDropdown" onchange="onCaseDropdownChange()" style="color: #fff; border-color: var(--accent-cyan);">
-            <!-- Dynamically populated -->
-          </select>
-        </div>
-
-        <!-- 4. Real Live Downloaded Data Card (Live HTTP Fetch) -->
-        <div class="live-web-card" id="liveCard">
-          <div class="live-badge">
-            <span class="pulse-dot"></span>
-            <span id="liveSourceBadge">TÉLÉCHARGEMENT EN DIRECT : WIKIMEDIA OSINT API</span>
+        <div class="panel-body">
+          <!-- 1. Real-Time Search Bar -->
+          <div class="search-box">
+            <span class="search-icon">🔍</span>
+            <input type="text" id="searchInput" placeholder="Search by suspect, city, keyword..." oninput="filterCases()">
+            <button class="clear-search-btn" onclick="clearSearch()" title="Clear">✖</button>
           </div>
-          <div class="live-card-body">
-            <img id="liveImg" class="live-card-thumb" src="https://upload.wikimedia.org/wikipedia/commons/thumb/c/cb/Empty_Frames_at_Isabella_Stewart_Gardner_Museum.jpg/330px-Empty_Frames_at_Isabella_Stewart_Gardner_Museum.jpg" alt="Live evidence thumbnail">
-            <div style="display: flex; flex-direction: column; gap: 4px;">
-              <div style="font-weight: bold; font-size: 11px; color: #fff;" id="liveTitle">Isabella Stewart Gardner Museum theft</div>
-              <div class="live-card-text" id="liveExtract">In the early hours of March 18, 1990, 13 works of art were stolen from the Isabella Stewart Gardner Museum in Boston...</div>
+
+          <!-- 2. Category Dropdown -->
+          <div class="dropdown-block">
+            <label class="field-label">1. CASE CATEGORY</label>
+            <select class="styled-dropdown" id="categorySelect" onchange="onCategorySelectChange()">
+              <option value="ALL">📂 All Categories (9 Cases)</option>
+              <option value="Major Heists & Financial Conspiracies">🏦 Major Heists & Financial Conspiracies (3)</option>
+              <option value="Homicides & Serial Cases">🔪 Homicides & Serial Cases (2)</option>
+              <option value="Mysterious Disappearances">⛵ Mysterious Disappearances (2)</option>
+              <option value="Cybercrime & State Espionage">💻 Cybercrime & State Espionage (2)</option>
+            </select>
+          </div>
+
+          <!-- 3. Case Dropdown -->
+          <div class="dropdown-block">
+            <label class="field-label">2. SELECT ACTIVE DOSSIER</label>
+            <select class="styled-dropdown" id="caseDropdown" onchange="onCaseDropdownChange()" style="color: #fff; border-color: var(--accent-cyan);">
+              <!-- Dynamically populated -->
+            </select>
+          </div>
+
+          <!-- 4. Real Live Downloaded Data Card -->
+          <div class="live-web-card" id="liveCard">
+            <div class="live-badge">
+              <span class="pulse-dot"></span>
+              <span id="liveSourceBadge">LIVE WIKIMEDIA / OSINT ENDPOINT (HTTP 200)</span>
+            </div>
+            <div class="live-card-body">
+              <img id="liveImg" class="live-card-thumb" src="https://upload.wikimedia.org/wikipedia/commons/thumb/c/cb/Empty_Frames_at_Isabella_Stewart_Gardner_Museum.jpg/330px-Empty_Frames_at_Isabella_Stewart_Gardner_Museum.jpg" alt="Live evidence thumbnail">
+              <div style="display: flex; flex-direction: column; gap: 4px;">
+                <div style="font-weight: bold; font-size: 11px; color: #fff;" id="liveTitle">Isabella Stewart Gardner Museum theft</div>
+                <div class="live-card-text" id="liveExtract">In the early hours of March 18, 1990, 13 works of art were stolen from the Isabella Stewart Gardner Museum in Boston...</div>
+              </div>
+            </div>
+            <button class="btn-live-fetch" onclick="fetchLiveDataForActiveCase()">
+              <span>🌐</span> FETCH LIVE WEB INTELLIGENCE
+            </button>
+          </div>
+
+          <!-- 5. Cases Sub-List Cards -->
+          <div class="case-list" id="casesContainer">
+            <!-- Dynamically filled by JS -->
+          </div>
+
+          <!-- 6. Active Case Parameters Form -->
+          <div style="border-top: 1px solid var(--card-border); padding-top: 6px; display: flex; flex-direction: column; gap: 6px;">
+            <div class="input-group">
+              <label class="field-label">INVESTIGATION TARGET / SUSPECT</label>
+              <input type="text" class="form-input" id="suspectInput" value="Victor Vance (Former Security Chief)">
+            </div>
+
+            <div class="input-group">
+              <label class="field-label">MULTI-SOURCE AGENTIC CORRELATION QUERY</label>
+              <textarea class="form-textarea" id="queryInput" rows="2">Cross-correlate physical, PI dossiers, press microfilms and video transcripts for: The Grand National Vault Century Heist (Berlin)</textarea>
+            </div>
+
+            <button class="btn-investigate" id="btnRun" onclick="runInvestigation()">
+              <span>⚡</span> RUN MULTI-SOURCE AGENTIC SYNTHESIS
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 1 SINGLE UNIFIED SPLITTER (LEFT) -->
+    <div class="unified-splitter" id="splitterLeft" title="Drag left/right to resize • Click pill to collapse/expand">
+      <div class="unified-splitter-pill" id="leftPill" onclick="toggleLeftPanel(event)" title="Collapse / Expand Dossiers Panel">◀</div>
+    </div>
+
+    <!-- Center Panel: The Cinematic Case Board (Corkboard, Polaroids, Sticky Notes, Red Strings) -->
+    <div class="panel-center-wrapper">
+      <div class="panel" style="position: relative;">
+        <div class="panel-header">
+          <div style="display: flex; align-items: center; gap: 8px;">
+            <span>Investigation Pinboard ("Cinematic Crime Board")</span>
+            <button class="header-icon-btn" onclick="toggleMaximizeBoard()" title="Toggle Fullscreen Focus Board Mode" style="width: auto; padding: 2px 8px; font-size: 9.5px;">⛶ MAX BOARD</button>
+          </div>
+          <span style="color: var(--accent-red); font-family: var(--font-mono);" id="boardStats">6 PIECES OF EVIDENCE • 6 RED THREADS</span>
+        </div>
+
+        <div class="board-wrapper">
+          <!-- Channel Filters -->
+          <div class="channel-filter-bar">
+            <button class="filter-btn active" onclick="setChannelFilter('ALL', this)">🌟 All Clues</button>
+            <button class="filter-btn" onclick="setChannelFilter('detective', this)">🕵️‍♂️ Private Investigators</button>
+            <button class="filter-btn" onclick="setChannelFilter('press', this)">📰 Press Archives</button>
+            <button class="filter-btn" onclick="setChannelFilter('sleuths', this)">🌐 Web Sleuths</button>
+            <button class="filter-btn" onclick="setChannelFilter('video', this)">🎥 Video Reports</button>
+            <button class="filter-btn" onclick="setChannelFilter('police', this)">🏛️ Police & Forensics</button>
+          </div>
+
+          <!-- Corkboard Canvas -->
+          <div class="corkboard-container" id="corkboardContainer">
+            <div class="hint-badge">🖱️ Scroll: Zoom • Drag: Pan • 📌 Move photos & notes freely!</div>
+
+            <div class="board-toolbar">
+              <button class="toolbar-btn" onclick="zoomIn()" title="Zoom In (+)">+</button>
+              <span class="zoom-level-badge" id="zoomBadge">100%</span>
+              <button class="toolbar-btn" onclick="zoomOut()" title="Zoom Out (-)">−</button>
+              <button class="toolbar-btn" onclick="fitAndCenter()" title="Fit & Center View" style="font-size: 11px; width: 50px;">FIT ⟲</button>
+            </div>
+
+            <!-- Dynamic Elements Viewport -->
+            <div class="board-viewport" id="boardViewport">
+              <!-- SVG Threads Layer -->
+              <svg class="strings-layer" id="stringsSvg" width="1200" height="900">
+                <defs>
+                  <filter id="stringShadow" x="-20%" y="-20%" width="140%" height="140%">
+                    <feGaussianBlur stdDeviation="3" result="blur" />
+                    <feOffset dx="3" dy="4" result="offset" />
+                    <feComponentTransfer>
+                      <feFuncA type="linear" slope="0.6" />
+                    </feComponentTransfer>
+                    <feMerge>
+                      <feMergeNode in="offset" />
+                      <feMergeNode in="SourceGraphic" />
+                    </feMerge>
+                  </filter>
+                </defs>
+                <g id="threadsGroup"></g>
+              </svg>
+
+              <!-- Thread Tags Overlay -->
+              <div id="threadTagsGroup" style="position: absolute; top:0; left:0; width:100%; height:100%; pointer-events:none;"></div>
+
+              <!-- Clue Cards (Polaroids, Post-its, Newspapers, PI reports, Videos) -->
+              <div id="cluesGroup"></div>
             </div>
           </div>
-          <button class="btn-live-fetch" onclick="fetchLiveDataForActiveCase()">
-            <span>🌐</span> TÉLÉCHARGER LES PREUVES EN DIRECT EN LIGNE
-          </button>
-        </div>
-
-        <!-- 5. Cases Sub-List Cards -->
-        <div class="case-list" id="casesContainer">
-          <!-- Dynamically filled by JS -->
-        </div>
-
-        <!-- 6. Active Case Parameters Form -->
-        <div style="border-top: 1px solid var(--card-border); padding-top: 6px; display: flex; flex-direction: column; gap: 6px;">
-          <div class="input-group">
-            <label class="field-label">CIBLE / SUSPECT D'ENQUÊTE</label>
-            <input type="text" class="form-input" id="suspectInput" value="Victor Vance (Ex-Security Chief)">
-          </div>
-
-          <div class="input-group">
-            <label class="field-label">REQUÊTE DE CORRÉLATION MULTI-AGENTS</label>
-            <textarea class="form-textarea" id="queryInput" rows="2">Cross-correlate physical and digital evidence for: Le Casse du Siècle du Grand National Vault (Berlin)</textarea>
-          </div>
-
-          <button class="btn-investigate" id="btnRun" onclick="runInvestigation()">
-            <span>⚡</span> LANCER L'INVESTIGATION AGENTIQUE
-          </button>
         </div>
       </div>
     </div>
 
-    <!-- Center Panel: The Murder Board / Knowledge Graph with Dynamic Real Nodes -->
-    <div class="panel">
-      <div class="panel-header">
-        <span>Investigation Knowledge Graph ("Murder Board")</span>
-        <span style="color: var(--accent-red); font-family: var(--font-mono);" id="graphStats">14 NODES • 22 CORRELATIONS</span>
-      </div>
-      <div class="panel-body" style="padding: 0; position: relative;">
-        <div class="board-container" id="boardContainer">
-          <div class="hint-badge">🖱️ Molette : Zoom • Glisser : Pan / Déplacer</div>
-
-          <div class="board-toolbar">
-            <button class="toolbar-btn" onclick="zoomIn()" title="Zoom In (+)">+</button>
-            <span class="zoom-level-badge" id="zoomBadge">100%</span>
-            <button class="toolbar-btn" onclick="zoomOut()" title="Zoom Out (-)">−</button>
-            <button class="toolbar-btn" onclick="fitAndCenter()" title="Fit & Center View" style="font-size: 11px; width: 50px;">FIT ⟲</button>
-          </div>
-
-          <svg class="murder-board" id="boardSvg">
-            <defs>
-              <filter id="glowRed" x="-30%" y="-30%" width="160%" height="160%">
-                <feGaussianBlur stdDeviation="6" result="blur" />
-                <feComposite in="SourceGraphic" in2="blur" operator="over" />
-              </filter>
-              <filter id="glowGold" x="-30%" y="-30%" width="160%" height="160%">
-                <feGaussianBlur stdDeviation="5" result="blur" />
-                <feComposite in="SourceGraphic" in2="blur" operator="over" />
-              </filter>
-              <pattern id="grid" width="40" height="40" patternUnits="userSpaceOnUse">
-                <path d="M 40 0 L 0 0 0 40" fill="none" stroke="rgba(255, 255, 255, 0.03)" stroke-width="1" />
-              </pattern>
-            </defs>
-
-            <rect width="100%" height="100%" fill="url(#grid)" />
-            <g id="viewport" transform="matrix(1 0 0 1 0 0)">
-              <!-- Dynamic Graph Content rendered by JavaScript -->
-            </g>
-          </svg>
-        </div>
-      </div>
+    <!-- 1 SINGLE UNIFIED SPLITTER (RIGHT) -->
+    <div class="unified-splitter" id="splitterRight" title="Drag left/right to resize • Click pill to collapse/expand">
+      <div class="unified-splitter-pill" id="rightPill" onclick="toggleRightPanel(event)" title="Collapse / Expand Agents Panel">▶</div>
     </div>
 
-    <!-- Right Panel: Agentic Trail & Verdict -->
-    <div class="panel">
-      <div class="panel-header">
-        <span>Agentic Reasoning Trail</span>
-        <span style="color: var(--accent-green); font-family: var(--font-mono);" id="trailConfidence">CONFIDENCE: 88%</span>
-      </div>
+    <!-- Right Panel: Agentic Trail & Verdict (All 6 Specialized Agents) -->
+    <div class="panel-right-wrapper" id="panelRightWrapper">
+      <div class="panel">
+        <div class="panel-header">
+          <span>Multi-Agent Reasoning (6 Agents)</span>
+          <span style="color: var(--accent-green); font-family: var(--font-mono);" id="trailConfidence">CONFIDENCE: 94%</span>
+        </div>
       <div class="panel-body" id="agentTrail">
+        <!-- Agent 01 -->
         <div class="agent-step active">
           <div class="step-badge">
-            <span>STEP 01 // CONTRADICTION AGENT</span>
-            <span>CRITICAL</span>
+            <span>AGENT 01 // FBI & OSINT ARCHIVES</span>
+            <span style="color: var(--accent-cyan);" id="osintRating">GRADE B2</span>
           </div>
-          <div class="step-title" style="color: var(--accent-red);" id="alibiTitle">Alibi Temporal Breach Detected</div>
+          <div class="step-title" style="color: var(--accent-cyan);" id="osintTitle">Classified Archives & Open Intelligence</div>
+          <div class="step-desc" id="osintDesc">
+            Extraction of 1998 Grand National Vault criminal files and Frankfurt financial archives. Background: Victor Vance, former military cryptographic engineer.
+          </div>
+        </div>
+
+        <!-- Agent 02 -->
+        <div class="agent-step active">
+          <div class="step-badge">
+            <span>AGENT 02 // TIMELINE & TELEMETRY</span>
+            <span style="color: var(--accent-amber);" id="timelineRating">GRADE A1</span>
+          </div>
+          <div class="step-title" style="color: var(--accent-amber);" id="timelineTitle">Temporal Reconstruction & Telemetry</div>
+          <div class="step-desc" id="timelineDesc">
+            Physical and digital checkpoints verified: biometric sensor shutdown at 22:45, A9 Motorway toll gate logged private sedan at 23:12, boarded train in Nuremberg at 01:45.
+          </div>
+        </div>
+
+        <!-- Agent 03 -->
+        <div class="agent-step active">
+          <div class="step-badge">
+            <span>AGENT 03 // ALIBI CONTRADICTION DETECTOR</span>
+            <span style="color: var(--accent-red);">GRADE A1 (CERTIFIED)</span>
+          </div>
+          <div class="step-title" style="color: var(--accent-red);" id="alibiTitle">Spatial-Temporal Discordance Detected</div>
           <div class="step-desc" id="alibiDesc">
-            Suspect claimed sleeper train presence at 20:15 in Cabin 4B. Conductor Hans Weber confirms cabin was vacant until 01:45 AM at Nuremberg. A9 Motorway toll gate logged private sedan at 23:12.
+            Suspect claimed sleeper train presence Berlin->Zurich (Cabin 4B) starting 20:15. Conductor log confirms Cabin 4B empty until Nuremberg at 01:45 AM. Motorway toll gate logged private sedan at 23:12 exiting Berlin.
           </div>
         </div>
 
+        <!-- Agent 04 -->
         <div class="agent-step">
           <div class="step-badge">
-            <span>STEP 02 // PROFILER & HYPOTHESIS AGENT</span>
-            <span>HYPOTHESIS H1</span>
+            <span>AGENT 04 // PROFILER & HYPOTHESIS</span>
+            <span style="color: var(--accent-purple);">GRADE B2/C3</span>
           </div>
-          <div class="step-title" id="hypoTitle">Hypothesis H1: Coordinated Physical Handoff</div>
+          <div class="step-title" id="hypoTitle" style="color: var(--accent-purple);">Hypothesis H1 : Coordinated Handoff & Crypto Key</div>
           <div class="step-desc" id="hypoDesc">
-            Vance handed off cryptographic bypass keys in Berlin at 23:00 to Marcus Thorne before driving south to stage an alibi boarding in Nuremberg.
+            Argus PI Stakeout: Vance met Marcus Thorne at Zurich Hotel Baur au Lac on Dec 14. Web Sleuths trace cryptographic firmware keys sold on Usenet 48h prior.
           </div>
         </div>
 
+        <!-- Agent 05 -->
         <div class="agent-step">
           <div class="step-badge">
-            <span>STEP 03 // SENIOR DETECTIVE CRITIC</span>
-            <span>VERDICT: STRONG</span>
+            <span>AGENT 05 // SENIOR DETECTIVE CRITIC</span>
+            <span style="color: var(--accent-cyan);">VALIDATED 7 SOURCES</span>
           </div>
-          <div class="step-title" id="criticTitle">Adversarial Stress-Test Passed</div>
+          <div class="step-title" id="criticTitle">Multi-Channel Adversarial Synthesis</div>
           <div class="step-desc" id="criticDesc">
-            Digital forensics on recovered 1998 hard drives corroborates cryptographic token generation. Single remaining blindspot: identity of on-site locksmith.
+            Theory solidly corroborated by spatial-temporal contradictions. Microfilms and sensor logs confirm zero forced entry.
           </div>
         </div>
 
+        <!-- Agent 06 -->
         <div class="agent-step active" style="border-color: var(--accent-green);">
           <div class="step-badge" style="color: var(--accent-green);">
-            <span>STEP 04 // BREAKTHROUGH ACTION</span>
+            <span>AGENT 06 // BREAKTHROUGH ACTION PLAN</span>
             <span>HIGH IMPACT</span>
           </div>
-          <div class="step-title" style="color: var(--accent-green);">Action Opérationnelle Recommandée :</div>
           <div class="step-desc" id="actionDesc" style="color: #fff; font-weight: 500;">
-            Exécuter une commission rogatoire internationale sur le Coffre 402 à Zurich et confronter le suspect avec le manifeste de Nuremberg.
+            Execute international rogatory subpoena on Zurich Safe Deposit Box 402 and confront Vance with Nuremberg conductor log.
           </div>
         </div>
       </div>
     </div>
+  </div>
   </main>
 
+  <!-- Modal Evidence Inspector -->
+  <div class="modal-backdrop" id="clueModal" onclick="closeClueModal(event)">
+    <div class="modal-card" onclick="event.stopPropagation()">
+      <div class="modal-header">
+        <div class="modal-title" id="modalTitle">Evidence Dossier Inspector</div>
+        <button class="modal-close" onclick="closeClueModal()">✖</button>
+      </div>
+      <div class="modal-body">
+        <div style="display: flex; gap: 10px; align-items: center;">
+          <span id="modalReliabilityBadge" class="reliability-pill rel-a1">A1 • Certified Evidence</span>
+          <span id="modalChannelBadge" style="font-family: var(--font-mono); font-size: 10px; color: var(--text-muted);">SOURCE : POLICE</span>
+        </div>
+        <div id="modalContent" style="background: #090d14; padding: 12px; border-radius: 6px; border: 1px solid var(--card-border);"></div>
+        <div id="modalExtraInfo" style="font-size: 11px; color: #94a3b8; line-height: 1.4;"></div>
+      </div>
+    </div>
+  </div>
+
   <script>
-    // --- Global State & Data ---
+    // --- Global State ---
     let allCases = [];
     let activeCase = null;
     let selectedCategory = 'ALL';
+    let activeChannelFilter = 'ALL';
 
-    const boardContainer = document.getElementById('boardContainer');
-    const viewport = document.getElementById('viewport');
+    const corkboardContainer = document.getElementById('corkboardContainer');
+    const boardViewport = document.getElementById('boardViewport');
+    const stringsSvg = document.getElementById('stringsSvg');
+    const threadsGroup = document.getElementById('threadsGroup');
+    const threadTagsGroup = document.getElementById('threadTagsGroup');
+    const cluesGroup = document.getElementById('cluesGroup');
     const zoomBadge = document.getElementById('zoomBadge');
     const casesContainer = document.getElementById('casesContainer');
     const categorySelect = document.getElementById('categorySelect');
     const caseDropdown = document.getElementById('caseDropdown');
     const searchInput = document.getElementById('searchInput');
 
-    let scale = 1.0;
-    let panX = 0;
-    let panY = 0;
-    let isDragging = false;
-    let startX = 0;
-    let startY = 0;
+    let scale = 0.85;
+    let panX = 40;
+    let panY = 20;
+    let isBoardDragging = false;
+    let startPanX = 0;
+    let startPanY = 0;
+
+    // Item Drag & Drop State
+    let draggedElement = null;
+    let dragItemData = null;
+    let dragOffsetX = 0;
+    let dragOffsetY = 0;
 
     // Load Cases from API / JSON
     async function loadCases() {
@@ -683,7 +1335,7 @@
         const res = await fetch('/api/cases');
         allCases = await res.json();
       } catch (err) {
-        console.warn('API error, using local fallback dataset');
+        console.warn('API error, fallback cases dataset');
       }
       populateCaseDropdown();
       renderCasesList();
@@ -700,9 +1352,7 @@
 
     function onCaseDropdownChange() {
       const caseId = caseDropdown.value;
-      if (caseId) {
-        selectCase(caseId);
-      }
+      if (caseId) selectCase(caseId);
     }
 
     function populateCaseDropdown() {
@@ -729,11 +1379,11 @@
 
       const filtered = allCases.filter(c => {
         const matchCat = (selectedCategory === 'ALL' || c.category === selectedCategory);
-        const matchQ = !q || c.title.toLowerCase().includes(q) || c.location.toLowerCase().includes(q) || (c.primary_suspect && c.primary_suspect.toLowerCase().includes(q)) || c.category.toLowerCase().includes(q);
+        const matchQ = !q || c.title.toLowerCase().includes(q) || c.location.toLowerCase().includes(q) || (c.primary_suspect && c.primary_suspect.toLowerCase().includes(q));
         return matchCat && matchQ;
       });
 
-      document.getElementById('caseCountBadge').innerText = `${filtered.length} SUR ${allCases.length} AFFAIRES`;
+      document.getElementById('caseCountBadge').innerText = `${filtered.length} OF ${allCases.length} DOSSIERS`;
 
       filtered.forEach(c => {
         const card = document.createElement('div');
@@ -753,44 +1403,347 @@
           <div class="case-card-title">${c.title}</div>
           <div class="case-card-meta">
             <span>📍 ${c.location}</span>
-            <span>👤 ${c.primary_suspect || 'Non identifié'}</span>
+            <span>👤 ${c.primary_suspect || 'Unidentified'}</span>
           </div>
         `;
         casesContainer.appendChild(card);
       });
     }
 
-    function filterCases() {
-      renderCasesList();
-    }
-
-    function clearSearch() {
-      searchInput.value = '';
-      renderCasesList();
-    }
+    function filterCases() { renderCasesList(); }
+    function clearSearch() { searchInput.value = ''; renderCasesList(); }
 
     function selectCase(caseId) {
       const found = allCases.find(c => c.case_id === caseId);
       if (!found) return;
       activeCase = found;
 
-      document.getElementById('suspectInput').value = `${found.primary_suspect || 'Suspect Inconnu'} (${found.primary_suspect_role || 'Rôle indéterminé'})`;
-      document.getElementById('queryInput').value = `Cross-correlate physical and digital evidence for: ${found.title}`;
+      document.getElementById('suspectInput').value = `${found.primary_suspect || 'Unknown Suspect'} (${found.primary_suspect_role || 'Undetermined Role'})`;
+      document.getElementById('queryInput').value = `Cross-correlate physical, PI dossiers, press microfilms and video transcripts for: ${found.title}`;
 
       caseDropdown.value = found.case_id;
       renderCasesList();
-      renderMurderBoard(found);
+      renderCorkboard();
       fitAndCenter();
       fetchLiveDataForActiveCase();
       runInvestigation();
     }
 
-    // Live Online Download of Real Case Details from Open API
+    function setChannelFilter(channel, btn) {
+      activeChannelFilter = channel;
+      document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      renderCorkboard();
+    }
+
+    // Render Cinematic Corkboard with Polaroids, Post-its, Press, PI Dossiers & Red Strings
+    function renderCorkboard() {
+      if (!activeCase || !activeCase.board_elements) return;
+
+      cluesGroup.innerHTML = '';
+      threadsGroup.innerHTML = '';
+      threadTagsGroup.innerHTML = '';
+
+      const elements = activeCase.board_elements;
+      const threads = activeCase.red_threads || [];
+
+      // 1. Render Clue Elements
+      elements.forEach(elem => {
+        const isVisible = (activeChannelFilter === 'ALL' || elem.channel === activeChannelFilter);
+        const itemDiv = document.createElement('div');
+        itemDiv.className = 'board-item';
+        itemDiv.id = elem.id;
+        itemDiv.style.left = `${elem.x}px`;
+        itemDiv.style.top = `${elem.y}px`;
+        itemDiv.style.transform = `rotate(${elem.rotation || 0}deg)`;
+        itemDiv.style.opacity = isVisible ? '1' : '0.15';
+        itemDiv.style.pointerEvents = isVisible ? 'auto' : 'none';
+
+        const pinClass = elem.pinColor === 'brass' ? 'pin-brass' : (elem.pinColor === 'silver' ? 'pin-silver' : 'pin-red');
+        const relClass = 'rel-' + (elem.reliability || 'A1').toLowerCase();
+
+        let innerHtml = '';
+
+        if (elem.type === 'polaroid') {
+          innerHtml = `
+            <div class="thumbtack ${pinClass}"></div>
+            <div class="scotch-tape"></div>
+            <div class="item-polaroid" onclick="openClueModal('${elem.id}')">
+              <div class="polaroid-img-wrapper">
+                <img src="${elem.image || 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=300'}" class="polaroid-img" alt="${elem.title}">
+              </div>
+              <div class="polaroid-caption">${elem.handwritten || elem.title}</div>
+              <div style="text-align: center; margin-top: 4px;">
+                <span class="reliability-pill ${relClass}">${elem.reliability} • ${elem.reliability_label || 'Police'}</span>
+              </div>
+            </div>
+          `;
+        } else if (elem.type === 'sticky_note') {
+          const stickyColor = elem.color === 'pink' ? 'sticky-pink' : 'sticky-yellow';
+          innerHtml = `
+            <div class="thumbtack ${pinClass}"></div>
+            <div class="item-sticky ${stickyColor}" onclick="openClueModal('${elem.id}')">
+              <div class="sticky-title">${elem.title}</div>
+              <div class="sticky-body">${elem.handwritten || ''}</div>
+              <span class="reliability-pill ${relClass}">${elem.reliability} • ${elem.reliability_label || 'OSINT'}</span>
+            </div>
+          `;
+        } else if (elem.type === 'newspaper') {
+          innerHtml = `
+            <div class="thumbtack ${pinClass}"></div>
+            <div class="item-newspaper" onclick="openClueModal('${elem.id}')">
+              <div class="newspaper-header">${elem.title}</div>
+              <div class="newspaper-headline">${elem.headline || ''}</div>
+              <div class="newspaper-snippet">${elem.snippet || ''}</div>
+              <span class="reliability-pill ${relClass}" style="margin-top: 6px;">${elem.reliability} • Press Archive</span>
+            </div>
+          `;
+        } else if (elem.type === 'pi_report') {
+          innerHtml = `
+            <div class="thumbtack ${pinClass}"></div>
+            <div class="item-pi-report" onclick="openClueModal('${elem.id}')">
+              <div class="pi-stamp">CONFIDENTIAL</div>
+              <div class="pi-header">DOSSIER : ${elem.dossier_no || 'PI-CONF-99'}</div>
+              <div class="pi-text">${elem.handwritten || elem.full_text || ''}</div>
+              <span class="reliability-pill ${relClass}" style="margin-top: 6px;">${elem.reliability} • PI Surveillance</span>
+            </div>
+          `;
+        } else if (elem.type === 'video_card') {
+          innerHtml = `
+            <div class="thumbtack ${pinClass}"></div>
+            <div class="item-video" onclick="openClueModal('${elem.id}')">
+              <div class="video-thumb-container">
+                <div class="video-play-badge">▶</div>
+                <div class="video-timecode">${elem.timecode || '00:00'}</div>
+              </div>
+              <div class="video-title">${elem.title}</div>
+              <div class="video-snippet">${elem.snippet || ''}</div>
+              <span class="reliability-pill ${relClass}">${elem.reliability} • Video / Audio</span>
+            </div>
+          `;
+        }
+
+        itemDiv.innerHTML = innerHtml;
+        setupDragItem(itemDiv, elem);
+        cluesGroup.appendChild(itemDiv);
+      });
+
+      renderRedThreads();
+      document.getElementById('boardStats').innerText = `${elements.length} PIECES OF EVIDENCE • ${threads.length} RED THREADS`;
+    }
+
+    // Render Red Strings / Crime Scene Threads with realistic curvature
+    function renderRedThreads() {
+      if (!activeCase || !activeCase.red_threads) return;
+
+      threadsGroup.innerHTML = '';
+      threadTagsGroup.innerHTML = '';
+
+      activeCase.red_threads.forEach(thread => {
+        const fromElem = activeCase.board_elements.find(e => e.id === thread.from);
+        const toElem = activeCase.board_elements.find(e => e.id === thread.to);
+        if (!fromElem || !toElem) return;
+
+        // Pin Coordinates (Pin is centered at top of element: x + width/2, y)
+        const fromW = getElementWidth(fromElem.type);
+        const toW = getElementWidth(toElem.type);
+
+        const x1 = fromElem.x + fromW / 2;
+        const y1 = fromElem.y + 2;
+        const x2 = toElem.x + toW / 2;
+        const y2 = toElem.y + 2;
+
+        // Realistic curved thread with gentle catenary sag
+        const dx = x2 - x1;
+        const dy = y2 - y1;
+        const dist = Math.sqrt(dx * dx + dy * dy);
+        const sag = Math.min(dist * 0.12, 35);
+        const cx = (x1 + x2) / 2;
+        const cy = (y1 + y2) / 2 + sag;
+
+        const pathData = `M ${x1} ${y1} Q ${cx} ${cy} ${x2} ${y2}`;
+
+        const pathElem = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+        pathElem.setAttribute('d', pathData);
+        pathElem.setAttribute('stroke', thread.color || '#e63946');
+        pathElem.setAttribute('stroke-width', '3');
+        pathElem.setAttribute('fill', 'none');
+        pathElem.setAttribute('filter', 'url(#stringShadow)');
+        if (thread.dashed) pathElem.setAttribute('stroke-dasharray', '6,4');
+        threadsGroup.appendChild(pathElem);
+
+        // Thread label tag in the middle
+        if (thread.label) {
+          const tag = document.createElement('div');
+          tag.className = 'thread-tag';
+          tag.innerText = thread.label;
+          tag.style.left = `${cx}px`;
+          tag.style.top = `${cy}px`;
+          threadTagsGroup.appendChild(tag);
+        }
+      });
+    }
+
+    function getElementWidth(type) {
+      if (type === 'polaroid') return 190;
+      if (type === 'sticky_note') return 175;
+      if (type === 'newspaper') return 210;
+      if (type === 'pi_report') return 200;
+      if (type === 'video_card') return 195;
+      return 180;
+    }
+
+    // Drag & Drop for Clue Elements on the Board
+    function setupDragItem(itemDiv, data) {
+      itemDiv.addEventListener('mousedown', (e) => {
+        if (e.button !== 0) return;
+        draggedElement = itemDiv;
+        dragItemData = data;
+        draggedElement.classList.add('dragging');
+
+        const rect = itemDiv.getBoundingClientRect();
+        dragOffsetX = (e.clientX - rect.left) / scale;
+        dragOffsetY = (e.clientY - rect.top) / scale;
+
+        e.stopPropagation();
+      });
+    }
+
+    window.addEventListener('mousemove', (e) => {
+      if (draggedElement && dragItemData) {
+        const boardRect = corkboardContainer.getBoundingClientRect();
+        const mouseBoardX = (e.clientX - boardRect.left - panX) / scale;
+        const mouseBoardY = (e.clientY - boardRect.top - panY) / scale;
+
+        const newX = Math.round(mouseBoardX - dragOffsetX);
+        const newY = Math.round(mouseBoardY - dragOffsetY);
+
+        dragItemData.x = newX;
+        dragItemData.y = newY;
+
+        draggedElement.style.left = `${newX}px`;
+        draggedElement.style.top = `${newY}px`;
+
+        renderRedThreads();
+        return;
+      }
+
+      if (isBoardDragging) {
+        panX = e.clientX - startPanX;
+        panY = e.clientY - startPanY;
+        updateTransform();
+      }
+    });
+
+    window.addEventListener('mouseup', () => {
+      if (draggedElement) {
+        draggedElement.classList.remove('dragging');
+        draggedElement = null;
+        dragItemData = null;
+      }
+      isBoardDragging = false;
+    });
+
+    // Zoom & Pan Engine for Board Container
+    function updateTransform() {
+      boardViewport.style.transform = `matrix(${scale}, 0, 0, ${scale}, ${panX}, ${panY})`;
+      zoomBadge.innerText = Math.round(scale * 100) + '%';
+    }
+
+    function fitAndCenter() {
+      const cw = corkboardContainer.clientWidth || 600;
+      const ch = corkboardContainer.clientHeight || 500;
+      const graphW = 1000;
+      const graphH = 650;
+
+      scale = Math.min(cw / graphW, ch / graphH, 1.1);
+      scale = Math.max(scale, 0.45);
+
+      panX = (cw - graphW * scale) / 2 + 30;
+      panY = (ch - graphH * scale) / 2 + 10;
+
+      updateTransform();
+    }
+
+    function zoomIn() {
+      const cw = corkboardContainer.clientWidth || 600;
+      const ch = corkboardContainer.clientHeight || 500;
+      const newScale = Math.min(2.5, scale * 1.15);
+      panX = (cw / 2) - ((cw / 2) - panX) * (newScale / scale);
+      panY = (ch / 2) - ((ch / 2) - panY) * (newScale / scale);
+      scale = newScale;
+      updateTransform();
+    }
+
+    function zoomOut() {
+      const cw = corkboardContainer.clientWidth || 600;
+      const ch = corkboardContainer.clientHeight || 500;
+      const newScale = Math.max(0.35, scale / 1.15);
+      panX = (cw / 2) - ((cw / 2) - panX) * (newScale / scale);
+      panY = (ch / 2) - ((ch / 2) - panY) * (newScale / scale);
+      scale = newScale;
+      updateTransform();
+    }
+
+    corkboardContainer.addEventListener('wheel', (e) => {
+      e.preventDefault();
+      const rect = corkboardContainer.getBoundingClientRect();
+      const mouseX = e.clientX - rect.left;
+      const mouseY = e.clientY - rect.top;
+
+      const zoomFactor = e.deltaY < 0 ? 1.12 : 0.88;
+      const newScale = Math.min(2.8, Math.max(0.35, scale * zoomFactor));
+
+      panX = mouseX - (mouseX - panX) * (newScale / scale);
+      panY = mouseY - (mouseY - panY) * (newScale / scale);
+      scale = newScale;
+
+      updateTransform();
+    }, { passive: false });
+
+    corkboardContainer.addEventListener('mousedown', (e) => {
+      if (e.target.closest('.board-toolbar') || e.target.closest('.board-item')) return;
+      isBoardDragging = true;
+      startPanX = e.clientX - panX;
+      startPanY = e.clientY - panY;
+    });
+
+    // Modal Clue Inspector
+    function openClueModal(elemId) {
+      if (!activeCase) return;
+      const elem = activeCase.board_elements.find(e => e.id === elemId);
+      if (!elem) return;
+
+      document.getElementById('modalTitle').innerText = elem.title;
+      const relBadge = document.getElementById('modalReliabilityBadge');
+      relBadge.className = 'reliability-pill rel-' + (elem.reliability || 'A1').toLowerCase();
+      relBadge.innerText = `${elem.reliability} • ${elem.reliability_label || 'Verified Source'}`;
+      document.getElementById('modalChannelBadge').innerText = `CHANNEL : ${elem.channel.toUpperCase()}`;
+
+      let contentHtml = '';
+      if (elem.image) {
+        contentHtml += `<img src="${elem.image}" style="width: 100%; max-height: 180px; object-fit: cover; border-radius: 4px; margin-bottom: 8px;">`;
+      }
+      contentHtml += `<div style="font-weight: 700; color: #fff; margin-bottom: 4px;">${elem.headline || elem.handwritten || elem.title}</div>`;
+      contentHtml += `<div>${elem.full_text || elem.snippet || ''}</div>`;
+
+      document.getElementById('modalContent').innerHTML = contentHtml;
+      document.getElementById('modalExtraInfo').innerText = `Evidence Chain & Seal: Dossier ${activeCase.case_id} — Active Pinboard Correlation.`;
+
+      document.getElementById('clueModal').classList.add('open');
+    }
+
+    function closeClueModal() {
+      document.getElementById('clueModal').classList.remove('open');
+    }
+
+    // Live Web Intelligence Fetch
     async function fetchLiveDataForActiveCase() {
       if (!activeCase) return;
-      const queryTerm = activeCase.title.replace("Le Casse du Siècle du ", "").replace("Le Vol du ", "").replace("L'Énigme du ", "");
+      const queryTerm = activeCase.live_search_query || activeCase.title.replace("The Grand National Vault Century Heist (Berlin)", "Bank robbery Berlin").replace("The Isabella Stewart Gardner Museum Heist (Boston)", "Isabella Stewart Gardner Museum theft").replace("The Antwerp Diamond Center Vault Heist", "Antwerp diamond heist").replace("The Zodiac Killer & Unsolved 340 Cryptograms", "Zodiac Killer").replace("The Black Dahlia Murder (Elizabeth Short)", "Black Dahlia").replace("The D.B. Cooper Skyjacking Mystery", "D. B. Cooper").replace("The Peninsula Yacht Charter Ghost Ship", "Ghost ship").replace("Global Manhunt for Ruja Ignatova 'Cryptoqueen'", "Ruja Ignatova").replace("The Bangladesh Central Bank Cyber-Heist", "Bangladesh Bank robbery");
+
       const badge = document.getElementById('liveSourceBadge');
-      badge.innerText = "TÉLÉCHARGEMENT EN DIRECT VIA OPEN API...";
+      badge.innerText = "FETCHING LIVE OSINT / WIKIMEDIA ARCHIVE...";
 
       try {
         const res = await fetch('/api/fetch-live', {
@@ -807,146 +1760,21 @@
             document.getElementById('liveImg').src = data.thumbnail_url;
             document.getElementById('liveImg').style.display = 'block';
           }
-          badge.innerText = `🟢 EN DIRECT : ${data.source} (HTTP 200)`;
+          badge.innerText = `🟢 LIVE OSINT API : ${data.source} (HTTP 200)`;
         } else {
           document.getElementById('liveTitle').innerText = activeCase.title;
           document.getElementById('liveExtract').innerText = activeCase.summary;
-          badge.innerText = "REGISTRE D'INVESTIGATION (LOCAL CACHE)";
+          badge.innerText = "INVESTIGATION LOCAL REGISTRY (CACHED)";
         }
       } catch (err) {
-        badge.innerText = "REGISTRE D'INVESTIGATION (LOCAL CACHE)";
+        badge.innerText = "INVESTIGATION LOCAL REGISTRY (CACHED)";
       }
     }
 
-    // Render Dynamic Murder Board for Selected Case
-    function renderMurderBoard(c) {
-      if (!c.nodes || c.nodes.length === 0) return;
-      let svgHtml = '';
-
-      // Render Links
-      c.links.forEach(l => {
-        const fromNode = c.nodes.find(n => n.id === l.from);
-        const toNode = c.nodes.find(n => n.id === l.to);
-        if (fromNode && toNode) {
-          const dash = l.dashed ? 'stroke-dasharray="6,4"' : '';
-          svgHtml += `<line x1="${fromNode.x}" y1="${fromNode.y}" x2="${toNode.x}" y2="${toNode.y}" stroke="${l.color || '#f85149'}" stroke-width="3.5" ${dash} />`;
-        }
-      });
-
-      // Render Nodes
-      c.nodes.forEach(n => {
-        const isTarget = n.isTarget;
-        const r = isTarget ? 68 : 54;
-        const innerR = isTarget ? 58 : 45;
-        const filter = isTarget ? 'filter="url(#glowRed)"' : '';
-        const titleSize = isTarget ? '14' : '12';
-
-        svgHtml += `
-          <g class="node-group" transform="translate(${n.x}, ${n.y})">
-            <circle r="${r}" fill="#161b22" stroke="${n.color}" stroke-width="3.5" ${filter} class="node-bg" />
-            <circle r="${innerR}" fill="#0d1117" />
-            <text y="-12" text-anchor="middle" font-size="20">${n.emoji || '📌'}</text>
-            <text y="10" text-anchor="middle" fill="#ffffff" font-size="${titleSize}" font-weight="800" font-family="'Outfit'">${n.label}</text>
-            <rect x="-46" y="20" width="92" height="18" rx="3" fill="${n.color}25" stroke="${n.color}" stroke-width="1" />
-            <text y="32" text-anchor="middle" fill="${n.color}" font-size="9" font-weight="bold" font-family="'JetBrains Mono'">${n.sub}</text>
-          </g>
-        `;
-      });
-
-      viewport.innerHTML = svgHtml;
-    }
-
-    // Zoom & Pan Engine
-    function updateTransform() {
-      viewport.setAttribute('transform', `matrix(${scale} 0 0 ${scale} ${panX} ${panY})`);
-      zoomBadge.innerText = Math.round(scale * 100) + '%';
-    }
-
-    function fitAndCenter() {
-      const containerRect = boardContainer.getBoundingClientRect();
-      const cw = containerRect.width || 600;
-      const ch = containerRect.height || 500;
-
-      const graphWidth = 740;
-      const graphHeight = 520;
-      const graphCenterX = 450;
-      const graphCenterY = 300;
-
-      const scaleX = (cw - 60) / graphWidth;
-      const scaleY = (ch - 60) / graphHeight;
-      scale = Math.min(scaleX, scaleY, 1.2);
-      scale = Math.max(scale, 0.45);
-
-      panX = (cw / 2) - (graphCenterX * scale);
-      panY = (ch / 2) - (graphCenterY * scale);
-
-      updateTransform();
-    }
-
-    function zoomIn() {
-      const cw = boardContainer.clientWidth || 600;
-      const ch = boardContainer.clientHeight || 500;
-      const newScale = Math.min(3.0, scale * 1.2);
-      panX = (cw / 2) - ((cw / 2) - panX) * (newScale / scale);
-      panY = (ch / 2) - ((ch / 2) - panY) * (newScale / scale);
-      scale = newScale;
-      updateTransform();
-    }
-
-    function zoomOut() {
-      const cw = boardContainer.clientWidth || 600;
-      const ch = boardContainer.clientHeight || 500;
-      const newScale = Math.max(0.3, scale / 1.2);
-      panX = (cw / 2) - ((cw / 2) - panX) * (newScale / scale);
-      panY = (ch / 2) - ((ch / 2) - panY) * (newScale / scale);
-      scale = newScale;
-      updateTransform();
-    }
-
-    boardContainer.addEventListener('wheel', (e) => {
-      e.preventDefault();
-      const rect = boardContainer.getBoundingClientRect();
-      const mouseX = e.clientX - rect.left;
-      const mouseY = e.clientY - rect.top;
-
-      const zoomFactor = e.deltaY < 0 ? 1.15 : 0.85;
-      const newScale = Math.min(3.5, Math.max(0.3, scale * zoomFactor));
-
-      panX = mouseX - (mouseX - panX) * (newScale / scale);
-      panY = mouseY - (mouseY - panY) * (newScale / scale);
-      scale = newScale;
-
-      updateTransform();
-    }, { passive: false });
-
-    boardContainer.addEventListener('mousedown', (e) => {
-      if (e.target.closest('.board-toolbar')) return;
-      isDragging = true;
-      startX = e.clientX - panX;
-      startY = e.clientY - panY;
-    });
-
-    window.addEventListener('mousemove', (e) => {
-      if (!isDragging) return;
-      panX = e.clientX - startX;
-      panY = e.clientY - startY;
-      updateTransform();
-    });
-
-    window.addEventListener('mouseup', () => {
-      isDragging = false;
-    });
-
-    window.addEventListener('DOMContentLoaded', () => {
-      loadCases();
-      setTimeout(fitAndCenter, 100);
-    });
-    window.addEventListener('resize', fitAndCenter);
-
-    // Investigation Trigger
+    // Agentic Investigation Trigger
     async function runInvestigation() {
       const btn = document.getElementById('btnRun');
-      btn.innerHTML = '<span>⚡</span> AGENTS EN RAISONNEMENT...';
+      btn.innerHTML = '<span>⚡</span> AGENTS RUNNING MULTI-SOURCE SYNTHESIS...';
       btn.style.opacity = '0.7';
 
       try {
@@ -961,11 +1789,23 @@
         });
         const data = await res.json();
 
+        if (data.agent_osint) {
+          document.getElementById('osintDesc').innerText = data.agent_osint.summary;
+          if (data.agent_osint.reliability_rating) {
+            document.getElementById('osintRating').innerText = data.agent_osint.reliability_rating;
+          }
+        }
+        if (data.agent_timeline) {
+          document.getElementById('timelineDesc').innerText = data.agent_timeline.summary + (data.agent_timeline.temporal_gap ? ' [' + data.agent_timeline.temporal_gap + ']' : '');
+          if (data.agent_timeline.reliability_rating) {
+            document.getElementById('timelineRating').innerText = data.agent_timeline.reliability_rating;
+          }
+        }
         if (data.contradiction) {
           document.getElementById('alibiDesc').innerText = data.contradiction.conflicting_statement_or_evidence;
         }
         if (data.hypothesis) {
-          document.getElementById('hypoDesc').innerText = data.hypothesis.suspect_or_theory + ' Mobile : ' + (data.hypothesis.motive_and_opportunity || '');
+          document.getElementById('hypoDesc').innerText = data.hypothesis.suspect_or_theory + ' Motive & Opportunity: ' + (data.hypothesis.motive_and_opportunity || '');
           if (data.hypothesis.confidence) {
             document.getElementById('trailConfidence').innerText = 'CONFIDENCE: ' + Math.round(data.hypothesis.confidence * 100) + '%';
           }
@@ -977,12 +1817,139 @@
           document.getElementById('actionDesc').innerText = data.next_action.objective + ' — ' + data.next_action.recommended_forensics_or_interrogation;
         }
       } catch (err) {
-        console.warn('API err:', err);
+        console.warn('API error:', err);
       } finally {
-        btn.innerHTML = '<span>⚡</span> LANCER L\'INVESTIGATION AGENTIQUE';
+        btn.innerHTML = '<span>⚡</span> RUN MULTI-SOURCE AGENTIC SYNTHESIS';
         btn.style.opacity = '1';
       }
     }
+
+    // Unified Sidebar Handlers (Click Pill to Collapse/Expand)
+    function toggleLeftPanel(e) {
+      if (e) e.stopPropagation();
+      const main = document.getElementById('mainContainer');
+      main.classList.toggle('left-collapsed');
+      const isCollapsed = main.classList.contains('left-collapsed');
+      const pill = document.getElementById('leftPill');
+      if (pill) pill.innerText = isCollapsed ? '▶' : '◀';
+      setTimeout(fitAndCenter, 360);
+    }
+
+    function toggleRightPanel(e) {
+      if (e) e.stopPropagation();
+      const main = document.getElementById('mainContainer');
+      main.classList.toggle('right-collapsed');
+      const isCollapsed = main.classList.contains('right-collapsed');
+      const pill = document.getElementById('rightPill');
+      if (pill) pill.innerText = isCollapsed ? '◀' : '▶';
+      setTimeout(fitAndCenter, 360);
+    }
+
+    function toggleMaximizeBoard() {
+      const main = document.getElementById('mainContainer');
+      const bothCollapsed = main.classList.contains('left-collapsed') && main.classList.contains('right-collapsed');
+      if (bothCollapsed) {
+        main.classList.remove('left-collapsed');
+        main.classList.remove('right-collapsed');
+        const lp = document.getElementById('leftPill');
+        const rp = document.getElementById('rightPill');
+        if (lp) lp.innerText = '◀';
+        if (rp) rp.innerText = '▶';
+      } else {
+        main.classList.add('left-collapsed');
+        main.classList.add('right-collapsed');
+        const lp = document.getElementById('leftPill');
+        const rp = document.getElementById('rightPill');
+        if (lp) lp.innerText = '▶';
+        if (rp) rp.innerText = '◀';
+      }
+      setTimeout(fitAndCenter, 360);
+    }
+
+    // Unified Mouse Drag Resizing for Left & Right Panels
+    let currentResizer = null;
+    let initialMouseX = 0;
+    let initialPanelW = 0;
+
+    function initResizers() {
+      const splitterLeft = document.getElementById('splitterLeft');
+      const splitterRight = document.getElementById('splitterRight');
+      const panelLeftWrapper = document.getElementById('panelLeftWrapper');
+      const panelRightWrapper = document.getElementById('panelRightWrapper');
+      const mainContainer = document.getElementById('mainContainer');
+
+      if (splitterLeft) {
+        splitterLeft.addEventListener('mousedown', (e) => {
+          if (e.target.classList.contains('unified-splitter-pill')) return;
+          if (e.button !== 0) return;
+          currentResizer = 'left';
+          initialMouseX = e.clientX;
+          initialPanelW = panelLeftWrapper.getBoundingClientRect().width;
+          mainContainer.classList.add('resizing');
+          splitterLeft.classList.add('dragging');
+          document.body.style.cursor = 'col-resize';
+          e.preventDefault();
+        });
+      }
+
+      if (splitterRight) {
+        splitterRight.addEventListener('mousedown', (e) => {
+          if (e.target.classList.contains('unified-splitter-pill')) return;
+          if (e.button !== 0) return;
+          currentResizer = 'right';
+          initialMouseX = e.clientX;
+          initialPanelW = panelRightWrapper.getBoundingClientRect().width;
+          mainContainer.classList.add('resizing');
+          splitterRight.classList.add('dragging');
+          document.body.style.cursor = 'col-resize';
+          e.preventDefault();
+        });
+      }
+
+      window.addEventListener('mousemove', (e) => {
+        if (!currentResizer) return;
+        if (currentResizer === 'left') {
+          const delta = e.clientX - initialMouseX;
+          let newW = initialPanelW + delta;
+          newW = Math.max(220, Math.min(650, newW));
+          panelLeftWrapper.style.width = newW + 'px';
+          if (mainContainer.classList.contains('left-collapsed')) {
+            mainContainer.classList.remove('left-collapsed');
+            const lp = document.getElementById('leftPill');
+            if (lp) lp.innerText = '◀';
+          }
+        } else if (currentResizer === 'right') {
+          const delta = initialMouseX - e.clientX;
+          let newW = initialPanelW + delta;
+          newW = Math.max(220, Math.min(680, newW));
+          panelRightWrapper.style.width = newW + 'px';
+          if (mainContainer.classList.contains('right-collapsed')) {
+            mainContainer.classList.remove('right-collapsed');
+            const rp = document.getElementById('rightPill');
+            if (rp) rp.innerText = '▶';
+          }
+        }
+        fitAndCenter();
+      });
+
+      window.addEventListener('mouseup', () => {
+        if (currentResizer) {
+          currentResizer = null;
+          mainContainer.classList.remove('resizing');
+          if (splitterLeft) splitterLeft.classList.remove('dragging');
+          if (splitterRight) splitterRight.classList.remove('dragging');
+          document.body.style.cursor = 'default';
+          fitAndCenter();
+        }
+      });
+    }
+
+    window.addEventListener('DOMContentLoaded', () => {
+      loadCases();
+      initResizers();
+      setTimeout(fitAndCenter, 150);
+    });
+    window.addEventListener('resize', fitAndCenter);
   </script>
 </body>
 </html>
