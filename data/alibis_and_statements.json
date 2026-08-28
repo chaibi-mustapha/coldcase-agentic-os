@@ -1,0 +1,29 @@
+[
+  {
+    "statement_id": "STMT-1998-01",
+    "case_id": "CASE-1998-BERLIN-VAULT",
+    "author": "Victor Vance",
+    "role": "Security Chief / Suspect",
+    "timestamp_claimed": "1998-11-14 20:15",
+    "content": "I clocked out at 18:00 and boarded the NightJet sleeper train to Zurich at 20:15. I stayed in Cabin 4B and checked into Zurich Hotel Bellerive at 06:30 the next morning.",
+    "source_type": "Initial Police Deposition 1998"
+  },
+  {
+    "statement_id": "STMT-2012-04",
+    "case_id": "CASE-1998-BERLIN-VAULT",
+    "author": "Hans Weber (Train Conductor)",
+    "role": "Witness",
+    "timestamp_claimed": "1998-11-14 20:15",
+    "content": "Cabin 4B reserved for Mr. Vance remained vacant when ticket checks occurred at 21:00 and 23:30. A passenger entered only at the Nuremberg stop at 01:45 AM.",
+    "source_type": "Cold Case Review 2012"
+  },
+  {
+    "statement_id": "STMT-2024-09",
+    "case_id": "CASE-1998-BERLIN-VAULT",
+    "author": "Marcus Thorne",
+    "role": "Logistics Contractor / Accomplice",
+    "timestamp_claimed": "1998-11-14 23:30",
+    "content": "Vance supplied the digital bypass firmware through an encrypted Swiss gateway. He drove his private sedan to Nuremberg after delivering the physical keys to me.",
+    "source_type": "Forensic Hard Drive Recovery 2024"
+  }
+]

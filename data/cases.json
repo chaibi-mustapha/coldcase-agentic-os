@@ -1,0 +1,246 @@
+[
+  {
+    "case_id": "CASE-1998-BERLIN-VAULT",
+    "category": "Braquages & Fraudes Majeures",
+    "sub_category": "Vol de Banque / Conspiration Financière",
+    "title": "Le Casse du Siècle du Grand National Vault (Berlin)",
+    "date": "1998-11-14",
+    "location": "Berlin & Zurich",
+    "status": "COLD_UNRESOLVED",
+    "priority": "HIGH",
+    "stolen_assets": "12 000 000 EUR en Bons au Porteur",
+    "summary": "12 millions dérobés sans effraction mécanique ni déclenchement d'alarme grâce à un firmware de contournement militaire.",
+    "primary_suspect": "Victor Vance",
+    "primary_suspect_role": "Ex-Directeur des Systèmes de Sécurité",
+    "nodes": [
+      { "id": "TARGET", "label": "VICTOR VANCE", "sub": "SUSPECT PRINCIPAL", "emoji": "🕵️‍♂️", "color": "#f85149", "x": 450, "y": 300, "isTarget": true },
+      { "id": "N1", "label": "ALIBI TRAIN", "sub": "CONTRADICTION", "emoji": "🚆", "color": "#e3b341", "x": 180, "y": 140 },
+      { "id": "N2", "label": "M. THORNE", "sub": "COMPLICE LOGISTIQUE", "emoji": "👤", "color": "#f85149", "x": 720, "y": 140 },
+      { "id": "N3", "label": "PÉAGE A9", "sub": "23:12 ENREGISTRÉ", "emoji": "📸", "color": "#58a6ff", "x": 210, "y": 460 },
+      { "id": "N4", "label": "COFFRE ZURICH", "sub": "COMPTE #402", "emoji": "🏦", "color": "#3fb950", "x": 690, "y": 460 }
+    ],
+    "links": [
+      { "from": "TARGET", "to": "N1", "color": "#f85149", "dashed": true },
+      { "from": "TARGET", "to": "N2", "color": "#f85149" },
+      { "from": "TARGET", "to": "N3", "color": "#e3b341" },
+      { "from": "TARGET", "to": "N4", "color": "#58a6ff" },
+      { "from": "N2", "to": "N4", "color": "#f85149", "dashed": true }
+    ]
+  },
+  {
+    "case_id": "CASE-1990-BOSTON-GARDNER",
+    "category": "Braquages & Fraudes Majeures",
+    "sub_category": "Vol d'Œuvres d'Art Historique",
+    "title": "Le Vol du Musée Isabella Stewart Gardner (Boston)",
+    "date": "1990-03-18",
+    "location": "Boston, MA",
+    "status": "COLD_UNRESOLVED",
+    "priority": "CRITICAL",
+    "stolen_assets": "13 Chefs-d'œuvre (Rembrandt, Vermeer) estimés à 500M$",
+    "summary": "Deux faux policiers s'introduisent à 1h24 du matin, ligotent les gardiens et découpent les toiles. Récompense active de 10 millions USD.",
+    "primary_suspect": "Bobby Donati / Gang Patriarca",
+    "primary_suspect_role": "Homme de main du crime organisé",
+    "nodes": [
+      { "id": "TARGET", "label": "BOBBY DONATI", "sub": "SUSPECT MAFIA", "emoji": "🕵️‍♂️", "color": "#f85149", "x": 450, "y": 300, "isTarget": true },
+      { "id": "N1", "label": "FAUX UNIFORMES", "sub": "POLICE DE BOSTON", "emoji": "👮‍♂️", "color": "#e3b341", "x": 180, "y": 140 },
+      { "id": "N2", "label": "GARDE ABATH", "sub": "PORTE OUVERTE 1h", "emoji": "🚪", "color": "#bc8cff", "x": 720, "y": 140 },
+      { "id": "N3", "label": "DÉTECTEURS MOUV.", "sub": "SALLE HOOFT", "emoji": "📡", "color": "#58a6ff", "x": 210, "y": 460 },
+      { "id": "N4", "label": "REMBRANDT VOLÉ", "sub": "TEMPÊTE TIBÉRIADE", "emoji": "🖼️", "color": "#3fb950", "x": 690, "y": 460 }
+    ],
+    "links": [
+      { "from": "TARGET", "to": "N1", "color": "#f85149" },
+      { "from": "TARGET", "to": "N2", "color": "#bc8cff", "dashed": true },
+      { "from": "TARGET", "to": "N3", "color": "#58a6ff" },
+      { "from": "TARGET", "to": "N4", "color": "#3fb950" }
+    ]
+  },
+  {
+    "case_id": "CASE-2003-ANTWERP-DIAMOND",
+    "category": "Braquages & Fraudes Majeures",
+    "sub_category": "Casse du Siècle Diamantaire",
+    "title": "Le Casse du Centre Diamantaire d'Anvers",
+    "date": "2003-02-15",
+    "location": "Anvers, Belgique",
+    "status": "COLD_UNRESOLVED",
+    "priority": "HIGH",
+    "stolen_assets": "100 000 000 $ en Diamants et Or",
+    "summary": "Pénétration dans un coffre protégé par 10 niveaux de sécurité (capteurs thermiques, magnétiques, sismiques). La quasi-totalité des diamants reste introuvable.",
+    "primary_suspect": "Leonardo Notarbartolo",
+    "primary_suspect_role": "Chef de l'École de Turin",
+    "nodes": [
+      { "id": "TARGET", "label": "NOTARBARTOLO", "sub": "CERVEAU DU CASSE", "emoji": "💎", "color": "#f85149", "x": 450, "y": 300, "isTarget": true },
+      { "id": "N1", "label": "FAUX LOCATAIRE", "sub": "BUREAU DIAMANTS", "emoji": "🏢", "color": "#e3b341", "x": 180, "y": 140 },
+      { "id": "N2", "label": "LAQUE CHEVEUX", "sub": "LEURRE CAPTEURS", "emoji": "🧴", "color": "#bc8cff", "x": 720, "y": 140 },
+      { "id": "N3", "label": "FORÊT AUTOROUTE", "sub": "SACS DE PREUVES", "emoji": "🌲", "color": "#58a6ff", "x": 210, "y": 460 },
+      { "id": "N4", "label": "DIAMANTS CACHÉS", "sub": "ITALIE DU NORD", "emoji": "📦", "color": "#3fb950", "x": 690, "y": 460 }
+    ],
+    "links": [
+      { "from": "TARGET", "to": "N1", "color": "#e3b341" },
+      { "from": "TARGET", "to": "N2", "color": "#bc8cff" },
+      { "from": "TARGET", "to": "N3", "color": "#58a6ff" },
+      { "from": "TARGET", "to": "N4", "color": "#3fb950" }
+    ]
+  },
+  {
+    "case_id": "CASE-1969-ZODIAC-CIPHER",
+    "category": "Homicides & Cold Cases",
+    "sub_category": "Tueur en Série / Cryptogrammes",
+    "title": "L'Énigme du Tueur du Zodiac & Cryptogrammes 340",
+    "date": "1968-1969",
+    "location": "San Francisco Bay Area, CA",
+    "status": "COLD_UNRESOLVED",
+    "priority": "CRITICAL",
+    "stolen_assets": "Affaire Criminelle Non Résolue",
+    "summary": "Auteur d'au moins 5 homicides confirmés et de lettres cryptées envoyées à la presse. Le chiffre 340 n'a été cassé qu'en 2020 par des informaticiens.",
+    "primary_suspect": "Arthur Leigh Allen (POI)",
+    "primary_suspect_role": "Personne d'intérêt principale",
+    "nodes": [
+      { "id": "TARGET", "label": "ARTHUR L. ALLEN", "sub": "PRINCIPAL SUSPECT", "emoji": "🕵️‍♂️", "color": "#f85149", "x": 450, "y": 300, "isTarget": true },
+      { "id": "N1", "label": "MONTRE ZODIAC", "sub": "SYMBOLE CROIX", "emoji": "⌚", "color": "#e3b341", "x": 180, "y": 140 },
+      { "id": "N2", "label": "MACHINE ROYAL", "sub": "CALIBRE ÉCRITURE", "emoji": "⌨️", "color": "#bc8cff", "x": 720, "y": 140 },
+      { "id": "N3", "label": "LAC BERRYESSA", "sub": "BOTTES MILITAIRES", "emoji": "🥾", "color": "#58a6ff", "x": 210, "y": 460 },
+      { "id": "N4", "label": "ADN TIMBRE 1969", "sub": "TEST INCONCLUSIF", "emoji": "🧬", "color": "#3fb950", "x": 690, "y": 460 }
+    ],
+    "links": [
+      { "from": "TARGET", "to": "N1", "color": "#e3b341" },
+      { "from": "TARGET", "to": "N2", "color": "#bc8cff" },
+      { "from": "TARGET", "to": "N3", "color": "#58a6ff" },
+      { "from": "TARGET", "to": "N4", "color": "#f85149", "dashed": true }
+    ]
+  },
+  {
+    "case_id": "CASE-1947-BLACK-DAHLIA",
+    "category": "Homicides & Cold Cases",
+    "sub_category": "Meurtre Historique Non Résolu",
+    "title": "L'Affaire du Dahlia Noir (Elizabeth Short)",
+    "date": "1947-01-15",
+    "location": "Leimert Park, Los Angeles, CA",
+    "status": "COLD_UNRESOLVED",
+    "priority": "CRITICAL",
+    "stolen_assets": "Homicide Non Résolu (LAPD)",
+    "summary": "Le corps sectionné d'Elizabeth Short est découvert dans un terrain vague. Plus de 150 suspects interrogés par le LAPD et le FBI sans inculpation définitive.",
+    "primary_suspect": "Dr. George Hodel",
+    "primary_suspect_role": "Médecin / Chirurgien de renom",
+    "nodes": [
+      { "id": "TARGET", "label": "DR. G. HODEL", "sub": "SUSPECT CHIRURGIEN", "emoji": "👨‍⚕️", "color": "#f85149", "x": 450, "y": 300, "isTarget": true },
+      { "id": "N1", "label": "SOWDEN HOUSE", "sub": "RÉSIDENCE HOLLYWOOD", "emoji": "🏠", "color": "#e3b341", "x": 180, "y": 140 },
+      { "id": "N2", "label": "ÉCOUTE LAPD 1950", "sub": "AVEUX SUR BANDE", "emoji": "🎙️", "color": "#bc8cff", "x": 720, "y": 140 },
+      { "id": "N3", "label": "HÉMICOPORECTOMIE", "sub": "PRÉCISION MÉDICALE", "emoji": "🔪", "color": "#58a6ff", "x": 210, "y": 460 },
+      { "id": "N4", "label": "ALBUM PHOTOS", "sub": "PORTRAITS RETROUVÉS", "emoji": "📷", "color": "#3fb950", "x": 690, "y": 460 }
+    ],
+    "links": [
+      { "from": "TARGET", "to": "N1", "color": "#e3b341" },
+      { "from": "TARGET", "to": "N2", "color": "#f85149" },
+      { "from": "TARGET", "to": "N3", "color": "#58a6ff" },
+      { "from": "TARGET", "to": "N4", "color": "#bc8cff" }
+    ]
+  },
+  {
+    "case_id": "CASE-1971-DB-COOPER",
+    "category": "Disparitions Mystérieuses",
+    "sub_category": "Détournement Aérien / Saut en Parachute",
+    "title": "Le Mystère du Pirate de l'Air D.B. Cooper",
+    "date": "1971-11-24",
+    "location": "Portland -> Seattle -> Reno",
+    "status": "COLD_UNRESOLVED",
+    "priority": "HIGH",
+    "stolen_assets": "200 000 $ en Billets de 20$",
+    "summary": "Détournement du Boeing 727 (Vol 305). Cooper saute en parachute de nuit dans une tempête au-dessus des forêts de l'État de Washington. Jamais retrouvé.",
+    "primary_suspect": "Dan Cooper (Inconnu)",
+    "primary_suspect_role": "Fugitif / Spécialiste Parachutisme",
+    "nodes": [
+      { "id": "TARGET", "label": "D.B. COOPER", "sub": "PIRATE DE L'AIR", "emoji": "🪂", "color": "#f85149", "x": 450, "y": 300, "isTarget": true },
+      { "id": "N1", "label": "BOEING 727", "sub": "PASSERELLE ARRIÈRE", "emoji": "✈️", "color": "#e3b341", "x": 180, "y": 140 },
+      { "id": "N2", "label": "CRAVATE JCPENNEY", "sub": "ADN PARTIEL 2007", "emoji": "👔", "color": "#bc8cff", "x": 720, "y": 140 },
+      { "id": "N3", "label": "TENA BAR PLAGE", "sub": "5 800$ RETROUVÉS", "emoji": "🏖️", "color": "#58a6ff", "x": 210, "y": 460 },
+      { "id": "N4", "label": "TITANE / ALLIAGE", "sub": "PARTICULES BOEING", "emoji": "🔬", "color": "#3fb950", "x": 690, "y": 460 }
+    ],
+    "links": [
+      { "from": "TARGET", "to": "N1", "color": "#e3b341" },
+      { "from": "TARGET", "to": "N2", "color": "#f85149" },
+      { "from": "TARGET", "to": "N3", "color": "#58a6ff" },
+      { "from": "TARGET", "to": "N4", "color": "#bc8cff" }
+    ]
+  },
+  {
+    "case_id": "CASE-2007-SEATTLE-COAST",
+    "category": "Disparitions Mystérieuses",
+    "sub_category": "Disparition en Mer / Fraude d'Assurance",
+    "title": "La Disparition du Yacht Charter de la Péninsule",
+    "date": "2007-06-22",
+    "location": "Puget Sound, Seattle, WA",
+    "status": "COLD_UNRESOLVED",
+    "priority": "MEDIUM",
+    "stolen_assets": "Police d'assurance-vie de 8.5M USD",
+    "summary": "Le yacht est retrouvé à la dérive moteur tournant, sans aucun passager à bord. Signatures de transferts bancaires offshore relevées 48h plus tard aux Bahamas.",
+    "primary_suspect": "Arthur Pendelton",
+    "primary_suspect_role": "Armateur / Déclaré disparu",
+    "nodes": [
+      { "id": "TARGET", "label": "A. PENDELTON", "sub": "DISPARU / FRAUDE", "emoji": "🛥️", "color": "#f85149", "x": 450, "y": 300, "isTarget": true },
+      { "id": "N1", "label": "YACHT DÉRIVE", "sub": "MOTEUR ALLUMÉ", "emoji": "⚓", "color": "#e3b341", "x": 180, "y": 140 },
+      { "id": "N2", "label": "POLICE ASSURANCE", "sub": "8.5M$ SOUSCRITS", "emoji": "📑", "color": "#bc8cff", "x": 720, "y": 140 },
+      { "id": "N3", "label": "NASSAU BAHAMAS", "sub": "RETRAIT IP 48H", "emoji": "🌴", "color": "#58a6ff", "x": 210, "y": 460 },
+      { "id": "N4", "label": "RADAR CÔTIER", "sub": "CANOT RAPIDE 3H", "emoji": "📡", "color": "#3fb950", "x": 690, "y": 460 }
+    ],
+    "links": [
+      { "from": "TARGET", "to": "N1", "color": "#e3b341" },
+      { "from": "TARGET", "to": "N2", "color": "#bc8cff" },
+      { "from": "TARGET", "to": "N3", "color": "#f85149" },
+      { "from": "TARGET", "to": "N4", "color": "#58a6ff" }
+    ]
+  },
+  {
+    "case_id": "CASE-2017-ONECOIN-CRYPTO",
+    "category": "Cybercriminalité & Espionnage",
+    "sub_category": "Ponzi Mondial / Crypto Fugitive",
+    "title": "La Traque Mondiale de Ruja Ignatova 'Cryptoqueen'",
+    "date": "2017-10-25",
+    "location": "Sofia, Athènes & International",
+    "status": "COLD_UNRESOLVED",
+    "priority": "CRITICAL",
+    "stolen_assets": "4 Milliards USD en fonds d'investisseurs",
+    "summary": "Figure du Top 10 FBI Most Wanted. Disparue après avoir pris un vol Ryanair Sofia -> Athènes le 25 octobre 2017.",
+    "primary_suspect": "Ruja Ignatova",
+    "primary_suspect_role": "Fondatrice OneCoin / Top 10 FBI",
+    "nodes": [
+      { "id": "TARGET", "label": "RUJA IGNATOVA", "sub": "CRYPTOQUEEN (TOP 10)", "emoji": "👸", "color": "#f85149", "x": 450, "y": 300, "isTarget": true },
+      { "id": "N1", "label": "VOL ATHÈNES", "sub": "25 OCT 2017", "emoji": "✈️", "color": "#e3b341", "x": 180, "y": 140 },
+      { "id": "N2", "label": "WALLETS 230K BTC", "sub": "TRANSFERTS DUBAÏ", "emoji": "💰", "color": "#bc8cff", "x": 720, "y": 140 },
+      { "id": "N3", "label": "CHIRURGIE ESTH.", "sub": "MODIFICATION VISAGE", "emoji": "🎭", "color": "#58a6ff", "x": 210, "y": 460 },
+      { "id": "N4", "label": "YACHT DAVINA", "sub": "EAUX GRECQUES", "emoji": "🛳️", "color": "#3fb950", "x": 690, "y": 460 }
+    ],
+    "links": [
+      { "from": "TARGET", "to": "N1", "color": "#e3b341" },
+      { "from": "TARGET", "to": "N2", "color": "#bc8cff" },
+      { "from": "TARGET", "to": "N3", "color": "#58a6ff" },
+      { "from": "TARGET", "to": "N4", "color": "#3fb950" }
+    ]
+  },
+  {
+    "case_id": "CASE-2016-BANGLADESH-BANK",
+    "category": "Cybercriminalité & Espionnage",
+    "sub_category": "Cyber-Casse SWIFT International",
+    "title": "Le Cyber-Braquage de la Bangladesh Central Bank",
+    "date": "2016-02-04",
+    "location": "Dhaka -> New York -> Manille",
+    "status": "COLD_UNRESOLVED",
+    "priority": "HIGH",
+    "stolen_assets": "81 000 000 $ blanchis via Casinos",
+    "summary": "Pénétration des terminaux SWIFT de la banque centrale. 35 ordres de virement frauduleux envoyés à la Fed de New York. Les auteurs restent sous mandat d'arrêt FBI.",
+    "primary_suspect": "Park Jin Hyok / Lazarus Group",
+    "primary_suspect_role": "Cyber-Opérateur d'État",
+    "nodes": [
+      { "id": "TARGET", "label": "PARK JIN HYOK", "sub": "OPERATEUR SWIFT", "emoji": "💻", "color": "#f85149", "x": 450, "y": 300, "isTarget": true },
+      { "id": "N1", "label": "MALWARE IMPRIMANTE", "sub": "BLOCAGE ALERTES", "emoji": "🖨️", "color": "#e3b341", "x": 180, "y": 140 },
+      { "id": "N2", "label": "CASINOS MANILLE", "sub": "SOLAIRE RESORT", "emoji": "🎰", "color": "#bc8cff", "x": 720, "y": 140 },
+      { "id": "N3", "label": "FAUTE TYPO 'FANDATION'", "sub": "ORDRE 20M$ STOPPÉ", "emoji": "⚠️", "color": "#58a6ff", "x": 210, "y": 460 },
+      { "id": "N4", "label": "SERVEURS RECON", "sub": "TRACAGE IP FBI", "emoji": "🌐", "color": "#3fb950", "x": 690, "y": 460 }
+    ],
+    "links": [
+      { "from": "TARGET", "to": "N1", "color": "#e3b341" },
+      { "from": "TARGET", "to": "N2", "color": "#bc8cff" },
+      { "from": "TARGET", "to": "N3", "color": "#58a6ff" },
+      { "from": "TARGET", "to": "N4", "color": "#3fb950" }
+    ]
+  }
+]
