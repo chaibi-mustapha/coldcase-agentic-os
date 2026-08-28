@@ -4,8 +4,10 @@
 [![Google ADK](https://img.shields.io/badge/Google-Agent_Development_Kit_(ADK)-4285F4.svg)](https://github.com/google/agent-development-kit)
 [![Gemini 3.7](https://img.shields.io/badge/Model-Gemini_3.7_Flash-8E24AA.svg)](https://ai.google.dev)
 [![FastAPI](https://img.shields.io/badge/API-FastAPI_0.115-009688.svg)](https://fastapi.tiangolo.com)
+[![Live Demo](https://img.shields.io/badge/Live_Demo-Google_Cloud_Run-4285F4.svg)](https://coldcase-agentic-os-448033705367.us-central1.run.app)
 [![License](https://img.shields.io/badge/License-Apache_2.0-green.svg)](LICENSE)
 
+> **Live Demo URL**: 🌐 **[https://coldcase-agentic-os-448033705367.us-central1.run.app](https://coldcase-agentic-os-448033705367.us-central1.run.app)**  
 > **Autonomous Multi-Agent Intelligence System & Interactive Crime Board for cracking unsolved cold cases across police telemetry, private investigator dossiers, historical press archives, web sleuth discoveries, and audiovisual reports.**
 
 ---
