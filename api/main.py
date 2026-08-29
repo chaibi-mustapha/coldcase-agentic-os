@@ -70,15 +70,27 @@ def fetch_live(req: LiveFetchRequest):
     return JSONResponse(result)
 
 
+def _build_gemini_request(model_name: str, api_key: str) -> tuple[str, dict]:
+    """Build URL and headers supporting both standard API keys (AIzaSy...) and Bearer tokens (AQ..., ya29...)."""
+    is_bearer = api_key.startswith("AQ.") or api_key.startswith("ya29.")
+    headers = {"Content-Type": "application/json"}
+    if is_bearer:
+        url = f"https://generativelanguage.googleapis.com/v1beta/models/{model_name}:generateContent"
+        headers["Authorization"] = f"Bearer {api_key}"
+    else:
+        url = f"https://generativelanguage.googleapis.com/v1beta/models/{model_name}:generateContent?key={api_key}"
+    return url, headers
+
+
 async def _get_best_gemini_model(client: httpx.AsyncClient, api_key: str) -> tuple[str, dict]:
     """Auto-discover an active Gemini model with remaining quota for this API key."""
-    candidates = ["gemini-3.6-flash", "gemini-2.0-flash", "gemini-1.5-flash", "gemini-1.5-pro", "gemini-pro"]
+    candidates = ["gemini-2.0-flash", "gemini-1.5-flash", "gemini-3.6-flash", "gemini-1.5-pro"]
     last_error = {}
     for cand in candidates:
         try:
-            url = f"https://generativelanguage.googleapis.com/v1beta/models/{cand}:generateContent?key={api_key}"
+            url, headers = _build_gemini_request(cand, api_key)
             payload = {"contents": [{"parts": [{"text": "OK"}]}]}
-            resp = await client.post(url, json=payload, timeout=6.0)
+            resp = await client.post(url, json=payload, headers=headers, timeout=6.0)
             if resp.status_code == 200:
                 return cand, {}
             elif resp.status_code == 429:
@@ -89,7 +101,7 @@ async def _get_best_gemini_model(client: httpx.AsyncClient, api_key: str) -> tup
         except Exception as ex:
             last_error = {"error": str(ex), "model": cand}
             continue
-    return "gemini-3.6-flash", last_error
+    return "gemini-2.0-flash", last_error
 
 
 @app.get("/api/gemini-status")
@@ -108,7 +120,6 @@ async def gemini_status():
             if not err:
                 return JSONResponse({"status": "active", "model": model, "key_preview": key_preview, "live": True})
             
-            # If rate limited on preview model, still considered connected but throttled
             if err.get("http_code") == 429:
                 return JSONResponse({"status": "active", "model": model, "notice": "Rate limit throttle (recovering)", "key_preview": key_preview, "live": True})
             
@@ -653,18 +664,17 @@ Perform a deep multi-agent criminal synthesis across 6 specialized agents. Retur
                 best_model, _ = await _get_best_gemini_model(client, api_key)
                 models_to_try = [best_model, "gemini-2.0-flash", "gemini-1.5-flash", "gemini-3.6-flash", "gemini-pro"]
                 for model_name in dict.fromkeys(models_to_try):
-                    for api_ver in ["v1beta", "v1"]:
-                        url = f"https://generativelanguage.googleapis.com/{api_ver}/models/{model_name}:generateContent?key={api_key}"
-                        payload = {
-                            "contents": [{"parts": [{"text": prompt}]}],
-                            "generationConfig": {
-                                "responseMimeType": "application/json",
-                                "temperature": 0.2
-                            }
+                    url, headers = _build_gemini_request(model_name, api_key)
+                    payload = {
+                        "contents": [{"parts": [{"text": prompt}]}],
+                        "generationConfig": {
+                            "responseMimeType": "application/json",
+                            "temperature": 0.2
                         }
-                        try:
-                            resp = await client.post(url, json=payload)
-                            if resp.status_code == 200:
+                    }
+                    try:
+                        resp = await client.post(url, json=payload, headers=headers)
+                        if resp.status_code == 200:
                                 data = resp.json()
                                 text_content = data["candidates"][0]["content"]["parts"][0]["text"]
                                 parsed = json.loads(text_content)
