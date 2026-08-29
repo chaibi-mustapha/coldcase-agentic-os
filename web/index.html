@@ -406,24 +406,65 @@
       box-shadow: 0 0 12px rgba(56, 189, 248, 0.3);
     }
 
+    /* Segmented Tabs for Left Panel */
+    .left-tabs {
+      display: flex;
+      background: #090d14;
+      border: 1px solid var(--card-border);
+      border-radius: 6px;
+      padding: 3px;
+      gap: 4px;
+      margin-bottom: 2px;
+      flex-shrink: 0;
+    }
+    .left-tab {
+      flex: 1;
+      background: none;
+      border: none;
+      color: var(--text-muted);
+      font-family: var(--font-ui);
+      font-size: 11px;
+      font-weight: 700;
+      padding: 6px 8px;
+      border-radius: 4px;
+      cursor: pointer;
+      transition: all 0.15s;
+      text-align: center;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 5px;
+    }
+    .left-tab.active {
+      background: #1e293b;
+      color: var(--accent-cyan);
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.4);
+      border: 1px solid rgba(56, 189, 248, 0.3);
+    }
+    .left-tab:hover:not(.active) {
+      color: #fff;
+      background: rgba(255, 255, 255, 0.05);
+    }
+
     /* Case List Items */
     .case-list {
       display: flex;
       flex-direction: column;
-      gap: 6px;
-      max-height: 120px;
+      gap: 8px;
+      flex: 1;
       overflow-y: auto;
       padding-right: 2px;
+      min-height: 250px;
     }
     .case-card {
       background: var(--card-bg);
       border: 1px solid var(--card-border);
       border-radius: 6px;
-      padding: 7px 9px;
+      padding: 9px 11px;
       cursor: pointer;
       display: flex;
       flex-direction: column;
-      gap: 3px;
+      gap: 4px;
       transition: all 0.15s;
     }
     .case-card:hover, .case-card.selected {
@@ -1210,71 +1251,87 @@
           <span id="caseCountBadge" style="color: var(--accent-red); font-family: var(--font-mono);">9 CASES</span>
         </div>
         <div class="panel-body">
-          <!-- 1. Real-Time Search Bar -->
+          <!-- Segmented Navigation Tabs -->
+          <div class="left-tabs">
+            <button class="left-tab active" id="tabActiveCaseBtn" onclick="switchLeftTab('activeCase')">⚡ DOSSIER ACTIF</button>
+            <button class="left-tab" id="tabAllCasesBtn" onclick="switchLeftTab('allCases')">📁 REGISTRE (9)</button>
+          </div>
+
+          <!-- 1. Real-Time Search Bar (Always Accessible) -->
           <div class="search-box">
             <span class="search-icon">🔍</span>
-            <input type="text" id="searchInput" placeholder="Search by suspect, city, keyword..." oninput="filterCases()">
+            <input type="text" id="searchInput" placeholder="Search suspect, city, keyword..." oninput="filterCases()">
             <button class="clear-search-btn" onclick="clearSearch()" title="Clear">✖</button>
           </div>
 
-          <!-- 2. Category Dropdown -->
-          <div class="dropdown-block">
-            <label class="field-label">1. CASE CATEGORY</label>
-            <select class="styled-dropdown" id="categorySelect" onchange="onCategorySelectChange()">
-              <option value="ALL">📂 All Categories (9 Cases)</option>
-              <option value="Major Heists & Financial Conspiracies">🏦 Major Heists & Financial Conspiracies (3)</option>
-              <option value="Homicides & Serial Cases">🔪 Homicides & Serial Cases (2)</option>
-              <option value="Mysterious Disappearances">⛵ Mysterious Disappearances (2)</option>
-              <option value="Cybercrime & State Espionage">💻 Cybercrime & State Espionage (2)</option>
-            </select>
-          </div>
-
-          <!-- 3. Case Dropdown -->
-          <div class="dropdown-block">
-            <label class="field-label">2. SELECT ACTIVE DOSSIER</label>
-            <select class="styled-dropdown" id="caseDropdown" onchange="onCaseDropdownChange()" style="color: #fff; border-color: var(--accent-cyan);">
-              <!-- Dynamically populated -->
-            </select>
-          </div>
-
-          <!-- 4. Real Live Downloaded Data Card -->
-          <div class="live-web-card" id="liveCard">
-            <div class="live-badge">
-              <span class="pulse-dot"></span>
-              <span id="liveSourceBadge">LIVE WIKIMEDIA / OSINT ENDPOINT (HTTP 200)</span>
+          <!-- TAB 1: ACTIVE DOSSIER & OSINT SYNTHESIS -->
+          <div id="leftActiveView" style="display: flex; flex-direction: column; gap: 8px;">
+            <!-- Category Dropdown -->
+            <div class="dropdown-block">
+              <label class="field-label">1. CATEGORIE DE L'AFFAIRE</label>
+              <select class="styled-dropdown" id="categorySelect" onchange="onCategorySelectChange()">
+                <option value="ALL">📂 Toutes les Catégories (9 Affaires)</option>
+                <option value="Major Heists & Financial Conspiracies">🏦 Braquages Majeurs & Conspirations (3)</option>
+                <option value="Homicides & Serial Cases">🔪 Homicides & Affaires Criminelles (2)</option>
+                <option value="Mysterious Disappearances">⛵ Disparitions Mystérieuses (2)</option>
+                <option value="Cybercrime & State Espionage">💻 Cybercriminalité & Espionnage (2)</option>
+              </select>
             </div>
-            <div class="live-card-body">
-              <img id="liveImg" class="live-card-thumb" src="https://upload.wikimedia.org/wikipedia/commons/thumb/c/cb/Empty_Frames_at_Isabella_Stewart_Gardner_Museum.jpg/330px-Empty_Frames_at_Isabella_Stewart_Gardner_Museum.jpg" alt="Live evidence thumbnail">
-              <div style="display: flex; flex-direction: column; gap: 4px;">
-                <div style="font-weight: bold; font-size: 11px; color: #fff;" id="liveTitle">Isabella Stewart Gardner Museum theft</div>
-                <div class="live-card-text" id="liveExtract">In the early hours of March 18, 1990, 13 works of art were stolen from the Isabella Stewart Gardner Museum in Boston...</div>
+
+            <!-- Case Dropdown -->
+            <div class="dropdown-block">
+              <label class="field-label">2. DOSSIER ACTIF</label>
+              <select class="styled-dropdown" id="caseDropdown" onchange="onCaseDropdownChange()" style="color: #fff; border-color: var(--accent-cyan);">
+                <!-- Dynamically populated -->
+              </select>
+            </div>
+
+            <!-- Live Downloaded OSINT Card -->
+            <div class="live-web-card" id="liveCard">
+              <div class="live-badge">
+                <span class="pulse-dot"></span>
+                <span id="liveSourceBadge">LIVE WIKIMEDIA / OSINT (HTTP 200)</span>
               </div>
+              <div class="live-card-body">
+                <img id="liveImg" class="live-card-thumb" src="https://upload.wikimedia.org/wikipedia/commons/thumb/c/cb/Empty_Frames_at_Isabella_Stewart_Gardner_Museum.jpg/330px-Empty_Frames_at_Isabella_Stewart_Gardner_Museum.jpg" alt="Live evidence thumbnail">
+                <div style="display: flex; flex-direction: column; gap: 4px; overflow: hidden;">
+                  <div style="font-weight: bold; font-size: 11px; color: #fff; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;" id="liveTitle">Isabella Stewart Gardner Museum theft</div>
+                  <div class="live-card-text" id="liveExtract">In the early hours of March 18, 1990, 13 works of art were stolen from the Isabella Stewart Gardner Museum in Boston...</div>
+                </div>
+              </div>
+              <button class="btn-live-fetch" onclick="fetchLiveDataForActiveCase()">
+                <span>🌐</span> FETCH LIVE WEB INTELLIGENCE
+              </button>
             </div>
-            <button class="btn-live-fetch" onclick="fetchLiveDataForActiveCase()">
-              <span>🌐</span> FETCH LIVE WEB INTELLIGENCE
-            </button>
+
+            <!-- Active Case Parameters Form -->
+            <div style="border-top: 1px solid var(--card-border); padding-top: 8px; display: flex; flex-direction: column; gap: 6px;">
+              <div class="input-group">
+                <label class="field-label">SUSPECT PRINCIPAL / CIBLE</label>
+                <input type="text" class="form-input" id="suspectInput" value="Victor Vance (Former Security Chief)">
+              </div>
+
+              <div class="input-group">
+                <label class="field-label">REQUETE DE CORRELATION MULTI-SOURCES</label>
+                <textarea class="form-textarea" id="queryInput" rows="2">Cross-correlate physical, PI dossiers, press microfilms and video transcripts for: The Grand National Vault Century Heist (Berlin)</textarea>
+              </div>
+
+              <button class="btn-investigate" id="btnRun" onclick="runInvestigation()">
+                <span>⚡</span> RUN MULTI-SOURCE AGENTIC SYNTHESIS
+              </button>
+            </div>
           </div>
 
-          <!-- 5. Cases Sub-List Cards -->
-          <div class="case-list" id="casesContainer">
-            <!-- Dynamically filled by JS -->
-          </div>
-
-          <!-- 6. Active Case Parameters Form -->
-          <div style="border-top: 1px solid var(--card-border); padding-top: 6px; display: flex; flex-direction: column; gap: 6px;">
-            <div class="input-group">
-              <label class="field-label">INVESTIGATION TARGET / SUSPECT</label>
-              <input type="text" class="form-input" id="suspectInput" value="Victor Vance (Former Security Chief)">
+          <!-- TAB 2: ALL CASES REGISTRY (SPACIOUS FULL LIST) -->
+          <div id="leftAllCasesView" style="display: none; flex-direction: column; gap: 8px; flex: 1;">
+            <div style="font-size: 10px; color: var(--text-muted); font-family: var(--font-mono); display: flex; justify-content: space-between;">
+              <span>CLIQUEZ SUR UN DOSSIER POUR L'OUVRIR :</span>
+              <span style="color: var(--accent-cyan);">9 DISPONIBLES</span>
             </div>
-
-            <div class="input-group">
-              <label class="field-label">MULTI-SOURCE AGENTIC CORRELATION QUERY</label>
-              <textarea class="form-textarea" id="queryInput" rows="2">Cross-correlate physical, PI dossiers, press microfilms and video transcripts for: The Grand National Vault Century Heist (Berlin)</textarea>
+            <!-- Cases Sub-List Cards -->
+            <div class="case-list" id="casesContainer">
+              <!-- Dynamically filled by JS -->
             </div>
-
-            <button class="btn-investigate" id="btnRun" onclick="runInvestigation()">
-              <span>⚡</span> RUN MULTI-SOURCE AGENTIC SYNTHESIS
-            </button>
           </div>
         </div>
       </div>
@@ -1697,6 +1754,7 @@
         card.onclick = () => {
           selectCase(c.case_id);
           caseDropdown.value = c.case_id;
+          switchLeftTab('activeCase');
         };
 
         const tagClass = c.priority === 'CRITICAL' ? 'tag-critical' : (c.priority === 'HIGH' ? 'tag-high' : 'tag-medium');
@@ -1714,6 +1772,26 @@
         `;
         casesContainer.appendChild(card);
       });
+    }
+
+    function switchLeftTab(tabName) {
+      const activeTabBtn = document.getElementById('tabActiveCaseBtn');
+      const allTabBtn = document.getElementById('tabAllCasesBtn');
+      const activeView = document.getElementById('leftActiveView');
+      const allView = document.getElementById('leftAllCasesView');
+
+      if (tabName === 'activeCase') {
+        if (activeTabBtn) activeTabBtn.classList.add('active');
+        if (allTabBtn) allTabBtn.classList.remove('active');
+        if (activeView) activeView.style.display = 'flex';
+        if (allView) allView.style.display = 'none';
+      } else {
+        if (allTabBtn) allTabBtn.classList.add('active');
+        if (activeTabBtn) activeTabBtn.classList.remove('active');
+        if (allView) allView.style.display = 'flex';
+        if (activeView) activeView.style.display = 'none';
+        renderCasesList();
+      }
     }
 
     function filterCases() {
