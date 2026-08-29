@@ -1951,9 +1951,32 @@
       });
     }
 
+    async function checkGeminiStatus() {
+      try {
+        const res = await fetch('/api/gemini-status');
+        const data = await res.json();
+        const st = document.getElementById('headerStatusText');
+        const dot = document.getElementById('headerPulseDot');
+        if (data.status === 'active') {
+          if (st) st.innerHTML = `<span style="color: #38bdf8; font-weight: 800;">✨ 6 OSINT AGENTS LIVE (${data.model})</span>`;
+          if (dot) {
+            dot.style.background = '#38bdf8';
+            dot.style.boxShadow = '0 0 10px #38bdf8';
+          }
+        } else if (data.status === 'api_error') {
+          if (st) st.innerHTML = `<span style="color: #f85149;">⚠️ GEMINI API KEY ERROR (${data.http_code})</span>`;
+        } else if (data.status === 'no_key') {
+          if (st) st.innerHTML = `<span style="color: #f0b429;">⚡ 6 OSINT AGENTS (STANDALONE ENGINE)</span>`;
+        }
+      } catch (e) {
+        console.warn('Status check:', e);
+      }
+    }
+
     window.addEventListener('DOMContentLoaded', () => {
       loadCases();
       initResizers();
+      checkGeminiStatus();
       setTimeout(fitAndCenter, 150);
     });
     window.addEventListener('resize', fitAndCenter);

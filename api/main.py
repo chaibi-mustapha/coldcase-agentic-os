@@ -70,11 +70,34 @@ def fetch_live(req: LiveFetchRequest):
     return JSONResponse(result)
 
 
+@app.get("/api/gemini-status")
+async def gemini_status():
+    """Verify Gemini API connection status and active model."""
+    api_key = os.getenv("GEMINI_API_KEY") or os.getenv("GOOGLE_API_KEY") or ""
+    has_key = bool(api_key and len(api_key) > 10 and not api_key.startswith("VOTRE_"))
+    key_preview = f"{api_key[:6]}...{api_key[-4:]}" if has_key else "None"
+
+    if not has_key:
+        return JSONResponse({"status": "no_key", "message": "No API key configured", "key_preview": key_preview})
+
+    url = f"https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key={api_key}"
+    payload = {"contents": [{"parts": [{"text": "Reply with only word OK"}]}]}
+    try:
+        async with httpx.AsyncClient(timeout=8.0) as client:
+            resp = await client.post(url, json=payload)
+            if resp.status_code == 200:
+                return JSONResponse({"status": "active", "model": "gemini-1.5-flash", "key_preview": key_preview, "live": True})
+            else:
+                return JSONResponse({"status": "api_error", "http_code": resp.status_code, "error": resp.text, "key_preview": key_preview})
+    except Exception as e:
+        return JSONResponse({"status": "network_error", "error": str(e), "key_preview": key_preview})
+
+
 @app.post("/api/investigate")
 async def investigate(req: CaseInvestigationRequest):
-    # Try live Gemini agents first if API key is configured
+    # Try live Gemini agents first whenever an API key is present
     api_key = os.getenv("GEMINI_API_KEY") or os.getenv("GOOGLE_API_KEY") or ""
-    if api_key and api_key != "VOTRE_CLE_ICI" and not MOCK_MODE:
+    if api_key and len(api_key) > 10 and not api_key.startswith("VOTRE_"):
         try:
             live_result = await _run_live_agents(req)
             if live_result and live_result.get("hypothesis"):
@@ -601,7 +624,7 @@ Perform a deep multi-agent criminal synthesis across 6 specialized agents. Retur
   }}
 }}"""
 
-        for model_name in ["gemini-2.5-flash", "gemini-2.0-flash", "gemini-1.5-flash"]:
+        for model_name in ["gemini-1.5-flash", "gemini-2.0-flash", "gemini-1.5-pro", "gemini-2.5-flash"]:
             url = f"https://generativelanguage.googleapis.com/v1beta/models/{model_name}:generateContent?key={api_key}"
             payload = {
                 "contents": [{"parts": [{"text": prompt}]}],
