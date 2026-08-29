@@ -2073,6 +2073,44 @@
             <img src="${elem.image}" alt="${elem.title}" style="max-width: 100%; max-height: 280px; object-fit: contain; border-radius: 4px; display: inline-block;">
           </div>
         `;
+      } else if (elem.type === 'video_card') {
+        contentHtml += `
+          <div style="position: relative; width: 100%; height: 210px; background: #000; border-radius: 8px; overflow: hidden; border: 1px solid #334155; margin-bottom: 12px; display: flex; flex-direction: column; justify-content: space-between; padding: 12px; box-sizing: border-box; box-shadow: 0 8px 24px rgba(0,0,0,0.6);">
+            <!-- CRT Scanline effect -->
+            <div style="position: absolute; top:0; left:0; width:100%; height:100%; background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.4) 50%), linear-gradient(90deg, rgba(255,0,0,0.06), rgba(0,255,0,0.02), rgba(0,0,255,0.06)); background-size: 100% 3px, 6px 100%; pointer-events: none; z-index: 1;"></div>
+            
+            <!-- Video Top Header -->
+            <div style="display: flex; justify-content: space-between; align-items: center; z-index: 2;">
+              <span style="font-family: var(--font-mono); font-size: 10px; color: #ef4444; font-weight: 800; display: flex; align-items: center; gap: 6px;">
+                <span style="width: 8px; height: 8px; border-radius: 50%; background: #ef4444; display: inline-block; box-shadow: 0 0 8px #ef4444;"></span>
+                REC // CRIME DOCUMENTARY ARCHIVE
+              </span>
+              <span style="font-family: var(--font-mono); font-size: 10px; color: #38bdf8; background: rgba(15, 23, 42, 0.85); border: 1px solid #1e293b; padding: 3px 8px; border-radius: 4px;">
+                TIMECODE [${elem.timecode || '18:45'}] / ${elem.duration || '45:00'}
+              </span>
+            </div>
+
+            <!-- Video Center Action Graphic -->
+            <div style="display: flex; flex-direction: column; align-items: center; justify-content: center; z-index: 2; gap: 8px;">
+              <div style="width: 56px; height: 56px; border-radius: 50%; background: linear-gradient(135deg, #e63946 0%, #991b1b 100%); display: flex; align-items: center; justify-content: center; color: #fff; font-size: 22px; box-shadow: 0 0 25px rgba(230, 57, 70, 0.7); cursor: pointer; border: 2px solid rgba(255,255,255,0.3); transition: transform 0.2s;">
+                ▶
+              </div>
+              <div style="font-family: var(--font-mono); font-size: 11px; color: #f8fafc; text-align: center; max-width: 90%; text-shadow: 0 2px 4px rgba(0,0,0,0.8); font-weight: 600;">
+                "${elem.snippet || 'Interview exclusive et reconstitution audiovisuelle'}"
+              </div>
+            </div>
+
+            <!-- Video Bottom Telemetry Bar -->
+            <div style="display: flex; justify-content: space-between; align-items: center; z-index: 2; border-top: 1px solid rgba(255,255,255,0.15); padding-top: 6px;">
+              <span style="font-family: var(--font-mono); font-size: 9.5px; color: #94a3b8; display: flex; align-items: center; gap: 4px;">
+                <span>🔊</span> AUDIO SPECTROGRAM : 48 kHz • FORENSIC SYNC
+              </span>
+              <span style="font-family: var(--font-mono); font-size: 9.5px; color: #86efac; font-weight: 700;">
+                1080p AI DECLASSIFIED
+              </span>
+            </div>
+          </div>
+        `;
       }
       contentHtml += `<div style="font-weight: 700; color: #fff; margin-bottom: 4px; font-size: 13px;">${elem.headline || elem.handwritten || elem.title}</div>`;
       contentHtml += `<div style="line-height: 1.45; color: #cbd5e1;">${elem.full_text || elem.snippet || ''}</div>`;
