@@ -1360,12 +1360,12 @@
     <!-- Center Panel: The Cinematic Case Board (Corkboard, Polaroids, Sticky Notes, Red Strings) -->
     <div class="panel-center-wrapper">
       <div class="panel" style="position: relative;">
-        <div class="panel-header">
-          <div style="display: flex; align-items: center; gap: 8px;">
-            <span>Investigation Pinboard ("Cinematic Crime Board")</span>
-            <button class="header-icon-btn" onclick="toggleMaximizeBoard()" title="Toggle Fullscreen Focus Board Mode" style="width: auto; padding: 2px 8px; font-size: 9.5px;">⛶ MAX BOARD</button>
+        <div class="panel-header" style="display: flex; justify-content: space-between; align-items: center; gap: 8px;">
+          <div style="display: flex; align-items: center; gap: 8px; min-width: 0;">
+            <span style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis; font-weight: 700;">Investigation Pinboard</span>
+            <button class="header-icon-btn" onclick="toggleMaximizeBoard()" title="Toggle Fullscreen Focus Board Mode" style="width: auto; padding: 2px 8px; font-size: 9px; flex-shrink: 0; background: rgba(56, 189, 248, 0.15); border-color: var(--accent-cyan); color: var(--accent-cyan);">⛶ MAX BOARD</button>
           </div>
-          <span style="color: var(--accent-red); font-family: var(--font-mono);" id="boardStats">6 PIECES OF EVIDENCE • 6 RED THREADS</span>
+          <span style="color: var(--accent-red); font-family: var(--font-mono); font-size: 10px; white-space: nowrap; flex-shrink: 0;" id="boardStats">7 PIECES OF EVIDENCE • 7 RED THREADS</span>
         </div>
 
         <div class="board-wrapper">
@@ -1763,9 +1763,9 @@
       const fVerdText = document.getElementById('formalVerdictText');
       const fVerdAction = document.getElementById('formalVerdictAction');
       const fStatus = document.getElementById('formalVerdictStatus');
-      if (fVerdText) fVerdText.innerText = `Multi-agent correlation & synthesis in progress for ${found.title}...`;
-      if (fVerdAction) fVerdAction.innerText = `Forensic priority investigation targeting: ${found.primary_suspect || 'Suspect'}.`;
-      if (fStatus) fStatus.innerText = 'SYNTHESIS IN PROGRESS...';
+      if (fVerdText) fVerdText.innerText = `Synthèse formelle et analyse contradictoire des 6 agents IA en cours pour : ${found.title}.`;
+      if (fVerdAction) fVerdAction.innerText = `Exécution des mandats prioritaires et confrontation sur : ${found.primary_suspect || 'le suspect principal'}.`;
+      if (fStatus) fStatus.innerText = 'DOSSIER ACTIF • ANALYSE MULTI-AGENTS';
 
       caseDropdown.value = found.case_id;
       renderCasesList();
@@ -2068,10 +2068,14 @@
 
       let contentHtml = '';
       if (elem.image) {
-        contentHtml += `<img src="${elem.image}" style="width: 100%; max-height: 180px; object-fit: cover; border-radius: 4px; margin-bottom: 8px;">`;
+        contentHtml += `
+          <div style="text-align: center; background: #080c14; border-radius: 6px; padding: 6px; border: 1px solid var(--card-border); margin-bottom: 10px;">
+            <img src="${elem.image}" alt="${elem.title}" style="max-width: 100%; max-height: 280px; object-fit: contain; border-radius: 4px; display: inline-block;">
+          </div>
+        `;
       }
-      contentHtml += `<div style="font-weight: 700; color: #fff; margin-bottom: 4px;">${elem.headline || elem.handwritten || elem.title}</div>`;
-      contentHtml += `<div>${elem.full_text || elem.snippet || ''}</div>`;
+      contentHtml += `<div style="font-weight: 700; color: #fff; margin-bottom: 4px; font-size: 13px;">${elem.headline || elem.handwritten || elem.title}</div>`;
+      contentHtml += `<div style="line-height: 1.45; color: #cbd5e1;">${elem.full_text || elem.snippet || ''}</div>`;
 
       document.getElementById('modalContent').innerHTML = contentHtml;
       document.getElementById('modalExtraInfo').innerText = `Evidence Chain & Seal: Dossier ${activeCase.case_id} — Active Pinboard Correlation.`;
