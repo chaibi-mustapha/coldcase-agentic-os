@@ -1257,13 +1257,6 @@
             <button class="left-tab" id="tabAllCasesBtn" onclick="switchLeftTab('allCases')">📁 REGISTRE (9)</button>
           </div>
 
-          <!-- 1. Real-Time Search Bar (Always Accessible) -->
-          <div class="search-box">
-            <span class="search-icon">🔍</span>
-            <input type="text" id="searchInput" placeholder="Search suspect, city, keyword..." oninput="filterCases()">
-            <button class="clear-search-btn" onclick="clearSearch()" title="Clear">✖</button>
-          </div>
-
           <!-- TAB 1: ACTIVE DOSSIER & OSINT SYNTHESIS -->
           <div id="leftActiveView" style="display: flex; flex-direction: column; gap: 8px;">
             <!-- Category Dropdown -->
@@ -1651,71 +1644,13 @@
     }
 
     function getFilteredCases() {
-      const rawQ = searchInput ? searchInput.value.toLowerCase().trim() : '';
-      if (!rawQ) {
-        return allCases.filter(c => selectedCategory === 'ALL' || c.category === selectedCategory);
-      }
-      
-      // Multilingual & Keyword Expansion for Crime Investigation
-      let qList = [rawQ];
-      if (['mort', 'more', 'meurtre', 'tueur', 'homicide', 'murder', 'cadavre', 'sang', 'assassin', 'dead', 'death'].some(w => rawQ.includes(w))) {
-        qList.push('homicide', 'murder', 'zodiac', 'dahlia', 'killer', 'serial', 'elizabeth short');
-      }
-      if (['vol', 'braquage', 'heist', 'banque', 'bank', 'argent', 'money', 'coffre', 'vault', 'diamant', 'tableau', 'art', 'stolen'].some(w => rawQ.includes(w))) {
-        qList.push('heist', 'vault', 'bank', 'gardner', 'antwerp', 'berlin', 'bonds');
-      }
-      if (['disparition', 'disappearance', 'disparu', 'yacht', 'bateau', 'mer', 'avion', 'skyjack', 'cooper', 'ruja', 'ignatova', 'ghost'].some(w => rawQ.includes(w))) {
-        qList.push('disappear', 'yacht', 'cooper', 'ghost', 'onecoin', 'ruja', 'skyjacking');
-      }
-      if (['cyber', 'hacker', 'pirate', 'swift', 'crypto', 'bitcoin', 'lazarus', 'coree', 'bank cyber'].some(w => rawQ.includes(w))) {
-        qList.push('cyber', 'swift', 'lazarus', 'onecoin', 'bangladesh', 'central bank');
-      }
-
-      const matches = (c) => {
-        return qList.some(q => {
-          const inMain = (c.title && c.title.toLowerCase().includes(q)) ||
-                         (c.location && c.location.toLowerCase().includes(q)) ||
-                         (c.primary_suspect && c.primary_suspect.toLowerCase().includes(q)) ||
-                         (c.primary_suspect_role && c.primary_suspect_role.toLowerCase().includes(q)) ||
-                         (c.summary && c.summary.toLowerCase().includes(q)) ||
-                         (c.category && c.category.toLowerCase().includes(q)) ||
-                         (c.sub_category && c.sub_category.toLowerCase().includes(q)) ||
-                         (c.stolen_assets && c.stolen_assets.toLowerCase().includes(q)) ||
-                         (c.date && c.date.toLowerCase().includes(q));
-          const inClues = c.board_elements && c.board_elements.some(e => 
-            (e.title && e.title.toLowerCase().includes(q)) ||
-            (e.handwritten && e.handwritten.toLowerCase().includes(q)) ||
-            (e.snippet && e.snippet.toLowerCase().includes(q)) ||
-            (e.full_text && e.full_text.toLowerCase().includes(q))
-          );
-          return inMain || inClues;
-        });
-      };
-
-      if (selectedCategory !== 'ALL') {
-        const catFiltered = allCases.filter(c => c.category === selectedCategory && matches(c));
-        if (catFiltered.length > 0) return catFiltered;
-      }
-      return allCases.filter(matches);
+      if (selectedCategory === 'ALL') return allCases;
+      return allCases.filter(c => c.category === selectedCategory);
     }
 
     function populateCaseDropdown() {
       caseDropdown.innerHTML = '';
       const filtered = getFilteredCases();
-
-      if (filtered.length === 0) {
-        const fallbackCases = allCases.filter(c => selectedCategory === 'ALL' || c.category === selectedCategory);
-        fallbackCases.forEach(c => {
-          const opt = document.createElement('option');
-          opt.value = c.case_id;
-          opt.innerText = `📁 [${c.priority}] ${c.title}`;
-          caseDropdown.appendChild(opt);
-        });
-        if (activeCase && fallbackCases.some(c => c.case_id === activeCase.case_id)) {
-          caseDropdown.value = activeCase.case_id;
-        }
-        return;
-      }
 
       filtered.forEach(c => {
         const opt = document.createElement('option');
@@ -1732,21 +1667,10 @@
     }
 
     function renderCasesList() {
-      const q = searchInput ? searchInput.value.toLowerCase().trim() : '';
       casesContainer.innerHTML = '';
       const filtered = getFilteredCases();
 
       document.getElementById('caseCountBadge').innerText = `${filtered.length} OF ${allCases.length} DOSSIERS`;
-
-      if (filtered.length === 0) {
-        casesContainer.innerHTML = `
-          <div class="empty-search">
-            <span>⚠️ Aucun dossier ne correspond à "<b>${q}</b>"</span><br>
-            <button class="btn-reset-search" onclick="clearSearch()">Effacer la recherche ⟲</button>
-          </div>
-        `;
-        return;
-      }
 
       filtered.forEach(c => {
         const card = document.createElement('div');
@@ -2427,16 +2351,6 @@
       loadCases();
       initResizers();
       checkGeminiStatus();
-      if (searchInput) {
-        searchInput.addEventListener('keydown', (e) => {
-          if (e.key === 'Enter') {
-            const filtered = getFilteredCases();
-            if (filtered.length > 0) {
-              selectCase(filtered[0].case_id);
-            }
-          }
-        });
-      }
       setTimeout(fitAndCenter, 150);
     });
     window.addEventListener('resize', fitAndCenter);
