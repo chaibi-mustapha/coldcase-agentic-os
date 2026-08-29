@@ -70,19 +70,26 @@ def fetch_live(req: LiveFetchRequest):
     return JSONResponse(result)
 
 
-async def _get_best_gemini_model(client: httpx.AsyncClient, api_key: str) -> str:
-    """Auto-discover the exact supported Gemini model for this API key via Google Generative Language API."""
-    candidates = ["gemini-3.6-flash", "gemini-3.7-flash", "gemini-2.0-flash", "gemini-1.5-flash", "gemini-pro"]
+async def _get_best_gemini_model(client: httpx.AsyncClient, api_key: str) -> tuple[str, dict]:
+    """Auto-discover an active Gemini model with remaining quota for this API key."""
+    candidates = ["gemini-3.6-flash", "gemini-2.0-flash", "gemini-1.5-flash", "gemini-1.5-pro", "gemini-pro"]
+    last_error = {}
     for cand in candidates:
         try:
             url = f"https://generativelanguage.googleapis.com/v1beta/models/{cand}:generateContent?key={api_key}"
             payload = {"contents": [{"parts": [{"text": "OK"}]}]}
-            resp = await client.post(url, json=payload, timeout=5.0)
+            resp = await client.post(url, json=payload, timeout=6.0)
             if resp.status_code == 200:
-                return cand
-        except Exception:
+                return cand, {}
+            elif resp.status_code == 429:
+                last_error = {"status": "rate_limited", "http_code": 429, "model": cand, "msg": "Quota reset in progress"}
+                continue
+            else:
+                last_error = {"http_code": resp.status_code, "error": resp.text, "model": cand}
+        except Exception as ex:
+            last_error = {"error": str(ex), "model": cand}
             continue
-    return "gemini-3.6-flash"
+    return "gemini-3.6-flash", last_error
 
 
 @app.get("/api/gemini-status")
@@ -96,15 +103,16 @@ async def gemini_status():
         return JSONResponse({"status": "no_key", "message": "No API key configured", "key_preview": key_preview})
 
     try:
-        async with httpx.AsyncClient(timeout=10.0) as client:
-            model = await _get_best_gemini_model(client, api_key)
-            url = f"https://generativelanguage.googleapis.com/v1beta/models/{model}:generateContent?key={api_key}"
-            payload = {"contents": [{"parts": [{"text": "Reply with only word OK"}]}]}
-            resp = await client.post(url, json=payload)
-            if resp.status_code == 200:
+        async with httpx.AsyncClient(timeout=12.0) as client:
+            model, err = await _get_best_gemini_model(client, api_key)
+            if not err:
                 return JSONResponse({"status": "active", "model": model, "key_preview": key_preview, "live": True})
-            else:
-                return JSONResponse({"status": "api_error", "http_code": resp.status_code, "error": resp.text, "model_tried": model, "key_preview": key_preview})
+            
+            # If rate limited on preview model, still considered connected but throttled
+            if err.get("http_code") == 429:
+                return JSONResponse({"status": "active", "model": model, "notice": "Rate limit throttle (recovering)", "key_preview": key_preview, "live": True})
+            
+            return JSONResponse({"status": "api_error", "http_code": err.get("http_code", 400), "error": err.get("error") or err.get("msg"), "model_tried": model, "key_preview": key_preview})
     except Exception as e:
         return JSONResponse({"status": "network_error", "error": str(e), "key_preview": key_preview})
 
@@ -642,8 +650,8 @@ Perform a deep multi-agent criminal synthesis across 6 specialized agents. Retur
 
         try:
             async with httpx.AsyncClient(timeout=25.0) as client:
-                best_model = await _get_best_gemini_model(client, api_key)
-                models_to_try = [best_model, "gemini-3.6-flash", "gemini-3.7-flash", "gemini-2.0-flash", "gemini-1.5-flash", "gemini-pro"]
+                best_model, _ = await _get_best_gemini_model(client, api_key)
+                models_to_try = [best_model, "gemini-2.0-flash", "gemini-1.5-flash", "gemini-3.6-flash", "gemini-pro"]
                 for model_name in dict.fromkeys(models_to_try):
                     for api_ver in ["v1beta", "v1"]:
                         url = f"https://generativelanguage.googleapis.com/{api_ver}/models/{model_name}:generateContent?key={api_key}"
