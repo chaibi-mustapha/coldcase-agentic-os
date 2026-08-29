@@ -675,16 +675,16 @@ Perform a deep multi-agent criminal synthesis across 6 specialized agents. Retur
                     try:
                         resp = await client.post(url, json=payload, headers=headers)
                         if resp.status_code == 200:
-                                data = resp.json()
-                                text_content = data["candidates"][0]["content"]["parts"][0]["text"]
-                                parsed = json.loads(text_content)
-                                parsed["live_gemini"] = True
-                                parsed["model"] = model_name
-                                parsed["case_id"] = req.case_id
-                                parsed["suspect"] = req.suspect_name
-                                return parsed
-                        except Exception:
-                            pass
+                            data = resp.json()
+                            text_content = data["candidates"][0]["content"]["parts"][0]["text"]
+                            parsed = json.loads(text_content)
+                            parsed["live_gemini"] = True
+                            parsed["model"] = model_name
+                            parsed["case_id"] = req.case_id
+                            parsed["suspect"] = req.suspect_name
+                            return parsed
+                    except Exception:
+                        pass
         except Exception as e:
             print(f"[Live Agents Global Error]: {e}")
 
