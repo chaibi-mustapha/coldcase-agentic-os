@@ -19,7 +19,7 @@ from .schemas import (
     NextLeadAction,
 )
 
-MODEL = "gemini-2.5-flash"
+MODEL = "gemini-3.6-flash"
 
 try:
     from google.adk import Agent, Workflow

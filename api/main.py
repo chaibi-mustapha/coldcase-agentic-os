@@ -72,26 +72,17 @@ def fetch_live(req: LiveFetchRequest):
 
 async def _get_best_gemini_model(client: httpx.AsyncClient, api_key: str) -> str:
     """Auto-discover the exact supported Gemini model for this API key via Google Generative Language API."""
-    try:
-        url = f"https://generativelanguage.googleapis.com/v1beta/models?key={api_key}"
-        resp = await client.get(url)
-        if resp.status_code == 200:
-            models_data = resp.json().get("models", [])
-            # Priority 1: Flash models
-            for m in models_data:
-                methods = m.get("supportedGenerationMethods", [])
-                if "generateContent" in methods:
-                    name = m.get("name", "").replace("models/", "")
-                    if "flash" in name.lower():
-                        return name
-            # Priority 2: Any model supporting generateContent
-            for m in models_data:
-                methods = m.get("supportedGenerationMethods", [])
-                if "generateContent" in methods:
-                    return m.get("name", "").replace("models/", "")
-    except Exception:
-        pass
-    return "gemini-1.5-flash"
+    candidates = ["gemini-3.6-flash", "gemini-3.7-flash", "gemini-2.0-flash", "gemini-1.5-flash", "gemini-pro"]
+    for cand in candidates:
+        try:
+            url = f"https://generativelanguage.googleapis.com/v1beta/models/{cand}:generateContent?key={api_key}"
+            payload = {"contents": [{"parts": [{"text": "OK"}]}]}
+            resp = await client.post(url, json=payload, timeout=5.0)
+            if resp.status_code == 200:
+                return cand
+        except Exception:
+            continue
+    return "gemini-3.6-flash"
 
 
 @app.get("/api/gemini-status")
@@ -652,7 +643,7 @@ Perform a deep multi-agent criminal synthesis across 6 specialized agents. Retur
         try:
             async with httpx.AsyncClient(timeout=25.0) as client:
                 best_model = await _get_best_gemini_model(client, api_key)
-                models_to_try = [best_model, "gemini-1.5-flash", "gemini-2.0-flash", "gemini-1.5-pro", "gemini-pro"]
+                models_to_try = [best_model, "gemini-3.6-flash", "gemini-3.7-flash", "gemini-2.0-flash", "gemini-1.5-flash", "gemini-pro"]
                 for model_name in dict.fromkeys(models_to_try):
                     for api_ver in ["v1beta", "v1"]:
                         url = f"https://generativelanguage.googleapis.com/{api_ver}/models/{model_name}:generateContent?key={api_key}"
