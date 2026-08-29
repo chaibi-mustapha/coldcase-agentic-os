@@ -104,15 +104,68 @@
         "y": 440,
         "rotation": 1,
         "full_text": "Multimodal analysis and transcript extraction of televised broadcast investigating 20th-century vault penetrations."
+      },
+      {
+        "id": "E7_SCHEMATIC",
+        "type": "pi_report",
+        "title": "Vault Firmware Binary Disassembly",
+        "dossier_no": "SEC-BER-1998-99",
+        "handwritten": "Disassembled ThinkPad ROM: Hardcoded cryptographic master key matching Vance's private RSA signature!",
+        "channel": "police",
+        "reliability": "A1",
+        "reliability_label": "Forensic Cryptanalysis Lab",
+        "pinColor": "red",
+        "x": 920,
+        "y": 200,
+        "rotation": -3,
+        "full_text": "Digital recovery of deleted source code files from Victor Vance's home workstation."
       }
     ],
     "red_threads": [
-      { "from": "E1_SUSPECT", "to": "E2_STICKY_ALIBI", "label": "Falsified Alibi", "color": "#e63946" },
-      { "from": "E1_SUSPECT", "to": "E4_PI_REPORT", "label": "PI Stakeout", "color": "#f85149" },
-      { "from": "E1_SUSPECT", "to": "E3_NEWSPAPER", "label": "Press Accusation", "color": "#e63946" },
-      { "from": "E1_SUSPECT", "to": "E5_COMMUNITY", "label": "Crypto Key Leak", "color": "#f85149", "dashed": true },
-      { "from": "E1_SUSPECT", "to": "E6_VIDEO", "label": "Key Testimony", "color": "#e63946" },
-      { "from": "E4_PI_REPORT", "to": "E6_VIDEO", "label": "Accomplice Link", "color": "#e63946", "dashed": true }
+      {
+        "from": "E1_SUSPECT",
+        "to": "E2_STICKY_ALIBI",
+        "label": "Falsified Alibi",
+        "color": "#e63946"
+      },
+      {
+        "from": "E1_SUSPECT",
+        "to": "E4_PI_REPORT",
+        "label": "PI Stakeout",
+        "color": "#f85149"
+      },
+      {
+        "from": "E1_SUSPECT",
+        "to": "E3_NEWSPAPER",
+        "label": "Press Accusation",
+        "color": "#e63946"
+      },
+      {
+        "from": "E1_SUSPECT",
+        "to": "E5_COMMUNITY",
+        "label": "Crypto Key Leak",
+        "color": "#f85149",
+        "dashed": true
+      },
+      {
+        "from": "E1_SUSPECT",
+        "to": "E6_VIDEO",
+        "label": "Key Testimony",
+        "color": "#e63946"
+      },
+      {
+        "from": "E4_PI_REPORT",
+        "to": "E6_VIDEO",
+        "label": "Accomplice Link",
+        "color": "#e63946",
+        "dashed": true
+      },
+      {
+        "from": "E1_SUSPECT",
+        "to": "E7_SCHEMATIC",
+        "label": "Master RSA Key",
+        "color": "#e63946"
+      }
     ]
   },
   {
@@ -220,14 +273,89 @@
         "y": 450,
         "rotation": -1,
         "full_text": "Forensic telemetry and sensor timestamp analysis presented in investigative documentary series."
+      },
+      {
+        "id": "E7_FRAME",
+        "type": "polaroid",
+        "title": "Empty Rembrandt Frame",
+        "handwritten": "Dutch Room Frame: Sliced canvas margins match 1980s surgical scalpel #11.",
+        "channel": "police",
+        "reliability": "A1",
+        "reliability_label": "Museum Forensic Crime Scene Photo",
+        "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/c/cb/Empty_Frames_at_Isabella_Stewart_Gardner_Museum.jpg/330px-Empty_Frames_at_Isabella_Stewart_Gardner_Museum.jpg",
+        "pinColor": "brass",
+        "x": 920,
+        "y": 140,
+        "rotation": 2,
+        "full_text": "Physical inspection of the gilded wooden frame left on the floor after the heist."
+      },
+      {
+        "id": "E8_DISPATCH",
+        "type": "sticky_note",
+        "color": "yellow",
+        "title": "911 Police Dispatch Log",
+        "handwritten": "Boston Police dispatch logs confirm zero official units dispatched to Fenway between 01:00 and 02:45.",
+        "channel": "police",
+        "reliability": "A1",
+        "reliability_label": "Official BPD Radio Dispatch Audio",
+        "pinColor": "red",
+        "x": 920,
+        "y": 420,
+        "rotation": -2,
+        "full_text": "Confirms the two uniformed intruders were impostors using counterfeit badges."
       }
     ],
     "red_threads": [
-      { "from": "E1_SUSPECT", "to": "E2_STICKY_ALIBI", "label": "Inside Guard Breach?", "color": "#e63946" },
-      { "from": "E1_SUSPECT", "to": "E4_PI_REPORT", "label": "Dublin Collateral", "color": "#f85149" },
-      { "from": "E1_SUSPECT", "to": "E3_NEWSPAPER", "label": "FBI Wanted Notice", "color": "#e63946" },
-      { "from": "E1_SUSPECT", "to": "E6_VIDEO", "label": "Sensor Profiling", "color": "#e63946" },
-      { "from": "E4_PI_REPORT", "to": "E5_COMMUNITY", "label": "Vehicle Tracking", "color": "#f85149", "dashed": true }
+      {
+        "from": "E1_SUSPECT",
+        "to": "E2_STICKY_ALIBI",
+        "label": "Inside Guard Breach?",
+        "color": "#e63946"
+      },
+      {
+        "from": "E1_SUSPECT",
+        "to": "E4_PI_REPORT",
+        "label": "Dublin Collateral",
+        "color": "#f85149"
+      },
+      {
+        "from": "E1_SUSPECT",
+        "to": "E3_NEWSPAPER",
+        "label": "FBI Wanted Notice",
+        "color": "#e63946"
+      },
+      {
+        "from": "E1_SUSPECT",
+        "to": "E6_VIDEO",
+        "label": "Sensor Profiling",
+        "color": "#e63946"
+      },
+      {
+        "from": "E4_PI_REPORT",
+        "to": "E5_COMMUNITY",
+        "label": "Vehicle Tracking",
+        "color": "#f85149",
+        "dashed": true
+      },
+      {
+        "from": "E1_SUSPECT",
+        "to": "E7_FRAME",
+        "label": "Scalpel Cut Signature",
+        "color": "#e63946"
+      },
+      {
+        "from": "E2_STICKY_ALIBI",
+        "to": "E8_DISPATCH",
+        "label": "Zero Real Patrols",
+        "color": "#f85149",
+        "dashed": true
+      },
+      {
+        "from": "E7_FRAME",
+        "to": "E4_PI_REPORT",
+        "label": "Canvas Dimensions",
+        "color": "#e63946"
+      }
     ]
   },
   {
@@ -335,14 +463,68 @@
         "y": 450,
         "rotation": 2,
         "full_text": "Analysis of the suspect's claim that the vault contained far less than the claimed insured value."
+      },
+      {
+        "id": "E7_KEY_COPY",
+        "type": "sticky_note",
+        "color": "yellow",
+        "title": "Copied Key Silicone Impression",
+        "handwritten": "Silicone key stamp of vault foot-pedal deadbolt discovered in Turin safehouse workshop.",
+        "channel": "police",
+        "reliability": "A1",
+        "reliability_label": "Turin Criminal Police Seizure",
+        "pinColor": "brass",
+        "x": 920,
+        "y": 220,
+        "rotation": 3,
+        "full_text": "Replication mold used by the School of Turin lockpicker 'The Genius'."
       }
     ],
     "red_threads": [
-      { "from": "E1_SUSPECT", "to": "E2_STICKY_ALIBI", "label": "Modus Operandi", "color": "#e63946" },
-      { "from": "E1_SUSPECT", "to": "E5_COMMUNITY", "label": "Salami DNA Trail", "color": "#f85149" },
-      { "from": "E1_SUSPECT", "to": "E4_PI_REPORT", "label": "Mumbai Fencing", "color": "#e63946" },
-      { "from": "E1_SUSPECT", "to": "E6_VIDEO", "label": "Partial Confession", "color": "#e63946" },
-      { "from": "E3_NEWSPAPER", "to": "E4_PI_REPORT", "label": "Insured Losses", "color": "#f85149", "dashed": true }
+      {
+        "from": "E1_SUSPECT",
+        "to": "E2_STICKY_ALIBI",
+        "label": "Modus Operandi",
+        "color": "#e63946"
+      },
+      {
+        "from": "E1_SUSPECT",
+        "to": "E5_COMMUNITY",
+        "label": "Salami DNA Trail",
+        "color": "#f85149"
+      },
+      {
+        "from": "E1_SUSPECT",
+        "to": "E4_PI_REPORT",
+        "label": "Mumbai Fencing",
+        "color": "#e63946"
+      },
+      {
+        "from": "E1_SUSPECT",
+        "to": "E6_VIDEO",
+        "label": "Partial Confession",
+        "color": "#e63946"
+      },
+      {
+        "from": "E3_NEWSPAPER",
+        "to": "E4_PI_REPORT",
+        "label": "Insured Losses",
+        "color": "#f85149",
+        "dashed": true
+      },
+      {
+        "from": "E1_SUSPECT",
+        "to": "E7_KEY_COPY",
+        "label": "Turin Safehouse Mold",
+        "color": "#e63946"
+      },
+      {
+        "from": "E2_STICKY_ALIBI",
+        "to": "E7_KEY_COPY",
+        "label": "Deadbolt Bypass",
+        "color": "#f85149",
+        "dashed": true
+      }
     ]
   },
   {
@@ -450,14 +632,90 @@
         "y": 450,
         "rotation": -1,
         "full_text": "Audio analysis of the killer's emergency call following the Blue Rock Springs shooting."
+      },
+      {
+        "id": "E7_CIPHER_CARD",
+        "type": "newspaper",
+        "title": "Zodiac 340 Symbol Matrix",
+        "headline": "DIAGONAL TRANSPOSITION CIPHER",
+        "snippet": "Symbols shift 1 down, 2 right across 17-column blocks. Decrypted via AI supercomputer.",
+        "channel": "sleuths",
+        "reliability": "A1",
+        "reliability_label": "FBI Cryptanalysis Certification",
+        "pinColor": "brass",
+        "x": 920,
+        "y": 140,
+        "rotation": -2,
+        "full_text": "High-resolution reproduction of the 340-symbol matrix solved in December 2020."
+      },
+      {
+        "id": "E8_BOOT_PRINT",
+        "type": "sticky_note",
+        "color": "yellow",
+        "title": "Wing Walker Size 10.5 Boot",
+        "handwritten": "Berryessa murder scene: Size 10.5 Wing Walker parachute jump boot impressions in soft dirt.",
+        "channel": "police",
+        "reliability": "A1",
+        "reliability_label": "Physical Cast & Forensic Report",
+        "pinColor": "red",
+        "x": 920,
+        "y": 420,
+        "rotation": 2,
+        "full_text": "Footwear match corresponding exactly to military surplus boots owned by Arthur Leigh Allen."
       }
     ],
     "red_threads": [
-      { "from": "E1_SUSPECT", "to": "E2_STICKY_ALIBI", "label": "Cipher & Symbol", "color": "#e63946" },
-      { "from": "E1_SUSPECT", "to": "E3_NEWSPAPER", "label": "Taunting Letters", "color": "#f85149" },
-      { "from": "E1_SUSPECT", "to": "E5_COMMUNITY", "label": "Stamp DNA Test", "color": "#e63946", "dashed": true },
-      { "from": "E1_SUSPECT", "to": "E4_PI_REPORT", "label": "Alternate POI (Poste)", "color": "#f85149", "dashed": true },
-      { "from": "E3_NEWSPAPER", "to": "E6_VIDEO", "label": "Voiceprint Analysis", "color": "#e63946" }
+      {
+        "from": "E1_SUSPECT",
+        "to": "E2_STICKY_ALIBI",
+        "label": "Cipher & Symbol",
+        "color": "#e63946"
+      },
+      {
+        "from": "E1_SUSPECT",
+        "to": "E3_NEWSPAPER",
+        "label": "Taunting Letters",
+        "color": "#f85149"
+      },
+      {
+        "from": "E1_SUSPECT",
+        "to": "E5_COMMUNITY",
+        "label": "Stamp DNA Test",
+        "color": "#e63946",
+        "dashed": true
+      },
+      {
+        "from": "E1_SUSPECT",
+        "to": "E4_PI_REPORT",
+        "label": "Alternate POI (Poste)",
+        "color": "#f85149",
+        "dashed": true
+      },
+      {
+        "from": "E3_NEWSPAPER",
+        "to": "E6_VIDEO",
+        "label": "Voiceprint Analysis",
+        "color": "#e63946"
+      },
+      {
+        "from": "E1_SUSPECT",
+        "to": "E8_BOOT_PRINT",
+        "label": "Size 10.5 Match",
+        "color": "#e63946"
+      },
+      {
+        "from": "E2_STICKY_ALIBI",
+        "to": "E7_CIPHER_CARD",
+        "label": "340 Decryption Key",
+        "color": "#f85149"
+      },
+      {
+        "from": "E7_CIPHER_CARD",
+        "to": "E3_NEWSPAPER",
+        "label": "Chronicle Mailing",
+        "color": "#e63946",
+        "dashed": true
+      }
     ]
   },
   {
@@ -565,14 +823,69 @@
         "y": 450,
         "rotation": 1,
         "full_text": "Expert interviews confirming surgical bisecting skill required to sever the spinal column cleanly."
+      },
+      {
+        "id": "E7_AUTOPSY",
+        "type": "pi_report",
+        "title": "Coroner Surgical Bisection Study",
+        "dossier_no": "CORONER-LA-1947-88",
+        "handwritten": "Autopsy report: Clean transverse lumbar transection through intervertebral disc. Required master surgical skill.",
+        "channel": "police",
+        "reliability": "A1",
+        "reliability_label": "LA County Coroner Autopsy Dossier",
+        "pinColor": "silver",
+        "x": 920,
+        "y": 220,
+        "rotation": -1,
+        "full_text": "Medical analysis confirming the killer had extensive surgical training in hemicorporectomy techniques."
       }
     ],
     "red_threads": [
-      { "from": "E1_SUSPECT", "to": "E2_STICKY_ALIBI", "label": "Bugged Confession", "color": "#e63946" },
-      { "from": "E1_SUSPECT", "to": "E4_PI_REPORT", "label": "Secret Photo Album", "color": "#f85149" },
-      { "from": "E1_SUSPECT", "to": "E6_VIDEO", "label": "Surgical Technique", "color": "#e63946" },
-      { "from": "E2_STICKY_ALIBI", "to": "E3_NEWSPAPER", "label": "Media Provocation", "color": "#f85149", "dashed": true },
-      { "from": "E4_PI_REPORT", "to": "E5_COMMUNITY", "label": "Cement Bag Clue", "color": "#e63946", "dashed": true }
+      {
+        "from": "E1_SUSPECT",
+        "to": "E2_STICKY_ALIBI",
+        "label": "Bugged Confession",
+        "color": "#e63946"
+      },
+      {
+        "from": "E1_SUSPECT",
+        "to": "E4_PI_REPORT",
+        "label": "Secret Photo Album",
+        "color": "#f85149"
+      },
+      {
+        "from": "E1_SUSPECT",
+        "to": "E6_VIDEO",
+        "label": "Surgical Technique",
+        "color": "#e63946"
+      },
+      {
+        "from": "E2_STICKY_ALIBI",
+        "to": "E3_NEWSPAPER",
+        "label": "Media Provocation",
+        "color": "#f85149",
+        "dashed": true
+      },
+      {
+        "from": "E4_PI_REPORT",
+        "to": "E5_COMMUNITY",
+        "label": "Cement Bag Clue",
+        "color": "#e63946",
+        "dashed": true
+      },
+      {
+        "from": "E1_SUSPECT",
+        "to": "E7_AUTOPSY",
+        "label": "Surgeon Incision",
+        "color": "#e63946"
+      },
+      {
+        "from": "E6_VIDEO",
+        "to": "E7_AUTOPSY",
+        "label": "Medical Corroboration",
+        "color": "#f85149",
+        "dashed": true
+      }
     ]
   },
   {
@@ -680,14 +993,89 @@
         "y": 450,
         "rotation": 1,
         "full_text": "Air Force radar telemetry and meteorological reconstruction narrowing the Ariel drop zone."
+      },
+      {
+        "id": "E7_TIE_METALLURGY",
+        "type": "sticky_note",
+        "color": "yellow",
+        "title": "Titanium Alloy Metallurgy",
+        "handwritten": "JC Penney tie: Pure antimony, cerium & titanium particles point directly to Boeing Seattle fabrication plant.",
+        "channel": "sleuths",
+        "reliability": "A1",
+        "reliability_label": "Citizen Sleuth Electron Microscope",
+        "pinColor": "red",
+        "x": 920,
+        "y": 140,
+        "rotation": 2,
+        "full_text": "Chemical composition isolates rare elements used exclusively in Supersonic Transport prototype development in 1971."
+      },
+      {
+        "id": "E8_ALTIMETER",
+        "type": "pi_report",
+        "title": "Cockpit Pressure Telemetry Log",
+        "dossier_no": "FAA-NW305-1971-TEL",
+        "handwritten": "20:13: Cabin pressure bump & altimeter spike over Ariel, WA confirms aft-stair parachute egress point.",
+        "channel": "police",
+        "reliability": "A1",
+        "reliability_label": "FAA Radar & Flight Telemetry",
+        "pinColor": "silver",
+        "x": 920,
+        "y": 420,
+        "rotation": -2,
+        "full_text": "Boeing 727 flight recorder telemetry isolating the exact second of Cooper's jump."
       }
     ],
     "red_threads": [
-      { "from": "E1_SUSPECT", "to": "E2_STICKY_ALIBI", "label": "Titanium Particles", "color": "#e63946" },
-      { "from": "E1_SUSPECT", "to": "E5_COMMUNITY", "label": "Tena Bar Bills", "color": "#f85149" },
-      { "from": "E1_SUSPECT", "to": "E3_NEWSPAPER", "label": "Storm Jump", "color": "#e63946" },
-      { "from": "E1_SUSPECT", "to": "E4_PI_REPORT", "label": "McCoy Pattern", "color": "#f85149", "dashed": true },
-      { "from": "E2_STICKY_ALIBI", "to": "E6_VIDEO", "label": "Flight Trajectory", "color": "#e63946" }
+      {
+        "from": "E1_SUSPECT",
+        "to": "E2_STICKY_ALIBI",
+        "label": "Titanium Particles",
+        "color": "#e63946"
+      },
+      {
+        "from": "E1_SUSPECT",
+        "to": "E5_COMMUNITY",
+        "label": "Tena Bar Bills",
+        "color": "#f85149"
+      },
+      {
+        "from": "E1_SUSPECT",
+        "to": "E3_NEWSPAPER",
+        "label": "Storm Jump",
+        "color": "#e63946"
+      },
+      {
+        "from": "E1_SUSPECT",
+        "to": "E4_PI_REPORT",
+        "label": "McCoy Pattern",
+        "color": "#f85149",
+        "dashed": true
+      },
+      {
+        "from": "E2_STICKY_ALIBI",
+        "to": "E6_VIDEO",
+        "label": "Flight Trajectory",
+        "color": "#e63946"
+      },
+      {
+        "from": "E1_SUSPECT",
+        "to": "E7_TIE_METALLURGY",
+        "label": "Boeing Metallurgy",
+        "color": "#e63946"
+      },
+      {
+        "from": "E2_STICKY_ALIBI",
+        "to": "E8_ALTIMETER",
+        "label": "20:13 Egress Spike",
+        "color": "#f85149"
+      },
+      {
+        "from": "E8_ALTIMETER",
+        "to": "E6_VIDEO",
+        "label": "Drop Zone Physics",
+        "color": "#e63946",
+        "dashed": true
+      }
     ]
   },
   {
@@ -798,11 +1186,37 @@
       }
     ],
     "red_threads": [
-      { "from": "E1_SUSPECT", "to": "E2_STICKY_ALIBI", "label": "Staged Shipwreck", "color": "#e63946" },
-      { "from": "E1_SUSPECT", "to": "E4_PI_REPORT", "label": "Nassau Wire Transfer", "color": "#f85149" },
-      { "from": "E2_STICKY_ALIBI", "to": "E5_COMMUNITY", "label": "Escape Speedboat", "color": "#e63946" },
-      { "from": "E1_SUSPECT", "to": "E3_NEWSPAPER", "label": "$8.5M Policy Fraud", "color": "#f85149" },
-      { "from": "E4_PI_REPORT", "to": "E6_VIDEO", "label": "Kill-switch Evidence", "color": "#e63946", "dashed": true }
+      {
+        "from": "E1_SUSPECT",
+        "to": "E2_STICKY_ALIBI",
+        "label": "Staged Shipwreck",
+        "color": "#e63946"
+      },
+      {
+        "from": "E1_SUSPECT",
+        "to": "E4_PI_REPORT",
+        "label": "Nassau Wire Transfer",
+        "color": "#f85149"
+      },
+      {
+        "from": "E2_STICKY_ALIBI",
+        "to": "E5_COMMUNITY",
+        "label": "Escape Speedboat",
+        "color": "#e63946"
+      },
+      {
+        "from": "E1_SUSPECT",
+        "to": "E3_NEWSPAPER",
+        "label": "$8.5M Policy Fraud",
+        "color": "#f85149"
+      },
+      {
+        "from": "E4_PI_REPORT",
+        "to": "E6_VIDEO",
+        "label": "Kill-switch Evidence",
+        "color": "#e63946",
+        "dashed": true
+      }
     ]
   },
   {
@@ -910,14 +1324,68 @@
         "y": 450,
         "rotation": -1,
         "full_text": "Audiovisual investigation into Balkan organized crime protection rings shielding the fugitive."
+      },
+      {
+        "id": "E7_BTC_CLUSTER",
+        "type": "sticky_note",
+        "color": "pink",
+        "title": "Dubai 230k BTC On-Chain Graph",
+        "handwritten": "UTXO cluster analysis: 230,000 Bitcoins routed via 40 nested multi-sig wallets into Dubai luxury property accounts.",
+        "channel": "sleuths",
+        "reliability": "A1",
+        "reliability_label": "Forensic Blockchain Cluster Analysis",
+        "pinColor": "red",
+        "x": 920,
+        "y": 220,
+        "rotation": -3,
+        "full_text": "Tracing of 2015 transaction records linking Emirati shell companies directly to Ignatova's inner circle."
       }
     ],
     "red_threads": [
-      { "from": "E1_SUSPECT", "to": "E2_STICKY_ALIBI", "label": "Athens Escape 2017", "color": "#e63946" },
-      { "from": "E1_SUSPECT", "to": "E5_COMMUNITY", "label": "230k BTC Wallet Trace", "color": "#f85149" },
-      { "from": "E1_SUSPECT", "to": "E4_PI_REPORT", "label": "Dubai Yacht Stakeout", "color": "#e63946" },
-      { "from": "E1_SUSPECT", "to": "E3_NEWSPAPER", "label": "$4B Ponzi Scheme", "color": "#e63946" },
-      { "from": "E4_PI_REPORT", "to": "E6_VIDEO", "label": "Protection Syndicate", "color": "#f85149", "dashed": true }
+      {
+        "from": "E1_SUSPECT",
+        "to": "E2_STICKY_ALIBI",
+        "label": "Athens Escape 2017",
+        "color": "#e63946"
+      },
+      {
+        "from": "E1_SUSPECT",
+        "to": "E5_COMMUNITY",
+        "label": "230k BTC Wallet Trace",
+        "color": "#f85149"
+      },
+      {
+        "from": "E1_SUSPECT",
+        "to": "E4_PI_REPORT",
+        "label": "Dubai Yacht Stakeout",
+        "color": "#e63946"
+      },
+      {
+        "from": "E1_SUSPECT",
+        "to": "E3_NEWSPAPER",
+        "label": "$4B Ponzi Scheme",
+        "color": "#e63946"
+      },
+      {
+        "from": "E4_PI_REPORT",
+        "to": "E6_VIDEO",
+        "label": "Protection Syndicate",
+        "color": "#f85149",
+        "dashed": true
+      },
+      {
+        "from": "E1_SUSPECT",
+        "to": "E7_BTC_CLUSTER",
+        "label": "230,000 BTC Reserves",
+        "color": "#e63946"
+      },
+      {
+        "from": "E5_COMMUNITY",
+        "to": "E7_BTC_CLUSTER",
+        "label": "Blockchain Graph Match",
+        "color": "#f85149",
+        "dashed": true
+      }
     ]
   },
   {
@@ -1025,14 +1493,88 @@
         "y": 450,
         "rotation": 1,
         "full_text": "Masterful geopolitical and time zone synchronization orchestrated by the cyber unit."
+      },
+      {
+        "id": "E7_CASINO_JUNKET",
+        "type": "pi_report",
+        "title": "Manila Solaire Casino Junket Audit",
+        "dossier_no": "AMLA-PH-2016-81M",
+        "handwritten": "Philippine Senate hearing: $43M converted to high-denomination baccarat chips at Solaire VIP gaming tables.",
+        "channel": "detective",
+        "reliability": "A1",
+        "reliability_label": "Senate Sworn Audit & Surveillance",
+        "pinColor": "silver",
+        "x": 920,
+        "y": 140,
+        "rotation": 2,
+        "full_text": "Tracking of RCBC Makati branch cash delivery to Kim Wong and eastern European junket operators."
+      },
+      {
+        "id": "E8_MALWARE_DISASSEMBLY",
+        "type": "sticky_note",
+        "color": "yellow",
+        "title": "Evtrack Malware Codebase",
+        "handwritten": "Shared codebase fingerprint with Sony Pictures (2014) and WannaCry (2017) confirms Lazarus Bureau 121 attribution.",
+        "channel": "police",
+        "reliability": "A1",
+        "reliability_label": "US DOJ Cyber Forensics Certification",
+        "pinColor": "red",
+        "x": 920,
+        "y": 420,
+        "rotation": -2,
+        "full_text": "Reverse engineering of the SWIFT alliance packet injector malware suite."
       }
     ],
     "red_threads": [
-      { "from": "E1_SUSPECT", "to": "E2_STICKY_ALIBI", "label": "Printer Evtdiag Malware", "color": "#e63946" },
-      { "from": "E1_SUSPECT", "to": "E5_COMMUNITY", "label": "'Fandation' Typo", "color": "#f85149" },
-      { "from": "E1_SUSPECT", "to": "E3_NEWSPAPER", "label": "Casino Laundering", "color": "#e63946" },
-      { "from": "E3_NEWSPAPER", "to": "E4_PI_REPORT", "label": "Macau Junket Trail", "color": "#f85149" },
-      { "from": "E2_STICKY_ALIBI", "to": "E6_VIDEO", "label": "Geopolitical Timing", "color": "#e63946" }
+      {
+        "from": "E1_SUSPECT",
+        "to": "E2_STICKY_ALIBI",
+        "label": "Printer Evtdiag Malware",
+        "color": "#e63946"
+      },
+      {
+        "from": "E1_SUSPECT",
+        "to": "E5_COMMUNITY",
+        "label": "'Fandation' Typo",
+        "color": "#f85149"
+      },
+      {
+        "from": "E1_SUSPECT",
+        "to": "E3_NEWSPAPER",
+        "label": "Casino Laundering",
+        "color": "#e63946"
+      },
+      {
+        "from": "E3_NEWSPAPER",
+        "to": "E4_PI_REPORT",
+        "label": "Macau Junket Trail",
+        "color": "#f85149"
+      },
+      {
+        "from": "E2_STICKY_ALIBI",
+        "to": "E6_VIDEO",
+        "label": "Geopolitical Timing",
+        "color": "#e63946"
+      },
+      {
+        "from": "E1_SUSPECT",
+        "to": "E8_MALWARE_DISASSEMBLY",
+        "label": "Lazarus Code Signature",
+        "color": "#e63946"
+      },
+      {
+        "from": "E3_NEWSPAPER",
+        "to": "E7_CASINO_JUNKET",
+        "label": "Solaire VIP Chips",
+        "color": "#f85149"
+      },
+      {
+        "from": "E7_CASINO_JUNKET",
+        "to": "E4_PI_REPORT",
+        "label": "Macau Delivery Trail",
+        "color": "#e63946",
+        "dashed": true
+      }
     ]
   }
 ]
