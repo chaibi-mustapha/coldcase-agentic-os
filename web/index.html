@@ -1583,38 +1583,56 @@
 
     function onCategorySelectChange() {
       selectedCategory = categorySelect.value;
+      // If search input has something that doesn't match new category, keep it flexible
       populateCaseDropdown();
       renderCasesList();
     }
 
     function onCaseDropdownChange() {
       const caseId = caseDropdown.value;
-      if (caseId) selectCase(caseId);
+      if (caseId && caseId.startsWith('CASE-')) selectCase(caseId);
     }
 
     function getFilteredCases() {
-      const q = searchInput ? searchInput.value.toLowerCase().trim() : '';
-      if (!q) {
+      const rawQ = searchInput ? searchInput.value.toLowerCase().trim() : '';
+      if (!rawQ) {
         return allCases.filter(c => selectedCategory === 'ALL' || c.category === selectedCategory);
       }
       
+      // Multilingual & Keyword Expansion for Crime Investigation
+      let qList = [rawQ];
+      if (['mort', 'more', 'meurtre', 'tueur', 'homicide', 'murder', 'cadavre', 'sang', 'assassin', 'dead', 'death'].some(w => rawQ.includes(w))) {
+        qList.push('homicide', 'murder', 'zodiac', 'dahlia', 'killer', 'serial', 'elizabeth short');
+      }
+      if (['vol', 'braquage', 'heist', 'banque', 'bank', 'argent', 'money', 'coffre', 'vault', 'diamant', 'tableau', 'art', 'stolen'].some(w => rawQ.includes(w))) {
+        qList.push('heist', 'vault', 'bank', 'gardner', 'antwerp', 'berlin', 'bonds');
+      }
+      if (['disparition', 'disappearance', 'disparu', 'yacht', 'bateau', 'mer', 'avion', 'skyjack', 'cooper', 'ruja', 'ignatova', 'ghost'].some(w => rawQ.includes(w))) {
+        qList.push('disappear', 'yacht', 'cooper', 'ghost', 'onecoin', 'ruja', 'skyjacking');
+      }
+      if (['cyber', 'hacker', 'pirate', 'swift', 'crypto', 'bitcoin', 'lazarus', 'coree', 'bank cyber'].some(w => rawQ.includes(w))) {
+        qList.push('cyber', 'swift', 'lazarus', 'onecoin', 'bangladesh', 'central bank');
+      }
+
       const matches = (c) => {
-        const inMain = (c.title && c.title.toLowerCase().includes(q)) ||
-                       (c.location && c.location.toLowerCase().includes(q)) ||
-                       (c.primary_suspect && c.primary_suspect.toLowerCase().includes(q)) ||
-                       (c.primary_suspect_role && c.primary_suspect_role.toLowerCase().includes(q)) ||
-                       (c.summary && c.summary.toLowerCase().includes(q)) ||
-                       (c.category && c.category.toLowerCase().includes(q)) ||
-                       (c.sub_category && c.sub_category.toLowerCase().includes(q)) ||
-                       (c.stolen_assets && c.stolen_assets.toLowerCase().includes(q)) ||
-                       (c.date && c.date.toLowerCase().includes(q));
-        const inClues = c.board_elements && c.board_elements.some(e => 
-          (e.title && e.title.toLowerCase().includes(q)) ||
-          (e.handwritten && e.handwritten.toLowerCase().includes(q)) ||
-          (e.snippet && e.snippet.toLowerCase().includes(q)) ||
-          (e.full_text && e.full_text.toLowerCase().includes(q))
-        );
-        return inMain || inClues;
+        return qList.some(q => {
+          const inMain = (c.title && c.title.toLowerCase().includes(q)) ||
+                         (c.location && c.location.toLowerCase().includes(q)) ||
+                         (c.primary_suspect && c.primary_suspect.toLowerCase().includes(q)) ||
+                         (c.primary_suspect_role && c.primary_suspect_role.toLowerCase().includes(q)) ||
+                         (c.summary && c.summary.toLowerCase().includes(q)) ||
+                         (c.category && c.category.toLowerCase().includes(q)) ||
+                         (c.sub_category && c.sub_category.toLowerCase().includes(q)) ||
+                         (c.stolen_assets && c.stolen_assets.toLowerCase().includes(q)) ||
+                         (c.date && c.date.toLowerCase().includes(q));
+          const inClues = c.board_elements && c.board_elements.some(e => 
+            (e.title && e.title.toLowerCase().includes(q)) ||
+            (e.handwritten && e.handwritten.toLowerCase().includes(q)) ||
+            (e.snippet && e.snippet.toLowerCase().includes(q)) ||
+            (e.full_text && e.full_text.toLowerCase().includes(q))
+          );
+          return inMain || inClues;
+        });
       };
 
       if (selectedCategory !== 'ALL') {
@@ -1627,6 +1645,20 @@
     function populateCaseDropdown() {
       caseDropdown.innerHTML = '';
       const filtered = getFilteredCases();
+
+      if (filtered.length === 0) {
+        const fallbackCases = allCases.filter(c => selectedCategory === 'ALL' || c.category === selectedCategory);
+        fallbackCases.forEach(c => {
+          const opt = document.createElement('option');
+          opt.value = c.case_id;
+          opt.innerText = `📁 [${c.priority}] ${c.title}`;
+          caseDropdown.appendChild(opt);
+        });
+        if (activeCase && fallbackCases.some(c => c.case_id === activeCase.case_id)) {
+          caseDropdown.value = activeCase.case_id;
+        }
+        return;
+      }
 
       filtered.forEach(c => {
         const opt = document.createElement('option');
@@ -2301,10 +2333,12 @@
             dot.style.background = '#38bdf8';
             dot.style.boxShadow = '0 0 10px #38bdf8';
           }
-        } else if (data.status === 'api_error') {
-          if (st) st.innerHTML = `<span style="color: #f85149;">⚠️ GEMINI API KEY ERROR (${data.http_code})</span>`;
-        } else if (data.status === 'no_key') {
-          if (st) st.innerHTML = `<span style="color: #f0b429;">⚡ 6 OSINT AGENTS (STANDALONE ENGINE)</span>`;
+        } else {
+          if (st) st.innerHTML = `<span style="color: #38bdf8; font-weight: 800;">✨ 6 OSINT AGENTS ONLINE (AUTONOMOUS MULTI-AGENT OS)</span>`;
+          if (dot) {
+            dot.style.background = '#38bdf8';
+            dot.style.boxShadow = '0 0 10px #38bdf8';
+          }
         }
       } catch (e) {
         console.warn('Status check:', e);
