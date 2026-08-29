@@ -70,6 +70,30 @@ def fetch_live(req: LiveFetchRequest):
     return JSONResponse(result)
 
 
+async def _get_best_gemini_model(client: httpx.AsyncClient, api_key: str) -> str:
+    """Auto-discover the exact supported Gemini model for this API key via Google Generative Language API."""
+    try:
+        url = f"https://generativelanguage.googleapis.com/v1beta/models?key={api_key}"
+        resp = await client.get(url)
+        if resp.status_code == 200:
+            models_data = resp.json().get("models", [])
+            # Priority 1: Flash models
+            for m in models_data:
+                methods = m.get("supportedGenerationMethods", [])
+                if "generateContent" in methods:
+                    name = m.get("name", "").replace("models/", "")
+                    if "flash" in name.lower():
+                        return name
+            # Priority 2: Any model supporting generateContent
+            for m in models_data:
+                methods = m.get("supportedGenerationMethods", [])
+                if "generateContent" in methods:
+                    return m.get("name", "").replace("models/", "")
+    except Exception:
+        pass
+    return "gemini-1.5-flash"
+
+
 @app.get("/api/gemini-status")
 async def gemini_status():
     """Verify Gemini API connection status and active model."""
@@ -80,15 +104,16 @@ async def gemini_status():
     if not has_key:
         return JSONResponse({"status": "no_key", "message": "No API key configured", "key_preview": key_preview})
 
-    url = f"https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key={api_key}"
-    payload = {"contents": [{"parts": [{"text": "Reply with only word OK"}]}]}
     try:
-        async with httpx.AsyncClient(timeout=8.0) as client:
+        async with httpx.AsyncClient(timeout=10.0) as client:
+            model = await _get_best_gemini_model(client, api_key)
+            url = f"https://generativelanguage.googleapis.com/v1beta/models/{model}:generateContent?key={api_key}"
+            payload = {"contents": [{"parts": [{"text": "Reply with only word OK"}]}]}
             resp = await client.post(url, json=payload)
             if resp.status_code == 200:
-                return JSONResponse({"status": "active", "model": "gemini-1.5-flash", "key_preview": key_preview, "live": True})
+                return JSONResponse({"status": "active", "model": model, "key_preview": key_preview, "live": True})
             else:
-                return JSONResponse({"status": "api_error", "http_code": resp.status_code, "error": resp.text, "key_preview": key_preview})
+                return JSONResponse({"status": "api_error", "http_code": resp.status_code, "error": resp.text, "model_tried": model, "key_preview": key_preview})
     except Exception as e:
         return JSONResponse({"status": "network_error", "error": str(e), "key_preview": key_preview})
 
@@ -624,32 +649,35 @@ Perform a deep multi-agent criminal synthesis across 6 specialized agents. Retur
   }}
 }}"""
 
-        for model_name in ["gemini-1.5-flash", "gemini-2.0-flash", "gemini-1.5-pro", "gemini-2.5-flash"]:
-            url = f"https://generativelanguage.googleapis.com/v1beta/models/{model_name}:generateContent?key={api_key}"
-            payload = {
-                "contents": [{"parts": [{"text": prompt}]}],
-                "generationConfig": {
-                    "responseMimeType": "application/json",
-                    "temperature": 0.2
-                }
-            }
-            try:
-                async with httpx.AsyncClient(timeout=20.0) as client:
-                    resp = await client.post(url, json=payload)
-                    if resp.status_code == 200:
-                        data = resp.json()
-                        text_content = data["candidates"][0]["content"]["parts"][0]["text"]
-                        parsed = json.loads(text_content)
-                        parsed["live_gemini"] = True
-                        parsed["model"] = model_name
-                        parsed["case_id"] = req.case_id
-                        parsed["suspect"] = req.suspect_name
-                        return parsed
-                    else:
-                        print(f"[Gemini {model_name} HTTP {resp.status_code}]: {resp.text}")
-            except Exception as ex:
-                print(f"[Gemini {model_name} Error]: {ex}")
-                continue
+        try:
+            async with httpx.AsyncClient(timeout=25.0) as client:
+                best_model = await _get_best_gemini_model(client, api_key)
+                models_to_try = [best_model, "gemini-1.5-flash", "gemini-2.0-flash", "gemini-1.5-pro", "gemini-pro"]
+                for model_name in dict.fromkeys(models_to_try):
+                    for api_ver in ["v1beta", "v1"]:
+                        url = f"https://generativelanguage.googleapis.com/{api_ver}/models/{model_name}:generateContent?key={api_key}"
+                        payload = {
+                            "contents": [{"parts": [{"text": prompt}]}],
+                            "generationConfig": {
+                                "responseMimeType": "application/json",
+                                "temperature": 0.2
+                            }
+                        }
+                        try:
+                            resp = await client.post(url, json=payload)
+                            if resp.status_code == 200:
+                                data = resp.json()
+                                text_content = data["candidates"][0]["content"]["parts"][0]["text"]
+                                parsed = json.loads(text_content)
+                                parsed["live_gemini"] = True
+                                parsed["model"] = model_name
+                                parsed["case_id"] = req.case_id
+                                parsed["suspect"] = req.suspect_name
+                                return parsed
+                        except Exception:
+                            pass
+        except Exception as e:
+            print(f"[Live Agents Global Error]: {e}")
 
     mock = _mock_investigation_trail(req.case_id, req.suspect_name)
     mock["live_gemini"] = False
