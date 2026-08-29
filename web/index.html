@@ -999,30 +999,61 @@
       color: #cbd5e1;
     }
 
-    /* Agent Timeline */
+    /* Agent Timeline & Verdict */
     .agent-step {
       background: var(--card-bg);
       border: 1px solid var(--card-border);
       border-radius: 6px;
-      padding: 10px;
+      padding: 8px 10px;
       display: flex;
       flex-direction: column;
-      gap: 5px;
+      gap: 4px;
+      transition: all 0.2s ease;
     }
     .agent-step.active {
-      border-color: var(--accent-red);
-      box-shadow: 0 0 14px rgba(248, 81, 73, 0.25);
+      border-color: rgba(248, 81, 73, 0.4);
+    }
+    .agent-step:hover {
+      border-color: var(--accent-cyan);
+      transform: translateX(-2px);
+    }
+    .agent-step.verdict-step {
+      border: 1px solid rgba(56, 189, 248, 0.6);
+      background: rgba(56, 189, 248, 0.05);
+    }
+    .agent-step.action-step {
+      border: 1.5px solid var(--accent-green);
+      background: rgba(63, 185, 80, 0.08);
+      box-shadow: 0 0 16px rgba(63, 185, 80, 0.2);
     }
     .step-badge {
       font-family: var(--font-mono);
-      font-size: 10px;
+      font-size: 9.5px;
       font-weight: bold;
       color: var(--accent-cyan);
       display: flex;
       justify-content: space-between;
     }
-    .step-title { font-weight: 700; font-size: 12px; }
-    .step-desc { font-size: 11px; color: var(--text-muted); line-height: 1.4; }
+    .step-title { font-weight: 700; font-size: 11.5px; }
+    .step-desc { font-size: 10.5px; color: #cbd5e1; line-height: 1.35; }
+    
+    .verdict-jump-btn {
+      background: rgba(63, 185, 80, 0.15);
+      border: 1px solid var(--accent-green);
+      color: var(--accent-green);
+      font-family: var(--font-mono);
+      font-size: 9px;
+      font-weight: 700;
+      padding: 2px 7px;
+      border-radius: 3px;
+      cursor: pointer;
+      text-decoration: none;
+      transition: all 0.15s;
+    }
+    .verdict-jump-btn:hover {
+      background: var(--accent-green);
+      color: #000;
+    }
   </style>
 </head>
 <body>
@@ -1200,7 +1231,10 @@
     <div class="panel-right-wrapper" id="panelRightWrapper">
       <div class="panel">
         <div class="panel-header">
-          <span>Multi-Agent Reasoning (6 Agents)</span>
+          <div style="display: flex; align-items: center; gap: 8px;">
+            <span>Multi-Agent Reasoning (6 Agents)</span>
+            <button class="verdict-jump-btn" onclick="document.getElementById('actionStep').scrollIntoView({behavior:'smooth'})" title="Jump to Final Verdict & Action Plan">⬇ FINAL VERDICT</button>
+          </div>
           <span style="color: var(--accent-green); font-family: var(--font-mono);" id="trailConfidence">CONFIDENCE: 94%</span>
         </div>
       <div class="panel-body" id="agentTrail">
@@ -1252,25 +1286,26 @@
           </div>
         </div>
 
-        <!-- Agent 05 -->
-        <div class="agent-step">
+        <!-- Agent 05 (Senior Detective Critic Verdict) -->
+        <div class="agent-step verdict-step" id="verdictStep">
           <div class="step-badge">
-            <span>AGENT 05 // SENIOR DETECTIVE CRITIC</span>
+            <span>AGENT 05 // SENIOR DETECTIVE CRITIC (VERDICT)</span>
             <span style="color: var(--accent-cyan);">VALIDATED 7 SOURCES</span>
           </div>
-          <div class="step-title" id="criticTitle">Multi-Channel Adversarial Synthesis</div>
+          <div class="step-title" id="criticTitle" style="color: #38bdf8;">⚖️ Multi-Channel Adversarial Verdict</div>
           <div class="step-desc" id="criticDesc">
             Theory solidly corroborated by spatial-temporal contradictions. Microfilms and sensor logs confirm zero forced entry.
           </div>
         </div>
 
-        <!-- Agent 06 -->
-        <div class="agent-step active" style="border-color: var(--accent-green);">
+        <!-- Agent 06 (Breakthrough Action Plan) -->
+        <div class="agent-step action-step" id="actionStep">
           <div class="step-badge" style="color: var(--accent-green);">
             <span>AGENT 06 // BREAKTHROUGH ACTION PLAN</span>
-            <span>HIGH IMPACT</span>
+            <span style="background: var(--accent-green); color: #000; padding: 1px 5px; border-radius: 2px; font-weight: 800;">HIGH IMPACT</span>
           </div>
-          <div class="step-desc" id="actionDesc" style="color: #fff; font-weight: 500;">
+          <div class="step-title" style="color: var(--accent-green);">🎯 Recommended Decisive Action</div>
+          <div class="step-desc" id="actionDesc" style="color: #fff; font-weight: 600;">
             Execute international rogatory subpoena on Zurich Safe Deposit Box 402 and confront Vance with Nuremberg conductor log.
           </div>
         </div>
