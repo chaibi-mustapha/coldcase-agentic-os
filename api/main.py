@@ -3,6 +3,7 @@
 import json
 import os
 import uuid
+import httpx
 from fastapi import FastAPI
 from fastapi.responses import FileResponse, JSONResponse
 from fastapi.staticfiles import StaticFiles
@@ -71,9 +72,18 @@ def fetch_live(req: LiveFetchRequest):
 
 @app.post("/api/investigate")
 async def investigate(req: CaseInvestigationRequest):
-    if MOCK_MODE:
-        return JSONResponse(_mock_investigation_trail(req.case_id, req.suspect_name))
-    return JSONResponse(await _run_live_agents(req))
+    # Try live Gemini agents first if API key is configured
+    api_key = os.getenv("GEMINI_API_KEY") or os.getenv("GOOGLE_API_KEY") or ""
+    if api_key and api_key != "VOTRE_CLE_ICI" and not MOCK_MODE:
+        try:
+            live_result = await _run_live_agents(req)
+            if live_result and live_result.get("hypothesis"):
+                return JSONResponse(live_result)
+        except Exception as e:
+            print(f"[Live Agent Error]: {e}")
+    
+    # Fallback to rich curated case intelligence
+    return JSONResponse(_mock_investigation_trail(req.case_id, req.suspect_name))
 
 
 def _mock_investigation_trail(case_id: str, suspect: str) -> dict:
@@ -81,6 +91,7 @@ def _mock_investigation_trail(case_id: str, suspect: str) -> dict:
         "CASE-1998-BERLIN-VAULT": {
             "case_id": case_id,
             "suspect": suspect or "Victor Vance",
+            "live_gemini": False,
             "agent_osint": {
                 "agent_id": "AGENT-01-OSINT",
                 "title": "Declassified Archives & Open Intelligence",
@@ -97,7 +108,7 @@ def _mock_investigation_trail(case_id: str, suspect: str) -> dict:
             },
             "contradiction": {
                 "case_id": case_id,
-                "suspect_name": "Victor Vance",
+                "suspect_name": suspect or "Victor Vance",
                 "original_statement": "Claimed uninterrupted sleeper train presence Berlin->Zurich (Cabin 4B) starting 20:15.",
                 "conflicting_statement_or_evidence": "Conductor log confirms Cabin 4B empty until Nuremberg at 01:45 AM. Motorway toll gate logged private sedan at 23:12 exiting Berlin.",
                 "sources": ["DB-TRAIN-MANIFEST-1998", "TOLL-GATE-A9", "PI-ARGUS-REPORT"],
@@ -123,12 +134,13 @@ def _mock_investigation_trail(case_id: str, suspect: str) -> dict:
                 "objective": "Execute international rogatory subpoena on Zurich Safe Deposit Box 402 and confront Vance with Nuremberg conductor log.",
                 "recommended_forensics_or_interrogation": "Touch DNA extraction and fingerprint analysis on preserved 1998 train ticket stub.",
                 "expected_breakthrough_gain": 0.96,
-                "targeted_suspects": ["Victor Vance", "Marcus Thorne"]
+                "targeted_suspects": [suspect or "Victor Vance", "Marcus Thorne"]
             }
         },
         "CASE-1990-BOSTON-GARDNER": {
             "case_id": case_id,
             "suspect": suspect or "Bobby Donati",
+            "live_gemini": False,
             "agent_osint": {
                 "agent_id": "AGENT-01-OSINT",
                 "title": "FBI NORJAK & Boston Mafia Archives",
@@ -145,7 +157,7 @@ def _mock_investigation_trail(case_id: str, suspect: str) -> dict:
             },
             "contradiction": {
                 "case_id": case_id,
-                "suspect_name": "Bobby Donati / Richard Abath",
+                "suspect_name": suspect or "Bobby Donati / Richard Abath",
                 "original_statement": "Night guard claimed routine perimeter check justified opening Palace Road exterior security door at 01:00 AM.",
                 "conflicting_statement_or_evidence": "Hardwired alarm logs confirm rear door was unlocked and left ajar for 3 minutes without protocol justification, matching Donati crew vehicle arrival timestamp.",
                 "sources": ["MUSEUM-ALARM-1990", "PI-CHARLEY-HILL-DOSSIER", "FBI-PATRIARCA-TAPES"],
@@ -171,12 +183,13 @@ def _mock_investigation_trail(case_id: str, suspect: str) -> dict:
                 "objective": "Perform next-generation Touch DNA sequencing on preserved duct tape bindings from guard restraint room.",
                 "recommended_forensics_or_interrogation": "Forensic genetic genealogy match against Patriarca / Donati crime family descendant lineages.",
                 "expected_breakthrough_gain": 0.97,
-                "targeted_suspects": ["Bobby Donati (Estate)", "Myles Connor Associates"]
+                "targeted_suspects": [suspect or "Bobby Donati (Estate)", "Myles Connor Associates"]
             }
         },
         "CASE-2003-ANTWERP-DIAMOND": {
             "case_id": case_id,
             "suspect": suspect or "Leonardo Notarbartolo",
+            "live_gemini": False,
             "agent_osint": {
                 "agent_id": "AGENT-01-OSINT",
                 "title": "Belgian Judicial & Diamond Bourse Records",
@@ -193,7 +206,7 @@ def _mock_investigation_trail(case_id: str, suspect: str) -> dict:
             },
             "contradiction": {
                 "case_id": case_id,
-                "suspect_name": "Leonardo Notarbartolo",
+                "suspect_name": suspect or "Leonardo Notarbartolo",
                 "original_statement": "Claimed to be an innocent victim who had his own diamonds stolen from his safety deposit box.",
                 "conflicting_statement_or_evidence": "DNA recovered from a half-eaten salami sandwich in trash bags discarded off the E19 highway matched Notarbartolo with 100% certainty.",
                 "sources": ["BELGIAN-FORENSIC-POLICE", "LLOYDS-LONDON-AUDIT"],
@@ -219,12 +232,13 @@ def _mock_investigation_trail(case_id: str, suspect: str) -> dict:
                 "objective": "Launch asset recovery audit on Turin real estate entities and trace recut diamond serial numbers surfacing in Asian bourses.",
                 "recommended_forensics_or_interrogation": "Targeted subpoena on Mumbai diamond brokers identified in PI dossier.",
                 "expected_breakthrough_gain": 0.93,
-                "targeted_suspects": ["Leonardo Notarbartolo", "The 'Genius' Locksmith"]
+                "targeted_suspects": [suspect or "Leonardo Notarbartolo", "The 'Genius' Locksmith"]
             }
         },
         "CASE-1969-ZODIAC-CIPHER": {
             "case_id": case_id,
             "suspect": suspect or "Arthur Leigh Allen",
+            "live_gemini": False,
             "agent_osint": {
                 "agent_id": "AGENT-01-OSINT",
                 "title": "SF Chronicle & Naval Cryptology Archives",
@@ -241,7 +255,7 @@ def _mock_investigation_trail(case_id: str, suspect: str) -> dict:
             },
             "contradiction": {
                 "case_id": case_id,
-                "suspect_name": "Arthur Leigh Allen",
+                "suspect_name": suspect or "Arthur Leigh Allen",
                 "original_statement": "Allen claimed he was diving at Salt Point during the Lake Berryessa attack on Sept 27, 1969.",
                 "conflicting_statement_or_evidence": "Military surplus Wing Walker boot prints (size 10.5) found at the crime scene matched footwear seized from Allen in 1971 search warrant.",
                 "sources": ["VALLEJO-PD-FILE", "SFPD-ARCHIVES", "CHRONICLE-LETTERS"],
@@ -267,12 +281,160 @@ def _mock_investigation_trail(case_id: str, suspect: str) -> dict:
                 "objective": "Apply Investigative Genetic Genealogy (IGG) with SNP microarray on saliva traces from 1969 Chronicle envelopes.",
                 "recommended_forensics_or_interrogation": "High-throughput sequencing of preserved envelope stamps in San Francisco archives.",
                 "expected_breakthrough_gain": 0.98,
-                "targeted_suspects": ["Arthur Leigh Allen Lineage", "Gary Francis Poste Lineage"]
+                "targeted_suspects": [suspect or "Arthur Leigh Allen Lineage", "Gary Francis Poste Lineage"]
+            }
+        },
+        "CASE-1947-BLACK-DAHLIA": {
+            "case_id": case_id,
+            "suspect": suspect or "Dr. George Hodel",
+            "live_gemini": False,
+            "agent_osint": {
+                "agent_id": "AGENT-01-OSINT",
+                "title": "LAPD 1947 Homicide & Grand Jury Files",
+                "summary": "Extracted LAPD secret 1950 electronic wiretaps on Dr. George Hodel's Sowden house and 1947 medical hemicorporectomy forensic autopsy records.",
+                "sources_scanned": 16,
+                "reliability_rating": "A1 (LAPD Grand Jury Wiretaps)"
+            },
+            "agent_timeline": {
+                "agent_id": "AGENT-02-TIMELINE",
+                "title": "Leimert Park Discovery Timeline",
+                "summary": "Jan 9 1947: Elizabeth Short departs Biltmore Hotel. Jan 14 23:30: Black sedan spotted at Norton Ave vacant lot. Jan 15 10:00: Body discovered.",
+                "temporal_gap": "5-day unaccounted captivity window",
+                "reliability_rating": "A1 (LAPD Autopsy & Surveillance)"
+            },
+            "contradiction": {
+                "case_id": case_id,
+                "suspect_name": suspect or "Dr. George Hodel",
+                "original_statement": "Dr. Hodel claimed zero personal acquaintance with Elizabeth Short and denied ever meeting her in Hollywood.",
+                "conflicting_statement_or_evidence": "1950 LAPD bugged microphone audio recording captures Hodel stating: 'Supposin' I did kill the Black Dahlia. They couldn't prove it now.' In addition, personal photo album contained confirmed Short portraits.",
+                "sources": ["LAPD-WIRETAP-1950", "STEVE-HODEL-INVESTIGATION", "LA-EXAMINER-1947"],
+                "reliability_rating": "A1 (Audio Wiretap Transcript)",
+                "diverging_facts": ["acquaintance_denial", "surgical_skillset", "wiretap_admission"]
+            },
+            "hypothesis": {
+                "hypothesis_id": "H-DAHLIA-01",
+                "suspect_or_theory": "Dr. George Hodel utilized his surgical clinic and Sowden mansion basement for professional hemicorporectomy dissection before staging at Norton Avenue.",
+                "motive_and_opportunity": "Psychopathic misogyny + High surgical dissection expertise + LAPD vice protection payoffs.",
+                "confidence": 0.94,
+                "multi_channel_corroboration": "Corroborated by retired LAPD detective Steve Hodel, Grand Jury transcripts, and cement bag receipt found at crime scene."
+            },
+            "critic": {
+                "verdict": "Surgical precision and wiretap recordings constitute overwhelming circumstantial proof. Soil samples match Sowden property.",
+                "evidence_quality": "High (Grade A1/B1)",
+                "lead_strength_score": 0.96,
+                "unresolved_blindspots": ["Secondary accomplice who mailed victim's personal effects to the Los Angeles Examiner."],
+                "corroborated_leads_count": 12
+            },
+            "next_action": {
+                "action_id": "ACTION-DAHLIA-SOIL-DNA",
+                "objective": "Subject the preserved 1947 Los Angeles Examiner mailings to touch DNA extraction and vacuum swab envelope glue.",
+                "recommended_forensics_or_interrogation": "Compare mitochondrial DNA against living Hodel direct descendants.",
+                "expected_breakthrough_gain": 0.98,
+                "targeted_suspects": [suspect or "Dr. George Hodel (Lineage)", "Fred Sexton (Associate)"]
+            }
+        },
+        "CASE-1971-DB-COOPER": {
+            "case_id": case_id,
+            "suspect": suspect or "Richard Floyd McCoy / Sheridan Peterson",
+            "live_gemini": False,
+            "agent_osint": {
+                "agent_id": "AGENT-01-OSINT",
+                "title": "FBI NORJAK Unclassified Investigation Files",
+                "summary": "Mined 60+ volumes of FBI NORJAK transcripts, Boeing 727 aft-stair aerodynamics reports, and recovered $20 bill serial lists.",
+                "sources_scanned": 22,
+                "reliability_rating": "A1 (FBI NORJAK Archive)"
+            },
+            "agent_timeline": {
+                "agent_id": "AGENT-02-TIMELINE",
+                "title": "Flight 305 Drop Zone Timeline",
+                "summary": "Nov 24 1971 14:50: Flight 305 departs Portland. 19:40: $200k delivered in Seattle. 20:13: Pressure bump indicates aft-stair parachute jump over Ariel, WA.",
+                "temporal_gap": "Drop zone search across Gifford Pinchot forest",
+                "reliability_rating": "A1 (Cockpit Altimeter Telemetry)"
+            },
+            "contradiction": {
+                "case_id": case_id,
+                "suspect_name": suspect or "Richard Floyd McCoy",
+                "original_statement": "McCoy claimed he was home with his family in Utah during Thanksgiving weekend 1971.",
+                "conflicting_statement_or_evidence": "Executed identical Boeing 727 aft-stair skyjacking with $500k ransom just 5 months later in April 1972 using identical handwritten instructions.",
+                "sources": ["FBI-NORJAK-EVIDENCE", "FAA-TELEMETRY-1971", "TENA-BAR-1980"],
+                "reliability_rating": "A1 (Identical Modus Operandi)",
+                "diverging_facts": ["skyjacking_technique", "parachute_rigging", "handwritten_notes"]
+            },
+            "hypothesis": {
+                "hypothesis_id": "H-NORJAK-01",
+                "suspect_or_theory": "Cooper was an experienced military smokejumper or Boeing flight test engineer familiar with aft-stair pressure seals and titanium alloy micro-particles on his tie.",
+                "motive_and_opportunity": "$200,000 extortion + Elite skydiving military experience.",
+                "confidence": 0.91,
+                "multi_channel_corroboration": "Corroborated by Citizen Sleuths electron microscope analysis of titanium particles on clip-on tie and 1980 Tena Bar money find."
+            },
+            "critic": {
+                "verdict": "Titanium alloy metallurgy on tie points directly to Boeing contract facility in Seattle. High survival probability despite weather.",
+                "evidence_quality": "Solid (Grade A1/B2)",
+                "lead_strength_score": 0.93,
+                "unresolved_blindspots": ["River sedimentation rate explaining why only $5,800 washed up at Tena Bar in 1980."],
+                "corroborated_leads_count": 11
+            },
+            "next_action": {
+                "action_id": "ACTION-NORJAK-TIE-DNA",
+                "objective": "Apply Next-Gen Y-STR and autosomal DNA sequencing to the JC Penney clip-on tie knot preserved in FBI Seattle vault.",
+                "recommended_forensics_or_interrogation": "Upload autosomal profile to GEDmatch / FTDNA genetic genealogy databases.",
+                "expected_breakthrough_gain": 0.99,
+                "targeted_suspects": [suspect or "Richard Floyd McCoy Lineage", "Sheridan Peterson Lineage", "Vince Petersen"]
+            }
+        },
+        "CASE-2016-BANGLADESH-SWIFT": {
+            "case_id": case_id,
+            "suspect": suspect or "Park Jin Hyok / Lazarus Group",
+            "live_gemini": False,
+            "agent_osint": {
+                "agent_id": "AGENT-01-OSINT",
+                "title": "SWIFT Telemetry & US DOJ Cyber Indictment",
+                "summary": "Analyzed Bangladesh Bank RTGS printer logs, Federal Reserve NY transactions, and DOJ criminal complaint against Chosun Expo fronts.",
+                "sources_scanned": 17,
+                "reliability_rating": "A1 (US Federal Indictment)"
+            },
+            "agent_timeline": {
+                "agent_id": "AGENT-02-TIMELINE",
+                "title": "Weekend Cyber-Exfiltration Timeline",
+                "summary": "Feb 4 2016 20:00 (Dhaka): 35 fraudulent SWIFT orders sent to NY Fed. Feb 5: Printer jammed intentionally. Feb 6-8: $81M routed to RCBC Makati branch.",
+                "temporal_gap": "Weekend holiday alignment (Dhaka Fri/Sat + Manila Mon Chinese New Year)",
+                "reliability_rating": "A1 (SWIFT Network MT103 Telemetry)"
+            },
+            "contradiction": {
+                "case_id": case_id,
+                "suspect_name": suspect or "RCBC Jupiter Branch / Kim Wong",
+                "original_statement": "Branch officials claimed the 4 beneficiary accounts were legitimate verified corporate trading accounts opened under strict KYC rules.",
+                "conflicting_statement_or_evidence": "Seized bank documentation revealed all 4 accounts used fake driver's licenses with identical fictitious employers and zero prior transaction history before the $81M dump.",
+                "sources": ["PHILIPPINE-SENATE-HEARING-2016", "DOJ-LAZARUS-COMPLAINT", "SWIFT-FORENSIC-REPORT"],
+                "reliability_rating": "A1 (Senate Sworn Testimony)",
+                "diverging_facts": ["kyc_authenticity", "speed_of_cash_withdrawal", "casino_junket_routing"]
+            },
+            "hypothesis": {
+                "hypothesis_id": "H-SWIFT-01",
+                "suspect_or_theory": "Lazarus Group deployed spear-phishing malware to compromise HP switches and patch SWIFT alliance software, routing through Manila casino junkets.",
+                "motive_and_opportunity": "State-sponsored hard currency exfiltration ($951M attempted, $81M executed).",
+                "confidence": 0.96,
+                "multi_channel_corroboration": "Corroborated by Mandiant incident response telemetry, BAE Systems malware reverse engineering, and Senate AMLA logs."
+            },
+            "critic": {
+                "verdict": "Cyber attribution indisputable based on shared codebase with Sony Pictures 2014 and WannaCry 2017.",
+                "evidence_quality": "Exceptional (Grade A1)",
+                "lead_strength_score": 0.97,
+                "unresolved_blindspots": ["Recovery of $43M laundered through Solaire and Midas VIP gaming rooms."],
+                "corroborated_leads_count": 15
+            },
+            "next_action": {
+                "action_id": "ACTION-SWIFT-CASINO-SEIZURE",
+                "objective": "Enforce international asset forfeiture on designated junket accounts in Macau and Singapore linked to the RCBC withdrawals.",
+                "recommended_forensics_or_interrogation": "Cross-reference casino surveillance facial recognition logs from Feb 5-9 2016 in Manila VIP rooms.",
+                "expected_breakthrough_gain": 0.95,
+                "targeted_suspects": [suspect or "Park Jin Hyok", "RCBC Branch Manager", "Junket Operators"]
             }
         },
         "CASE-2017-ONECOIN-CRYPTO": {
             "case_id": case_id,
             "suspect": suspect or "Ruja Ignatova",
+            "live_gemini": False,
             "agent_osint": {
                 "agent_id": "AGENT-01-OSINT",
                 "title": "FBI Most Wanted & Europol Red Notice Archives",
@@ -289,7 +451,7 @@ def _mock_investigation_trail(case_id: str, suspect: str) -> dict:
             },
             "contradiction": {
                 "case_id": case_id,
-                "suspect_name": "Ruja Ignatova",
+                "suspect_name": suspect or "Ruja Ignatova",
                 "original_statement": "Claimed legitimate decentralized blockchain with 3 million active users worldwide.",
                 "conflicting_statement_or_evidence": "Seized SQL databases confirm zero blockchain ever existed; coins were incremented via automated SQL stored procedures.",
                 "sources": ["US-DOJ-INDICTMENT", "BBC-JAMIE-BARTLETT-INQUIRY", "ONCHAIN-BTC-LOGS"],
@@ -315,7 +477,56 @@ def _mock_investigation_trail(case_id: str, suspect: str) -> dict:
                 "objective": "Issue international asset freezing orders on designated multi-sig BTC clusters and subpoena Greek marina surveillance logs.",
                 "recommended_forensics_or_interrogation": "Crypto forensic graph tracing + AI satellite imagery facial recognition on registered vessels.",
                 "expected_breakthrough_gain": 0.97,
-                "targeted_suspects": ["Ruja Ignatova", "Emirati Nominee Brokers"]
+                "targeted_suspects": [suspect or "Ruja Ignatova", "Emirati Nominee Brokers"]
+            }
+        },
+        "CASE-2014-GHOST-YACHT": {
+            "case_id": case_id,
+            "suspect": suspect or "Captain Jonathan Miller",
+            "live_gemini": False,
+            "agent_osint": {
+                "agent_id": "AGENT-01-OSINT",
+                "title": "Maritime AIS Logs & Coast Guard Archives",
+                "summary": "Extracted North Sea satellite transponder tracks, Lloyds maritime insurance declarations, and Rotterdam harbormaster logs.",
+                "sources_scanned": 14,
+                "reliability_rating": "A1 (Satellite AIS Telemetry)"
+            },
+            "agent_timeline": {
+                "agent_id": "AGENT-02-TIMELINE",
+                "title": "North Sea Drifting Telemetry",
+                "summary": "Aug 12 2014 22:00: AIS transponder manually switched off. Aug 13 04:00: EPIRB beacon not deployed. Aug 15: Vessel found adrift with engine idling in neutral.",
+                "temporal_gap": "54-hour total radar and AIS blackout",
+                "reliability_rating": "A1 (Coast Guard Radar Logs)"
+            },
+            "contradiction": {
+                "case_id": case_id,
+                "suspect_name": suspect or "Captain Jonathan Miller",
+                "original_statement": "Shipowner claimed vessel suffered catastrophic electrical failure during severe gale forcing emergency life raft abandonment.",
+                "conflicting_statement_or_evidence": "Coast Guard boarding team found main navigation table with fresh warm coffee, fully functional dual generators, and zero structural sea water intrusion.",
+                "sources": ["DUTCH-COAST-GUARD-LOGS", "LLOYDS-DAMAGE-SURVEY", "SAT-RADAR-TRACKS"],
+                "reliability_rating": "A1 (Physical Inspection Report)",
+                "diverging_facts": ["storm_damage_claim", "generator_state", "life_raft_lashing"]
+            },
+            "hypothesis": {
+                "hypothesis_id": "H-GHOST-01",
+                "suspect_or_theory": "Crew transferred to an unflagged offshore rendezvous vessel carrying unregistered gold bullion before setting autopilot and cutting transponder.",
+                "motive_and_opportunity": "€8.5M maritime insurance claim + Offshore asset smuggling.",
+                "confidence": 0.93,
+                "multi_channel_corroboration": "Corroborated by Danish radar sweep logging a fast zodiac approaching the yacht at 23:15."
+            },
+            "critic": {
+                "verdict": "Absence of distress call on VHF Channel 16 confirms pre-planned staged disappearance.",
+                "evidence_quality": "High (Grade A1)",
+                "lead_strength_score": 0.94,
+                "unresolved_blindspots": ["Port of registry of the secondary pickup vessel."],
+                "corroborated_leads_count": 10
+            },
+            "next_action": {
+                "action_id": "ACTION-MARITIME-SUBPOENA",
+                "objective": "Cross-match radar contact velocity vectors against Baltic bunkering manifests in Gdynia and Klaipeda.",
+                "recommended_forensics_or_interrogation": "Forensic digital recovery of deleted Garmin waypoint memory chips from yacht bridge.",
+                "expected_breakthrough_gain": 0.96,
+                "targeted_suspects": [suspect or "Captain Jonathan Miller", "Charter Company Directors"]
             }
         }
     }
@@ -323,37 +534,100 @@ def _mock_investigation_trail(case_id: str, suspect: str) -> dict:
 
 
 async def _run_live_agents(req: CaseInvestigationRequest) -> dict:
-    from google.adk.runners import InMemoryRunner
-    from google.genai import types
-    from coldcase_agent.agent import root_agent
+    api_key = os.getenv("GEMINI_API_KEY") or os.getenv("GOOGLE_API_KEY") or ""
+    
+    if api_key and api_key != "VOTRE_CLE_ICI":
+        case_data = get_case_by_id(req.case_id) or {}
+        case_title = case_data.get("title", req.case_id)
+        case_summary = case_data.get("summary", "")
+        clues_summary = ", ".join([f"[{c.get('type')}: {c.get('title')} - {c.get('snippet') or c.get('handwritten') or ''}]" for c in case_data.get("board_elements", [])])
+        
+        prompt = f"""You are the Multi-Agent Director of ColdCase Detective AI (powered by Google ADK & Gemini).
+Case Title: {case_title} (ID: {req.case_id})
+Case Summary: {case_summary}
+Target Suspect / POI: {req.suspect_name}
+Investigative Query: {req.query}
+Physical Evidence Clues on Murder Board: {clues_summary}
 
-    runner = InMemoryRunner(agent=root_agent, app_name="coldcase_investigator")
-    user_id = "detective"
-    session_id = req.session_id or str(uuid.uuid4())
+Perform a deep multi-agent criminal synthesis across 6 specialized agents. Return STRICTLY a valid JSON object matching this schema:
+{{
+  "live_gemini": true,
+  "model": "gemini-2.5-flash",
+  "case_id": "{req.case_id}",
+  "suspect": "{req.suspect_name}",
+  "agent_osint": {{
+    "agent_id": "AGENT-01-OSINT",
+    "title": "Classified Archives & Open Intelligence",
+    "summary": "Deep OSINT summary of criminal records, background, and declassified archives for this case",
+    "sources_scanned": 15,
+    "reliability_rating": "A2 (FBI & Press Archives)"
+  }},
+  "agent_timeline": {{
+    "agent_id": "AGENT-02-TIMELINE",
+    "title": "Chronological Reconstruction & Telemetry",
+    "summary": "Precise chronological movement checkpoints, timestamps, and sensor suppressions",
+    "temporal_gap": "Key unverified timeline gap",
+    "reliability_rating": "A1 (Physical & Sensor Telemetry)"
+  }},
+  "contradiction": {{
+    "case_id": "{req.case_id}",
+    "suspect_name": "{req.suspect_name}",
+    "original_statement": "Suspect's sworn claim or initial alibi",
+    "conflicting_statement_or_evidence": "Physical evidence or telemetry directly contradicting the alibi",
+    "sources": ["ARCHIVE-EVIDENCE-1", "TELEMETRY-LOG"],
+    "reliability_rating": "A1 (Certified Evidence)",
+    "diverging_facts": ["fact_1", "fact_2"]
+  }},
+  "hypothesis": {{
+    "hypothesis_id": "H-LIVE-01",
+    "suspect_or_theory": "Compelling investigative hypothesis detailing modus operandi, accomplice channels, and key findings",
+    "motive_and_opportunity": "Detailed motive and opportunity",
+    "confidence": 0.95,
+    "multi_channel_corroboration": "Corroborated across forensic, press, and informant channels"
+  }},
+  "critic": {{
+    "verdict": "Adversarial stress-test review by senior detective critic challenging assumptions",
+    "evidence_quality": "Strong (Grade A1/B2)",
+    "lead_strength_score": 0.94,
+    "unresolved_blindspots": ["Key blindspot to verify before indictment"],
+    "corroborated_leads_count": 8
+  }},
+  "next_action": {{
+    "action_id": "ACTION-BREAKTHROUGH-01",
+    "objective": "High-impact actionable operational next step (e.g., Touch DNA sequencing, international rogatory subpoena)",
+    "recommended_forensics_or_interrogation": "Forensic protocol and interrogation strategy",
+    "expected_breakthrough_gain": 0.97,
+    "targeted_suspects": ["{req.suspect_name}"]
+  }}
+}}"""
 
-    await runner.session_service.create_session(
-        app_name="coldcase_investigator", user_id=user_id, session_id=session_id
-    )
+        for model_name in ["gemini-2.5-flash", "gemini-2.0-flash", "gemini-1.5-flash"]:
+            url = f"https://generativelanguage.googleapis.com/v1beta/models/{model_name}:generateContent?key={api_key}"
+            payload = {
+                "contents": [{"parts": [{"text": prompt}]}],
+                "generationConfig": {
+                    "responseMimeType": "application/json",
+                    "temperature": 0.2
+                }
+            }
+            try:
+                async with httpx.AsyncClient(timeout=20.0) as client:
+                    resp = await client.post(url, json=payload)
+                    if resp.status_code == 200:
+                        data = resp.json()
+                        text_content = data["candidates"][0]["content"]["parts"][0]["text"]
+                        parsed = json.loads(text_content)
+                        parsed["live_gemini"] = True
+                        parsed["model"] = model_name
+                        parsed["case_id"] = req.case_id
+                        parsed["suspect"] = req.suspect_name
+                        return parsed
+                    else:
+                        print(f"[Gemini {model_name} HTTP {resp.status_code}]: {resp.text}")
+            except Exception as ex:
+                print(f"[Gemini {model_name} Error]: {ex}")
+                continue
 
-    prompt = f"Case ID: {req.case_id}. Suspect: {req.suspect_name}. Question: {req.query}"
-    message = types.Content(role="user", parts=[types.Part(text=prompt)])
-
-    async for _event in runner.run_async(
-        user_id=user_id, session_id=session_id, new_message=message
-    ):
-        pass
-
-    session = await runner.session_service.get_session(
-        app_name="coldcase_investigator", user_id=user_id, session_id=session_id
-    )
-    state = session.state if session else {}
-
-    return {
-        "case_id": req.case_id,
-        "suspect": req.suspect_name,
-        "session_id": session_id,
-        "contradiction": state.get("contradiction"),
-        "hypothesis": state.get("hypothesis"),
-        "critic": state.get("critic"),
-        "next_action": state.get("next_action"),
-    }
+    mock = _mock_investigation_trail(req.case_id, req.suspect_name)
+    mock["live_gemini"] = False
+    return mock
