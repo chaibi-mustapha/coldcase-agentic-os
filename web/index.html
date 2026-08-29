@@ -1054,6 +1054,133 @@
       background: var(--accent-green);
       color: #000;
     }
+
+    /* Formal Investigation Verdict Banner */
+    .formal-verdict-card {
+      background: linear-gradient(135deg, rgba(234, 179, 8, 0.12) 0%, rgba(15, 23, 42, 0.95) 100%);
+      border: 1.5px solid #eab308;
+      border-radius: 8px;
+      padding: 12px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      box-shadow: 0 0 20px rgba(234, 179, 8, 0.25);
+      position: relative;
+      overflow: hidden;
+      animation: verdictGlow 3s infinite ease-in-out;
+    }
+    @keyframes verdictGlow {
+      0%, 100% { box-shadow: 0 0 15px rgba(234, 179, 8, 0.2); }
+      50% { box-shadow: 0 0 25px rgba(234, 179, 8, 0.45); }
+    }
+    .formal-verdict-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 6px;
+      border-bottom: 1px dashed rgba(234, 179, 8, 0.4);
+      padding-bottom: 6px;
+    }
+    .formal-verdict-badge {
+      font-family: var(--font-mono);
+      font-size: 10px;
+      font-weight: 900;
+      color: #fef08a;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      letter-spacing: 0.5px;
+    }
+    .formal-verdict-status {
+      background: #eab308;
+      color: #1a1000;
+      font-family: var(--font-mono);
+      font-size: 9px;
+      font-weight: 900;
+      padding: 2px 6px;
+      border-radius: 3px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+    .formal-verdict-title {
+      font-size: 12.5px;
+      font-weight: 800;
+      color: #fff;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .formal-verdict-text {
+      font-size: 11.5px;
+      line-height: 1.45;
+      color: #fef9c3;
+      background: rgba(0, 0, 0, 0.45);
+      padding: 8px 10px;
+      border-left: 3px solid #eab308;
+      border-radius: 4px;
+    }
+    .formal-verdict-action {
+      font-size: 10.5px;
+      color: #86efac;
+      display: flex;
+      align-items: flex-start;
+      gap: 5px;
+      line-height: 1.35;
+    }
+    .btn-open-verdict-modal {
+      background: linear-gradient(90deg, #ca8a04 0%, #eab308 100%);
+      color: #000;
+      border: none;
+      border-radius: 4px;
+      font-family: var(--font-mono);
+      font-size: 10px;
+      font-weight: 800;
+      padding: 6px 10px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      transition: all 0.15s;
+      margin-top: 2px;
+      box-shadow: 0 4px 12px rgba(202, 138, 4, 0.4);
+    }
+    .btn-open-verdict-modal:hover {
+      background: #fde047;
+      transform: translateY(-1px);
+      box-shadow: 0 6px 16px rgba(234, 179, 8, 0.6);
+    }
+
+    /* Empty Search State */
+    .empty-search {
+      padding: 16px 12px;
+      text-align: center;
+      color: #94a3b8;
+      font-size: 11.5px;
+      line-height: 1.5;
+      background: rgba(15, 23, 42, 0.6);
+      border: 1px dashed var(--card-border);
+      border-radius: 6px;
+      margin-top: 4px;
+    }
+    .btn-reset-search {
+      background: rgba(248, 81, 73, 0.15);
+      border: 1px solid var(--accent-red);
+      color: var(--accent-red);
+      font-family: var(--font-mono);
+      font-size: 10px;
+      font-weight: 700;
+      padding: 4px 10px;
+      border-radius: 4px;
+      margin-top: 8px;
+      cursor: pointer;
+      transition: all 0.15s;
+    }
+    .btn-reset-search:hover {
+      background: var(--accent-red);
+      color: #fff;
+    }
   </style>
 </head>
 <body>
@@ -1238,6 +1365,30 @@
           <span style="color: var(--accent-green); font-family: var(--font-mono);" id="trailConfidence">CONFIDENCE: 94%</span>
         </div>
       <div class="panel-body" id="agentTrail">
+        <!-- ⚖️ PROMINENT OFFICIAL SYNTHESIS VERDICT CARD -->
+        <div class="formal-verdict-card" id="formalVerdictCard">
+          <div class="formal-verdict-header">
+            <div class="formal-verdict-badge">
+              <span>⚖️ OFFICIAL INVESTIGATION VERDICT</span>
+              <span style="color: var(--accent-cyan);">// GRADE A1</span>
+            </div>
+            <div class="formal-verdict-status" id="formalVerdictStatus">PRIME SUSPECT IMPLICATED</div>
+          </div>
+          <div class="formal-verdict-title">
+            <span>🎯 SYNTHESIS RULING & FORMAL CHARGES</span>
+          </div>
+          <div class="formal-verdict-text" id="formalVerdictText">
+            Theory solidly corroborated by spatial-temporal contradictions. Microfilms and sensor logs confirm zero forced entry.
+          </div>
+          <div class="formal-verdict-action">
+            <span style="font-weight: 800;">⚡ ACTION:</span>
+            <span id="formalVerdictAction">Execute international rogatory subpoena on Zurich Safe Deposit Box 402 and confront Vance with Nuremberg conductor log.</span>
+          </div>
+          <button class="btn-open-verdict-modal" onclick="openVerdictModal()">
+            <span>📜</span> AFFICHER LE RAPPORT DE VERDICT OFFICIEL
+          </button>
+        </div>
+
         <!-- Agent 01 -->
         <div class="agent-step active">
           <div class="step-badge">
@@ -1332,6 +1483,57 @@
     </div>
   </div>
 
+  <!-- Modal Official Case Verdict Dossier -->
+  <div class="modal-backdrop" id="verdictReportModal" onclick="closeVerdictModal(event)">
+    <div class="modal-card" style="width: 620px; border-color: #eab308; box-shadow: 0 25px 60px rgba(0, 0, 0, 0.9);" onclick="event.stopPropagation()">
+      <div class="modal-header" style="background: linear-gradient(90deg, #231904 0%, #172033 100%); border-bottom: 1.5px solid #eab308;">
+        <div style="display: flex; align-items: center; gap: 8px;">
+          <span style="font-size: 18px;">⚖️</span>
+          <div>
+            <div class="modal-title" style="color: #fef08a; font-size: 13px;">OFFICIAL MULTI-AGENT SYNTHESIS REPORT & VERDICT</div>
+            <div style="font-family: var(--font-mono); font-size: 9px; color: #94a3b8;">CLASSIFIED COLD CASE DOSSIER • DEPT OF JUSTICE SYNTHESIS</div>
+          </div>
+        </div>
+        <button class="modal-close" onclick="closeVerdictModal()">✖</button>
+      </div>
+      <div class="modal-body" style="gap: 14px; max-height: 75vh; overflow-y: auto;">
+        <!-- Top Status Banner -->
+        <div style="display: flex; justify-content: space-between; align-items: center; background: rgba(234, 179, 8, 0.1); border: 1px solid rgba(234, 179, 8, 0.4); padding: 10px 14px; border-radius: 6px;">
+          <div>
+            <div style="font-family: var(--font-mono); font-size: 10px; color: #fef08a;" id="modalVerdictCaseTitle">CASE DOSSIER</div>
+            <div style="font-weight: 800; font-size: 14px; color: #fff;" id="modalVerdictSuspect">PRIMARY SUSPECT</div>
+          </div>
+          <div style="text-align: right;">
+            <div style="font-family: var(--font-mono); font-size: 9px; color: #94a3b8;">CONSENSUS CERTAINTY</div>
+            <div style="font-family: var(--font-mono); font-weight: 900; font-size: 16px; color: #86efac;" id="modalVerdictConfidence">94% CONFIDENCE</div>
+          </div>
+        </div>
+
+        <!-- 1. Formal Ruling -->
+        <div style="background: #090d14; padding: 12px; border-radius: 6px; border-left: 3px solid #eab308; border-top: 1px solid #1e293b; border-right: 1px solid #1e293b; border-bottom: 1px solid #1e293b;">
+          <div style="font-family: var(--font-mono); font-size: 10px; color: #fef08a; font-weight: 800; margin-bottom: 4px;">1. FORMAL INVESTIGATION VERDICT (SENIOR DETECTIVE CRITIC)</div>
+          <div id="modalVerdictText" style="font-size: 12px; color: #f8fafc; line-height: 1.5;"></div>
+        </div>
+
+        <!-- 2. Alibi & Contradiction Checkpoint -->
+        <div style="background: #090d14; padding: 12px; border-radius: 6px; border-left: 3px solid var(--accent-red); border-top: 1px solid #1e293b; border-right: 1px solid #1e293b; border-bottom: 1px solid #1e293b;">
+          <div style="font-family: var(--font-mono); font-size: 10px; color: var(--accent-red); font-weight: 800; margin-bottom: 4px;">2. PHYSICAL & TELEMETRY CONTRADICTION CHECKPOINT</div>
+          <div id="modalContradictionText" style="font-size: 11.5px; color: #fca5a5; line-height: 1.45;"></div>
+        </div>
+
+        <!-- 3. Decisive Action Plan -->
+        <div style="background: #090d14; padding: 12px; border-radius: 6px; border-left: 3px solid var(--accent-green); border-top: 1px solid #1e293b; border-right: 1px solid #1e293b; border-bottom: 1px solid #1e293b;">
+          <div style="font-family: var(--font-mono); font-size: 10px; color: var(--accent-green); font-weight: 800; margin-bottom: 4px;">3. RECOMMENDED ROGATORY & FORENSIC ACTION PLAN</div>
+          <div id="modalActionText" style="font-size: 11.5px; color: #bbf7d0; line-height: 1.45;"></div>
+        </div>
+
+        <div style="display: flex; justify-content: flex-end; gap: 8px; margin-top: 4px;">
+          <button class="filter-btn" onclick="closeVerdictModal()" style="padding: 6px 14px; background: #1e293b; color: #fff;">FERMER</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
   <script>
     // --- Global State ---
     let allCases = [];
@@ -1390,9 +1592,41 @@
       if (caseId) selectCase(caseId);
     }
 
+    function getFilteredCases() {
+      const q = searchInput ? searchInput.value.toLowerCase().trim() : '';
+      if (!q) {
+        return allCases.filter(c => selectedCategory === 'ALL' || c.category === selectedCategory);
+      }
+      
+      const matches = (c) => {
+        const inMain = (c.title && c.title.toLowerCase().includes(q)) ||
+                       (c.location && c.location.toLowerCase().includes(q)) ||
+                       (c.primary_suspect && c.primary_suspect.toLowerCase().includes(q)) ||
+                       (c.primary_suspect_role && c.primary_suspect_role.toLowerCase().includes(q)) ||
+                       (c.summary && c.summary.toLowerCase().includes(q)) ||
+                       (c.category && c.category.toLowerCase().includes(q)) ||
+                       (c.sub_category && c.sub_category.toLowerCase().includes(q)) ||
+                       (c.stolen_assets && c.stolen_assets.toLowerCase().includes(q)) ||
+                       (c.date && c.date.toLowerCase().includes(q));
+        const inClues = c.board_elements && c.board_elements.some(e => 
+          (e.title && e.title.toLowerCase().includes(q)) ||
+          (e.handwritten && e.handwritten.toLowerCase().includes(q)) ||
+          (e.snippet && e.snippet.toLowerCase().includes(q)) ||
+          (e.full_text && e.full_text.toLowerCase().includes(q))
+        );
+        return inMain || inClues;
+      };
+
+      if (selectedCategory !== 'ALL') {
+        const catFiltered = allCases.filter(c => c.category === selectedCategory && matches(c));
+        if (catFiltered.length > 0) return catFiltered;
+      }
+      return allCases.filter(matches);
+    }
+
     function populateCaseDropdown() {
       caseDropdown.innerHTML = '';
-      const filtered = allCases.filter(c => selectedCategory === 'ALL' || c.category === selectedCategory);
+      const filtered = getFilteredCases();
 
       filtered.forEach(c => {
         const opt = document.createElement('option');
@@ -1409,16 +1643,21 @@
     }
 
     function renderCasesList() {
-      const q = searchInput.value.toLowerCase().trim();
+      const q = searchInput ? searchInput.value.toLowerCase().trim() : '';
       casesContainer.innerHTML = '';
-
-      const filtered = allCases.filter(c => {
-        const matchCat = (selectedCategory === 'ALL' || c.category === selectedCategory);
-        const matchQ = !q || c.title.toLowerCase().includes(q) || c.location.toLowerCase().includes(q) || (c.primary_suspect && c.primary_suspect.toLowerCase().includes(q));
-        return matchCat && matchQ;
-      });
+      const filtered = getFilteredCases();
 
       document.getElementById('caseCountBadge').innerText = `${filtered.length} OF ${allCases.length} DOSSIERS`;
+
+      if (filtered.length === 0) {
+        casesContainer.innerHTML = `
+          <div class="empty-search">
+            <span>⚠️ Aucun dossier ne correspond à "<b>${q}</b>"</span><br>
+            <button class="btn-reset-search" onclick="clearSearch()">Effacer la recherche ⟲</button>
+          </div>
+        `;
+        return;
+      }
 
       filtered.forEach(c => {
         const card = document.createElement('div');
@@ -1445,16 +1684,32 @@
       });
     }
 
-    function filterCases() { renderCasesList(); }
-    function clearSearch() { searchInput.value = ''; renderCasesList(); }
+    function filterCases() {
+      populateCaseDropdown();
+      renderCasesList();
+    }
+
+    function clearSearch() {
+      if (searchInput) searchInput.value = '';
+      populateCaseDropdown();
+      renderCasesList();
+    }
 
     function selectCase(caseId) {
       const found = allCases.find(c => c.case_id === caseId);
       if (!found) return;
       activeCase = found;
+      currentInvestigationResult = null;
 
       document.getElementById('suspectInput').value = `${found.primary_suspect || 'Unknown Suspect'} (${found.primary_suspect_role || 'Undetermined Role'})`;
       document.getElementById('queryInput').value = `Cross-correlate physical, PI dossiers, press microfilms and video transcripts for: ${found.title}`;
+
+      const fVerdText = document.getElementById('formalVerdictText');
+      const fVerdAction = document.getElementById('formalVerdictAction');
+      const fStatus = document.getElementById('formalVerdictStatus');
+      if (fVerdText) fVerdText.innerText = `Multi-agent correlation & synthesis in progress for ${found.title}...`;
+      if (fVerdAction) fVerdAction.innerText = `Forensic priority investigation targeting: ${found.primary_suspect || 'Suspect'}.`;
+      if (fStatus) fStatus.innerText = 'SYNTHESIS IN PROGRESS...';
 
       caseDropdown.value = found.case_id;
       renderCasesList();
@@ -1806,6 +2061,45 @@
       }
     }
 
+    let currentInvestigationResult = null;
+
+    function openVerdictModal() {
+      if (!activeCase) return;
+      const titleElem = document.getElementById('modalVerdictCaseTitle');
+      const suspElem = document.getElementById('modalVerdictSuspect');
+      const confElem = document.getElementById('modalVerdictConfidence');
+      const verdElem = document.getElementById('modalVerdictText');
+      const contraElem = document.getElementById('modalContradictionText');
+      const actElem = document.getElementById('modalActionText');
+
+      if (titleElem) titleElem.innerText = `DOSSIER : ${activeCase.case_id} — ${activeCase.title.toUpperCase()}`;
+      if (suspElem) suspElem.innerText = `🎯 SUSPECT : ${activeCase.primary_suspect || 'Dan Cooper / Unknown'} (${activeCase.primary_suspect_role || 'Suspect Principal'})`;
+      
+      const trailConf = document.getElementById('trailConfidence');
+      if (confElem) confElem.innerText = trailConf ? trailConf.innerText : 'CONFIDENCE: 94%';
+
+      const verdictText = (currentInvestigationResult && currentInvestigationResult.critic && currentInvestigationResult.critic.verdict) ||
+                          (document.getElementById('criticDesc') && document.getElementById('criticDesc').innerText) ||
+                          "Synthèse des 6 agents validée par les preuves matérielles et la télémétrie.";
+      if (verdElem) verdElem.innerText = verdictText;
+
+      const contradictionText = (currentInvestigationResult && currentInvestigationResult.contradiction && currentInvestigationResult.contradiction.conflicting_statement_or_evidence) ||
+                                (document.getElementById('alibiDesc') && document.getElementById('alibiDesc').innerText) ||
+                                "Discordance spatio-temporelle majeure confirmée par la télémétrie.";
+      if (contraElem) contraElem.innerText = contradictionText;
+
+      const actionText = (currentInvestigationResult && currentInvestigationResult.next_action && currentInvestigationResult.next_action.objective) ||
+                         (document.getElementById('actionDesc') && document.getElementById('actionDesc').innerText) ||
+                         "Exécution des mandats rogatoires et analyses médico-légales prioritaires.";
+      if (actElem) actElem.innerText = actionText;
+
+      document.getElementById('verdictReportModal').classList.add('open');
+    }
+
+    function closeVerdictModal() {
+      document.getElementById('verdictReportModal').classList.remove('open');
+    }
+
     // Agentic Investigation Trigger
     async function runInvestigation() {
       const btn = document.getElementById('btnRun');
@@ -1823,6 +2117,7 @@
           })
         });
         const data = await res.json();
+        currentInvestigationResult = data;
 
         if (data.live_gemini) {
           const st = document.getElementById('headerStatusText');
@@ -1851,12 +2146,20 @@
           if (data.hypothesis.confidence) {
             document.getElementById('trailConfidence').innerText = 'CONFIDENCE: ' + Math.round(data.hypothesis.confidence * 100) + '%';
           }
+          const statusElem = document.getElementById('formalVerdictStatus');
+          if (statusElem) {
+            statusElem.innerText = (data.hypothesis.confidence >= 0.9) ? 'PRIME SUSPECT IMPLICATED' : 'HYPOTHESIS CORROBORATED';
+          }
         }
         if (data.critic) {
           document.getElementById('criticDesc').innerText = data.critic.verdict;
+          const formalText = document.getElementById('formalVerdictText');
+          if (formalText) formalText.innerText = data.critic.verdict;
         }
         if (data.next_action) {
           document.getElementById('actionDesc').innerText = data.next_action.objective + ' — ' + (data.next_action.recommended_forensics_or_interrogation || '');
+          const formalAct = document.getElementById('formalVerdictAction');
+          if (formalAct) formalAct.innerText = data.next_action.objective;
         }
       } catch (err) {
         console.warn('API error:', err);
@@ -2012,6 +2315,16 @@
       loadCases();
       initResizers();
       checkGeminiStatus();
+      if (searchInput) {
+        searchInput.addEventListener('keydown', (e) => {
+          if (e.key === 'Enter') {
+            const filtered = getFilteredCases();
+            if (filtered.length > 0) {
+              selectCase(filtered[0].case_id);
+            }
+          }
+        });
+      }
       setTimeout(fitAndCenter, 150);
     });
     window.addEventListener('resize', fitAndCenter);
