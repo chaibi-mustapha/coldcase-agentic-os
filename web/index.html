@@ -2085,31 +2085,40 @@
         `;
       } else if (elem.type === 'video_card' || elem.video_url) {
         const rawSnippet = (elem.snippet || elem.full_text || 'Reconstitution audiovisuelle et analyse de la déposition').replace(/'/g, "\\'");
-        const embedUrl = elem.video_url || 'https://www.youtube-nocookie.com/embed/-1n56x6UDe8';
         contentHtml += `
           <div style="position: relative; width: 100%; background: #030712; border-radius: 8px; overflow: hidden; border: 1.5px solid #1e293b; margin-bottom: 12px; box-shadow: 0 8px 24px rgba(0,0,0,0.85);">
             <!-- Video Top Surveillance HUD Bar -->
-            <div style="position: absolute; top: 0; left: 0; right: 0; z-index: 10; background: linear-gradient(180deg, rgba(3,7,18,0.95) 0%, rgba(3,7,18,0) 100%); padding: 8px 12px; display: flex; justify-content: space-between; align-items: center; pointer-events: none;">
+            <div style="background: linear-gradient(180deg, rgba(3,7,18,0.95) 0%, rgba(3,7,18,0.7) 100%); padding: 8px 12px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #1e293b;">
               <span style="font-family: var(--font-mono); font-size: 10px; color: #ef4444; font-weight: 800; display: flex; align-items: center; gap: 6px;">
                 <span style="width: 8px; height: 8px; border-radius: 50%; background: #ef4444; display: inline-block; box-shadow: 0 0 8px #ef4444; animation: blinkRec 1.2s infinite ease-in-out;"></span>
-                REC // DECLASSIFIED SURVEILLANCE & DOC ARCHIVE
+                <span id="canvasFeedTitle">LIVE FORENSIC SURVEILLANCE FEED</span>
               </span>
-              <span style="font-family: var(--font-mono); font-size: 10px; color: #38bdf8; background: rgba(15, 23, 42, 0.9); border: 1px solid #334155; padding: 2px 8px; border-radius: 3px; font-weight: 700;">
-                TIMECODE [${elem.timecode || '00:00'}] • ${elem.duration || 'Full Video'}
+              <span id="canvasTimecodeBadge" style="font-family: var(--font-mono); font-size: 10px; color: #38bdf8; background: rgba(15, 23, 42, 0.9); border: 1px solid #334155; padding: 2px 8px; border-radius: 3px; font-weight: 700;">
+                TIMECODE [${elem.timecode || '00:00'}] • 60 FPS
               </span>
             </div>
 
-            <!-- Video Player Iframe (YouTube / Video Stream) -->
-            <div style="position: relative; width: 100%; padding-top: 56.25%; background: #000;">
-              <iframe id="modalVideoIframe" 
-                src="${embedUrl}?autoplay=1&rel=0&modestbranding=1" 
-                style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; border: none;" 
-                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
-                allowfullscreen>
-              </iframe>
+            <!-- Video Canvas Container -->
+            <div style="position: relative; width: 100%; height: 240px; background: #000; overflow: hidden; display: flex; align-items: center; justify-content: center;">
+              <canvas id="forensicFeedCanvas" width="640" height="360" style="width: 100%; height: 100%; object-fit: cover; display: block;"></canvas>
+              
+              <!-- CRT Scanlines Overlay -->
+              <div style="position: absolute; top:0; left:0; width:100%; height:100%; background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%), linear-gradient(90deg, rgba(255,0,0,0.03), rgba(0,255,0,0.01), rgba(0,0,255,0.03)); background-size: 100% 3px, 6px 100%; pointer-events: none;"></div>
+
+              <!-- Play/Pause Overlay Button -->
+              <div id="canvasPlayToggleBtn" onclick="toggleForensicCanvasPlay()" style="position: absolute; bottom: 12px; left: 12px; width: 34px; height: 34px; border-radius: 50%; background: rgba(15, 23, 42, 0.85); border: 1.5px solid #38bdf8; color: #38bdf8; display: flex; align-items: center; justify-content: center; font-size: 13px; cursor: pointer; box-shadow: 0 0 15px rgba(56, 189, 248, 0.4); z-index: 10; transition: all 0.2s;" title="Lecture / Pause">
+                ❚❚
+              </div>
+
+              <!-- Visual Filter Switcher -->
+              <div style="position: absolute; bottom: 12px; right: 12px; display: flex; gap: 4px; z-index: 10;">
+                <button onclick="setForensicFilter('cctv')" style="background: rgba(15,23,42,0.85); border: 1px solid #334155; color: #38bdf8; font-size: 8.5px; font-family: var(--font-mono); padding: 3px 6px; border-radius: 3px; cursor: pointer;">CCTV</button>
+                <button onclick="setForensicFilter('thermal')" style="background: rgba(15,23,42,0.85); border: 1px solid #334155; color: #f43f5e; font-size: 8.5px; font-family: var(--font-mono); padding: 3px 6px; border-radius: 3px; cursor: pointer;">FLIR</button>
+                <button onclick="setForensicFilter('night')" style="background: rgba(15,23,42,0.85); border: 1px solid #334155; color: #86efac; font-size: 8.5px; font-family: var(--font-mono); padding: 3px 6px; border-radius: 3px; cursor: pointer;">NIGHT</button>
+              </div>
             </div>
 
-            <!-- Forensic Bottom Audio Telemetry & Narration Bar -->
+            <!-- Forensic Bottom Audio Telemetry & Actions Bar -->
             <div style="background: #080d1a; border-top: 1px solid #1e293b; padding: 8px 12px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 8px;">
               <div style="display: flex; align-items: center; gap: 6px;">
                 <span style="font-family: var(--font-mono); font-size: 9px; color: #94a3b8;">SPECTROGRAM :</span>
@@ -2127,6 +2136,9 @@
                 <button id="voiceNarrateBtn" onclick="toggleVoiceNarration('${rawSnippet}')" style="background: rgba(56, 189, 248, 0.15); border: 1px solid #38bdf8; color: #38bdf8; font-family: var(--font-mono); font-size: 9.5px; font-weight: 700; padding: 3px 8px; border-radius: 4px; cursor: pointer; display: flex; align-items: center; gap: 4px; transition: all 0.2s;" title="Écouter la transcription sonore par synthèse vocale">
                   <span id="voiceNarrateIcon">🔊</span> <span id="voiceNarrateText">SYNTHÈSE VOCALE (EXTRAIT)</span>
                 </button>
+                <a href="https://www.youtube.com/results?search_query=${encodeURIComponent(elem.title + ' documentary')}" target="_blank" rel="noopener noreferrer" style="background: rgba(239, 68, 68, 0.15); border: 1px solid #ef4444; color: #ef4444; font-family: var(--font-mono); font-size: 9.5px; font-weight: 700; padding: 3px 8px; border-radius: 4px; text-decoration: none; display: flex; align-items: center; gap: 4px;" title="Ouvrir le documentaire complet sur YouTube">
+                  ▶ YOUTUBE ↗
+                </a>
                 <span style="font-family: var(--font-mono); font-size: 9px; color: #86efac; font-weight: 700;">
                   1080p AI DECLASSIFIED
                 </span>
@@ -2142,9 +2154,294 @@
       document.getElementById('modalExtraInfo').innerText = `Evidence Chain & Seal: Dossier ${activeCase.case_id} — Active Pinboard Correlation.`;
 
       document.getElementById('clueModal').classList.add('open');
+
+      if (elem.type === 'video_card' || elem.video_url) {
+        setTimeout(() => {
+          initForensicCanvas(activeCase.case_id, elem);
+        }, 50);
+      }
     }
 
     let isVoiceNarrating = false;
+    let isCanvasPlaying = true;
+    let canvasAnimFrameId = null;
+    let currentForensicFilter = 'cctv';
+    let canvasTimeSeconds = 0;
+
+    function setForensicFilter(filterName) {
+      currentForensicFilter = filterName;
+    }
+
+    function toggleForensicCanvasPlay() {
+      isCanvasPlaying = !isCanvasPlaying;
+      const btn = document.getElementById('canvasPlayToggleBtn');
+      if (btn) {
+        btn.innerText = isCanvasPlaying ? '❚❚' : '▶';
+        btn.style.borderColor = isCanvasPlaying ? '#38bdf8' : '#ef4444';
+        btn.style.color = isCanvasPlaying ? '#38bdf8' : '#ef4444';
+      }
+    }
+
+    function initForensicCanvas(caseId, elem) {
+      const canvas = document.getElementById('forensicFeedCanvas');
+      if (!canvas) return;
+      const ctx = canvas.getContext('2d');
+      if (!ctx) return;
+
+      if (canvasAnimFrameId) cancelAnimationFrame(canvasAnimFrameId);
+      isCanvasPlaying = true;
+      let frameCount = 0;
+      let baseSeconds = 0;
+      let baseParts = (elem.timecode || '08:45').split(':');
+      baseSeconds = (parseInt(baseParts[0], 10) || 0) * 60 + (parseInt(baseParts[1], 10) || 0);
+
+      // Random seeds for realistic surveillance artifacts
+      const matrixSymbols = "0123456789ABCDEFЖΨΩ§±≠∂∇⊗⊕⊙⊘⊚⊛⊜⊝⊞⊟⊠⊡";
+
+      function renderFrame() {
+        if (!document.getElementById('clueModal').classList.contains('open')) return;
+
+        if (isCanvasPlaying) {
+          frameCount++;
+          if (frameCount % 60 === 0) {
+            baseSeconds++;
+            const m = String(Math.floor(baseSeconds / 60)).padStart(2, '0');
+            const s = String(baseSeconds % 60).padStart(2, '0');
+            const tcElem = document.getElementById('canvasTimecodeBadge');
+            if (tcElem) tcElem.innerText = `TIMECODE [${m}:${s}] • 60 FPS`;
+          }
+        }
+
+        const W = canvas.width;
+        const H = canvas.height;
+        const t = frameCount * 0.03;
+
+        ctx.save();
+        ctx.fillStyle = '#05070d';
+        ctx.fillRect(0, 0, W, H);
+
+        // Case Specific Visual Rendering
+        if (caseId === 'CASE-1971-DB-COOPER') {
+          // Airspace Radar Surveillance
+          const cx = W / 2;
+          const cy = H / 2;
+          const maxR = 150;
+
+          // Draw radar background circles
+          ctx.strokeStyle = currentForensicFilter === 'thermal' ? 'rgba(244,63,94,0.35)' : 'rgba(56,189,248,0.25)';
+          ctx.lineWidth = 1.5;
+          for (let r = 30; r <= maxR; r += 35) {
+            ctx.beginPath();
+            ctx.arc(cx, cy, r, 0, Math.PI * 2);
+            ctx.stroke();
+          }
+
+          // Crosshairs
+          ctx.beginPath();
+          ctx.moveTo(cx - maxR, cy); ctx.lineTo(cx + maxR, cy);
+          ctx.moveTo(cx, cy - maxR); ctx.lineTo(cx, cy + maxR);
+          ctx.stroke();
+
+          // Radar Sweep Beam
+          const angle = t * 1.5;
+          const grad = ctx.createRadialGradient(cx, cy, 0, cx, cy, maxR);
+          grad.addColorStop(0, 'rgba(56, 189, 248, 0.4)');
+          grad.addColorStop(1, 'rgba(16, 185, 129, 0)');
+          ctx.fillStyle = grad;
+          ctx.beginPath();
+          ctx.moveTo(cx, cy);
+          ctx.arc(cx, cy, maxR, angle - 0.4, angle);
+          ctx.closePath();
+          ctx.fill();
+
+          // Flight 305 blip
+          const bx = cx + Math.cos(angle - 0.8) * 75;
+          const by = cy + Math.sin(angle - 0.8) * 75;
+          ctx.fillStyle = '#ef4444';
+          ctx.beginPath(); ctx.arc(bx, by, 5, 0, Math.PI * 2); ctx.fill();
+
+          ctx.font = '11px monospace';
+          ctx.fillStyle = '#38bdf8';
+          ctx.fillText("FLIGHT NW305 (B727)", bx + 10, by - 12);
+          ctx.fillText("ALT: 10,000 FT | SPD: 170 KT", bx + 10, by + 2);
+          ctx.fillStyle = '#ef4444';
+          ctx.fillText("PRESSURE DROP @ 20:13 [AFT STAIRS]", bx + 10, by + 16);
+
+          // Ariel Drop Zone Target Box
+          ctx.strokeStyle = '#f59e0b';
+          ctx.setLineDash([4, 4]);
+          ctx.strokeRect(cx + 40, cy + 20, 80, 50);
+          ctx.setLineDash([]);
+          ctx.fillStyle = '#f59e0b';
+          ctx.fillText("ARIEL DROP ZONE", cx + 45, cy + 35);
+          ctx.fillText("45°59'N 122°33'W", cx + 45, cy + 52);
+
+        } else if (caseId === 'CASE-1969-ZODIAC-CIPHER') {
+          // Cryptographic Matrix Decryption Stream
+          ctx.font = '13px monospace';
+          ctx.fillStyle = currentForensicFilter === 'thermal' ? 'rgba(244,63,94,0.7)' : 'rgba(56,189,248,0.7)';
+          const cols = 22;
+          const rows = 12;
+          for (let r = 0; r < rows; r++) {
+            for (let c = 0; c < cols; c++) {
+              const charIdx = (r * cols + c + Math.floor(t * 5)) % matrixSymbols.length;
+              const isHighlight = ((c + r * 2 + Math.floor(t * 3)) % 17 === 0);
+              ctx.fillStyle = isHighlight ? '#86efac' : (currentForensicFilter === 'thermal' ? '#f43f5e' : '#38bdf8');
+              ctx.fillText(matrixSymbols[charIdx], 25 + c * 27, 35 + r * 22);
+            }
+          }
+
+          // Audio Spectrograph Waveform
+          ctx.strokeStyle = '#38bdf8';
+          ctx.lineWidth = 2;
+          ctx.beginPath();
+          for (let x = 0; x < W; x += 6) {
+            const y = H - 45 + Math.sin(x * 0.05 + t * 4) * 15 * Math.cos(x * 0.02 + t);
+            if (x === 0) ctx.moveTo(x, y);
+            else ctx.lineTo(x, y);
+          }
+          ctx.stroke();
+
+          ctx.fillStyle = '#86efac';
+          ctx.font = '11px monospace';
+          ctx.fillText("VALLEJO PD PAYPHONE ACOUSTIC FREQUENCY MATCH : 94.2% [CORROBORATED]", 25, H - 15);
+
+        } else if (caseId === 'CASE-1998-BERLIN-VAULT') {
+          // Bank Vault Subterranean CCTV Perspective
+          ctx.strokeStyle = '#334155';
+          ctx.lineWidth = 1.5;
+          ctx.strokeRect(50, 40, W - 100, H - 80);
+          ctx.strokeRect(120, 80, W - 240, H - 160);
+          ctx.beginPath();
+          ctx.moveTo(50, 40); ctx.lineTo(120, 80);
+          ctx.moveTo(W - 50, 40); ctx.lineTo(W - 120, 80);
+          ctx.moveTo(50, H - 40); ctx.lineTo(120, H - 80);
+          ctx.moveTo(W - 50, H - 40); ctx.lineTo(W - 120, H - 80);
+          ctx.stroke();
+
+          // Motion Detection Box
+          const mx = 240 + Math.sin(t) * 40;
+          const my = 120 + Math.cos(t * 0.8) * 20;
+          ctx.strokeStyle = '#ef4444';
+          ctx.lineWidth = 2;
+          ctx.strokeRect(mx, my, 120, 100);
+          ctx.fillStyle = '#ef4444';
+          ctx.font = '10px monospace';
+          ctx.fillText("MOTION ID #01 [OPERATIVE DETECTED]", mx, my - 6);
+          ctx.fillText("BIOMETRIC ACCESS: MASTER OVERRIDE", mx, my + 115);
+
+        } else if (caseId === 'CASE-1990-BOSTON-GARDNER') {
+          // Gardner Museum Dutch Room Gallery
+          ctx.strokeStyle = '#475569';
+          ctx.strokeRect(60, 40, W - 120, H - 90);
+          
+          // Paintings on Wall
+          ctx.fillStyle = '#1e293b';
+          ctx.fillRect(100, 70, 100, 130);
+          ctx.fillRect(260, 70, 120, 140);
+          ctx.fillRect(440, 70, 100, 130);
+
+          ctx.strokeStyle = '#ef4444';
+          ctx.lineWidth = 2;
+          ctx.strokeRect(260, 70, 120, 140);
+          ctx.fillStyle = '#ef4444';
+          ctx.font = '10px monospace';
+          ctx.fillText("ALARM SENSOR 04 TRIPPED", 260, 62);
+          ctx.fillText("REMBRANDT 'STORM ON SEA'", 260, 225);
+          ctx.fillText("MOTION SENSORS: 1 INTRUDER ONLY", 60, H - 25);
+
+        } else if (caseId === 'CASE-2003-ANTWERP-DIAMOND') {
+          // Antwerp Diamond Vault Grid
+          ctx.strokeStyle = '#1e3a8a';
+          for (let x = 40; x < W - 40; x += 40) {
+            ctx.beginPath(); ctx.moveTo(x, 40); ctx.lineTo(x, H - 40); ctx.stroke();
+          }
+          for (let y = 40; y < H - 40; y += 30) {
+            ctx.beginPath(); ctx.moveTo(40, y); ctx.lineTo(W - 40, y); ctx.stroke();
+          }
+          ctx.fillStyle = '#ef4444';
+          ctx.font = '11px monospace';
+          ctx.fillText("VAULT SENSOR MATRIX: LEVEL -2", 50, 65);
+          ctx.fillText("MAGNETIC CONTACTS: TAPED & BYPASSED", 50, 90);
+          ctx.fillText("109 / 189 DEPOSIT BOXES BREACHED", 50, 115);
+
+        } else if (caseId === 'CASE-1947-BLACK-DAHLIA') {
+          // 1947 LAPD Coroners 35mm Film Archive
+          ctx.fillStyle = 'rgba(255, 255, 255, 0.08)';
+          for (let i = 0; i < 30; i++) {
+            ctx.fillRect(Math.random() * W, Math.random() * H, Math.random() * 2, Math.random() * 8);
+          }
+          ctx.strokeStyle = '#d97706';
+          ctx.beginPath();
+          ctx.moveTo(W / 2, 40); ctx.lineTo(W / 2, H - 40);
+          ctx.moveTo(60, H / 2); ctx.lineTo(W - 60, H / 2);
+          ctx.stroke();
+
+          ctx.fillStyle = '#fbbf24';
+          ctx.font = '11px monospace';
+          ctx.fillText("LAPD CORONERS INQUEST // 1947 ARCHIVE REEL", 70, 70);
+          ctx.fillText("HEMICORPORECTOMY INCISION: L2-L3 VERTEBRAE", 70, 95);
+          ctx.fillText("PRECISION SURGICAL TECHNIQUE (1930s CURRICULUM)", 70, 120);
+
+        } else if (caseId === 'CASE-2007-SEATTLE-COAST') {
+          // Coast Guard Sonar & Navigation Radar
+          const cx = W / 2;
+          const cy = H / 2;
+          ctx.strokeStyle = '#0284c7';
+          ctx.beginPath(); ctx.arc(cx, cy, 110, 0, Math.PI * 2); ctx.stroke();
+          ctx.beginPath(); ctx.arc(cx, cy, 60, 0, Math.PI * 2); ctx.stroke();
+
+          const bx = cx + Math.sin(t * 0.4) * 45;
+          const by = cy + Math.cos(t * 0.4) * 35;
+          ctx.fillStyle = '#ef4444';
+          ctx.beginPath(); ctx.arc(bx, by, 6, 0, Math.PI * 2); ctx.fill();
+
+          ctx.fillStyle = '#38bdf8';
+          ctx.font = '11px monospace';
+          ctx.fillText("YACHT DRIFT VECTOR: 2.4 KTS @ 285°", 50, 60);
+          ctx.fillText("STRAIT OF JUAN DE FUCA [PUGET SOUND]", 50, 80);
+          ctx.fillStyle = '#ef4444';
+          ctx.fillText("ENGINE KILL-SWITCH: DELIBERATELY BYPASSED", 50, 105);
+
+        } else if (caseId === 'CASE-2017-ONECOIN-CRYPTO') {
+          // Airport CCTV Facial Recognition Scan
+          ctx.strokeStyle = '#38bdf8';
+          ctx.strokeRect(W / 2 - 60, H / 2 - 70, 120, 140);
+          ctx.fillStyle = '#86efac';
+          ctx.font = '10px monospace';
+          ctx.fillText("TARGET: RUJA IGNATOVA", W / 2 - 55, H / 2 - 80);
+          ctx.fillText("BIOMETRIC MATCH: 98.4%", W / 2 - 55, H / 2 + 90);
+          ctx.fillText("ATHENS DEPARTURES // GATE B12", W / 2 - 55, H / 2 + 105);
+          ctx.fillStyle = '#ef4444';
+          ctx.fillText("INTERPOL RED NOTICE #A-1082/2017 ACTIVE", 50, 50);
+
+        } else if (caseId === 'CASE-2016-BANGLADESH-BANK') {
+          // SWIFT Network Terminal Stream
+          ctx.font = '11px monospace';
+          ctx.fillStyle = '#38bdf8';
+          ctx.fillText("SWIFT MT103 PACKET INTERCEPT // NY FED GATEWAY", 40, 50);
+          ctx.fillText("TXID: 20160204-FEDNY-81000000USD -> RCBC PH", 40, 75);
+          ctx.fillStyle = '#ef4444';
+          ctx.fillText("ANOMALY: PRINTER BUFFER INJECTION SPOOF", 40, 100);
+          ctx.fillStyle = '#86efac';
+          ctx.fillText("TIMING: LUNAR NEW YEAR & FRIDAY HOLIDAY OVERLAP", 40, 125);
+        }
+
+        // Overlay Filter Tinting
+        if (currentForensicFilter === 'thermal') {
+          ctx.fillStyle = 'rgba(244, 63, 94, 0.12)';
+          ctx.fillRect(0, 0, W, H);
+        } else if (currentForensicFilter === 'night') {
+          ctx.fillStyle = 'rgba(34, 197, 94, 0.15)';
+          ctx.fillRect(0, 0, W, H);
+        }
+
+        ctx.restore();
+        canvasAnimFrameId = requestAnimationFrame(renderFrame);
+      }
+
+      renderFrame();
+    }
 
     function toggleVoiceNarration(snippetText) {
       const btnText = document.getElementById('voiceNarrateText');
@@ -2178,9 +2475,9 @@
     }
 
     function closeClueModal() {
-      const iframe = document.getElementById('modalVideoIframe');
-      if (iframe) {
-        iframe.src = ''; // Stop video and sound immediately on modal close
+      if (canvasAnimFrameId) {
+        cancelAnimationFrame(canvasAnimFrameId);
+        canvasAnimFrameId = null;
       }
       if ('speechSynthesis' in window) {
         window.speechSynthesis.cancel();
